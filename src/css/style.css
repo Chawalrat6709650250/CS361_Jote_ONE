@@ -1,0 +1,233 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Sarabun", sans-serif;
+  color: #333;
+  background-color: #fff;
+  line-height: 1.6;
+}
+
+/* Hero Carousel */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+}
+
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hero__slide--active {
+  opacity: 1;
+}
+
+.hero__image-placeholder {
+  position: absolute;
+  inset: 0;
+  background-color: #4a4a4a;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+  max-width: 700px;
+  padding: 0 2rem;
+}
+
+.hero__title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  min-height: 2.5rem;
+}
+
+.hero__subtitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  min-height: 1.75rem;
+}
+
+.hero__description {
+  font-size: 0.95rem;
+  font-weight: 300;
+  min-height: 3rem;
+}
+
+.hero__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.hero__arrow:hover {
+  opacity: 1;
+}
+
+.hero__arrow--prev {
+  left: 1.5rem;
+}
+
+.hero__arrow--next {
+  right: 1.5rem;
+}
+
+.hero__dots {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hero__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.hero__dot--active {
+  background-color: #fff;
+}
+
+/* Programs Section */
+.programs {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.programs__title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+/* Accordion */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.accordion__item {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.accordion__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+}
+
+.accordion__title {
+  flex: 1;
+  min-height: 1.5rem;
+}
+
+.accordion__icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-left: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.accordion__item--open .accordion__icon {
+  transform: rotate(180deg);
+}
+
+.accordion__body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.accordion__item--open .accordion__body {
+  max-height: 500px;
+}
+
+.accordion__content {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.accordion__text {
+  font-size: 0.9rem;
+  color: #555;
+  min-height: 4rem;
+  margin-bottom: 1rem;
+}
+
+.accordion__footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.accordion__btn {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background: #fff;
+  color: #c9a227;
+  font-family: inherit;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.accordion__btn:hover {
+  background-color: #fafafa;
+}
