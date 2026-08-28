@@ -29,15 +29,31 @@ body {
   justify-content: center;
   opacity: 0;
   transition: opacity 0.5s ease;
+  overflow: hidden;
+  background-color: #676767;
 }
 
 .hero__slide--active {
   opacity: 1;
 }
 
+.hero__image,
 .hero__image-placeholder {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__image {
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.5;
+  transform: scale(1);
+}
+
+.hero__image-placeholder {
+  object-fit: cover;
   background-color: #4a4a4a;
 }
 
