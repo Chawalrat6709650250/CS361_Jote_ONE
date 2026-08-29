@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   initCarousel();
   initAccordion();
+  initSearchToggle();
+  initLangSwitch();
 });
 
 function initCarousel() {
@@ -45,6 +47,40 @@ function initAccordion() {
       if (!isOpen) {
         item.classList.add("accordion__item--open");
       }
+    });
+  });
+}
+function initSearchToggle() {
+  const searchIcon = document.querySelector(".search-icon");
+  const searchBox = document.querySelector(".search-box");
+
+  if (!searchIcon || !searchBox) return;
+
+  searchIcon.addEventListener("click", () => {
+    searchBox.classList.toggle("open");
+    if (searchBox.classList.contains("open")) {
+      searchBox.focus();
+    }
+  });
+
+  searchBox.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && searchBox.value.trim() !== "") {
+      alert("ค้นหา: " + searchBox.value);
+    }
+  });
+}
+
+function initLangSwitch() {
+  const langSpans = document.querySelectorAll(".lang-switch span");
+
+  langSpans.forEach((span) => {
+    span.addEventListener("click", () => {
+      langSpans.forEach((s) => s.classList.remove("active"));
+      span.classList.add("active");
+
+      const selectedLang = span.dataset.lang;
+      console.log("เปลี่ยนภาษาเป็น:", selectedLang);
+      // TODO: ใส่ฟังก์ชันเปลี่ยนภาษาจริง
     });
   });
 }
