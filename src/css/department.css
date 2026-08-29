@@ -420,3 +420,106 @@ main blockquote {
         line-height: 1.7;
     }
 }
+
+/* =========================================
+   Commit 4 - Department Content Layout
+   ========================================= */
+
+/* Applicant + credit information: two columns */
+.admission-grid {
+    max-width: 1200px;
+    margin: 0 auto 50px;
+    padding: 0 40px;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 60px;
+    align-items: start;
+}
+
+.admission-section,
+.credit-section {
+    min-width: 0;
+    padding: 45px 0;
+}
+
+.admission-section h2,
+.credit-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    color: #D99A00;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.admission-section ul,
+.credit-section ul {
+    margin: 15px 0;
+    padding-left: 25px;
+}
+
+.admission-section li,
+.credit-section li {
+    margin-bottom: 8px;
+    color: #333333;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.credit-section blockquote {
+    margin: 30px 0 0;
+    padding: 20px 22px;
+
+    background: #F7F7F7;
+    border-left: 4px solid #D99A00;
+    border-radius: 0 6px 6px 0;
+
+    color: #555555;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+    .admission-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0 30px;
+    }
+
+    .admission-section,
+    .credit-section {
+        padding: 35px 0;
+    }
+
+    .credit-section {
+        border-top: 1px solid #D9D9D9;
+    }
+}
+
+@media (max-width: 600px) {
+    .admission-grid {
+        grid-template-columns: 1fr;
+        padding: 0 20px;
+        margin-bottom: 30px;
+    }
+
+    .admission-section,
+    .credit-section {
+        padding: 30px 0;
+    }
+
+    .admission-section h2,
+    .credit-section h2 {
+        font-size: 21px;
+    }
+
+    .admission-section li,
+    .credit-section li {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+}
+
