@@ -1,99 +1,422 @@
 /* =========================================
-   Department Pages - Main Layout
+   Department Pages
+   Commit 3
+   Hero + Course Summary + Download Button
    ========================================= */
 
-/* ---------- Basic Reset ---------- */
+
+/* =========================================
+   1. Basic Reset
+   ========================================= */
 
 main {
     width: 100%;
     box-sizing: border-box;
 }
 
-main * {
+main *,
+main *::before,
+main *::after {
     box-sizing: border-box;
 }
 
 
-/* ---------- Main Content Width ---------- */
+/* =========================================
+   2. Hero Section
+   ========================================= */
 
-main section {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+header {
+    min-height: 360px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 60px 40px;
+
+    text-align: center;
+
+    background-image: url("../assets/images/banner1.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
 }
 
 
-/* ---------- Section Spacing ---------- */
+/* Dark overlay เพื่อให้อ่านตัวหนังสือง่าย */
 
-main section {
-    padding: 50px 40px;
+header::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background: rgba(0, 0, 0, 0.45);
 }
 
 
-/* ---------- Headings ---------- */
+/* ชื่อสาขา */
 
-main h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
+header h1 {
+    position: relative;
+    z-index: 1;
 
-    font-size: 24px;
+    max-width: 900px;
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 42px;
     font-weight: 700;
-    line-height: 1.5;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   3. Course Summary
+   ========================================= */
+
+main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 0;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+
+    overflow: hidden;
+
+    position: relative;
+
+    margin-top: -35px;
+
+    z-index: 2;
+}
+
+
+/* แต่ละช่อง */
+
+main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article {
+    min-height: 150px;
+
+    padding: 25px 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    border-right: 1px solid #e0e0e0;
+}
+
+
+/* เอาเส้นขวาของช่องสุดท้ายออก */
+
+main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article:last-child {
+    border-right: none;
+}
+
+
+/* หัวข้อของแต่ละช่อง */
+
+main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article h2 {
+    margin: 0 0 10px;
 
     color: #D99A00;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
 }
 
 
-/* ---------- Paragraph ---------- */
+/* ข้อมูลในแต่ละช่อง */
 
-main p {
-    margin-top: 0;
-    margin-bottom: 16px;
+main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article p {
+    margin: 3px 0;
+
+    color: #333333;
 
     font-size: 16px;
-    line-height: 1.7;
 
-    color: #222;
+    line-height: 1.5;
 }
 
 
-/* ---------- Lists ---------- */
+/* =========================================
+   4. Download Button
+   ========================================= */
 
-main ul {
-    margin-top: 10px;
+main > p:has(a[href="#description"]) {
+    max-width: 1200px;
+
+    margin: 35px auto 45px;
+
+    padding: 0 40px;
+
+    text-align: center;
+}
+
+
+main > p:has(a[href="#description"]) a {
+    display: inline-block;
+
+    padding: 13px 32px;
+
+    background: #D99A00;
+
+    color: #ffffff;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* Hover */
+
+main > p:has(a[href="#description"]) a:hover {
+    background: #B98200;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   5. Content Section
+   ========================================= */
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 45px 40px;
+}
+
+
+/* Section heading */
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) h2 {
+    margin-top: 0;
+
     margin-bottom: 20px;
+
+    color: #D99A00;
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+
+/* Paragraph */
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) p {
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+    color: #333333;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+}
+
+
+/* Lists */
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) ul {
+    margin: 15px 0;
+
     padding-left: 25px;
 }
 
-main li {
-    margin-bottom: 6px;
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) li {
+    margin-bottom: 10px;
+
+    color: #333333;
 
     font-size: 16px;
-    line-height: 1.6;
+
+    line-height: 1.7;
 }
 
 
-/* ---------- Horizontal Line ---------- */
+/* =========================================
+   6. Blockquote
+   ========================================= */
 
-main hr {
-    max-width: 1200px;
-    margin: 0 auto;
+main blockquote {
+    margin: 30px 0;
 
-    border: 0;
-    border-top: 1px solid #D9D9D9;
+    padding: 20px 25px;
+
+    border-left: 5px solid #D99A00;
+
+    background: #f8f8f8;
+
+    color: #555555;
+
+    font-size: 18px;
+
+    font-style: italic;
+
+    line-height: 1.7;
 }
 
 
-/* ---------- Strong Text ---------- */
+/* =========================================
+   7. Responsive - Tablet
+   ========================================= */
 
-main strong {
-    font-weight: 700;
+@media (max-width: 900px) {
+
+    header {
+        min-height: 320px;
+
+        padding: 50px 30px;
+    }
+
+
+    header h1 {
+        font-size: 34px;
+    }
+
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] {
+        grid-template-columns: repeat(2, 1fr);
+
+        margin-left: 25px;
+        margin-right: 25px;
+    }
+
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article {
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article:nth-child(2) {
+        border-right: none;
+    }
+
+
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) {
+        padding: 40px 30px;
+    }
 }
 
 
-/* ---------- Links inside Main ---------- */
+/* =========================================
+   8. Responsive - Mobile
+   ========================================= */
 
-main a {
-    color: inherit;
-    text-decoration: none;
+@media (max-width: 600px) {
+
+    header {
+        min-height: 280px;
+
+        padding: 40px 20px;
+    }
+
+
+    header h1 {
+        font-size: 28px;
+
+        line-height: 1.35;
+    }
+
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] {
+        grid-template-columns: 1fr;
+
+        margin: 0 15px;
+
+        margin-top: -25px;
+    }
+
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article {
+        min-height: 120px;
+
+        border-right: none;
+
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article:last-child {
+        border-bottom: none;
+    }
+
+
+    main > p:has(a[href="#description"]) {
+        margin: 30px auto 35px;
+
+        padding: 0 20px;
+    }
+
+
+    main > p:has(a[href="#description"]) a {
+        width: 100%;
+
+        max-width: 300px;
+
+        padding: 13px 20px;
+    }
+
+
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) {
+        padding: 35px 20px;
+    }
+
+
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) h2 {
+        font-size: 22px;
+    }
+
+
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) p,
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) li {
+        font-size: 15px;
+
+        line-height: 1.7;
+    }
 }
