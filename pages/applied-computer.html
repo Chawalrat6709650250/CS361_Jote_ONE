@@ -10,7 +10,7 @@
  </head>
  <body>
   <!-- ส่วนหัวของเว็บไซต์ -->
-  <header>
+  <header class="hero-applied">
    <h1>
     สาขาวิชาวิทยาการคอมพิวเตอร์
     <br/>
@@ -19,53 +19,55 @@
   </header>
   <!-- ข้อมูลหลักสูตร -->
   <main>
-   <section aria-label="ข้อมูลหลักสูตรโดยสรุป">
-    <article>
-     <h2>
-      หลักสูตรปริญญาตรี
-     </h2>
-     <p>
-      ภาษาไทย ภาคพิเศษ
-     </p>
+   <section class="course-summary" aria-label="ข้อมูลหลักสูตรโดยสรุป">
+    <article class="summary-item">
+        <img src="../src/assets/images/course.png" alt="หลักสูตร" class="summary-icon">
+        <div class="summary-content">
+            <h2>หลักสูตรปริญญาตรี</h2>
+            <p>ภาษาไทย ภาคพิเศษ</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      ระยะเวลาเรียน
-     </h2>
-     <p>
-      4 ปี
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/time.png" alt="ระยะเวลาเรียน" class="summary-icon">
+        <div class="summary-content">
+            <h2>ระยะเวลาเรียน</h2>
+            <p>4 ปี</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      จำนวนรับเข้า
-     </h2>
-     <p>
-      70 คน
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/student.png" alt="จำนวนรับเข้า" class="summary-icon">
+        <div class="summary-content">
+            <h2>จำนวนรับเข้า</h2>
+            <p>70 คน</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      ค่าเล่าเรียน
-     </h2>
-     <p>
-      ค่าธรรมเนียม 1,200 บาท
-     </p>
-     <p>
-      ค่าธรรมเนียมพิเศษ
-     </p>
-     <p>
-      25,000 บาท (เฉพาะเทอม)
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/fee.png" alt="ค่าเล่าเรียน" class="summary-icon">
+        <div class="summary-content">
+            <h2>ค่าเล่าเรียน</h2>
+            <p>ค่าธรรมเนียม 1,200 บาท</p>
+            <p>ค่าธรรมเนียมพิเศษ</p>
+            <p>25,000 บาท (เฉพาะเทอม)</p>
+        </div>
     </article>
-   </section>
+</section>
+   
    <p class="download-section">
     <a class="download-btn" href="#description">
-     ดาวน์โหลดหลักสูตร
+        <span>ดาวน์โหลดหลักสูตร</span>
+        <img
+            src="../src/assets/images/download.png"
+            alt="ดาวน์โหลด"
+            class="download-icon"
+        >
     </a>
-   </p>
+</p>
    <!-- แนะนําหลักสูตร -->
-   <section>
+   <section class="intro-banner">
+    <div class="intro-banner-content">
     <p>
      หลักสูตรที่สอนเกี่ยวกับ &lsquo;คอมพิวเตอร์ประยุกต์&rsquo; ที่เน้นเรียนหลักการทางวิทยาการคอมพิวเตอร์แบบกระชับเช่นเดียวกับเอกเทคโนโลยีการเรียนรู้
         เพื่อปูพื้นฐานความรู้ โดยเน้นการผลิตบุคลากรทางด้านวิทยาการคอมพิวเตอร์ประยุกต์ที่ตลาดแรงงาน IT ต้องการ ซึ่งจำเป็นต้องมีความพร้อมที่จะปฏิบัติงานได้ทันที 
@@ -73,6 +75,7 @@
         Data Scientist หรือวิทยาการข้อมูล รวมถึงนักบริหารจัดการสารสนเทศในองค์กร ซึ่งเน้นไปที่การฝึกทักษะในการปฏิบัติงานจริง
         ผู้เรียนจะมีโอกาสได้ใบประกาศนียบัตรรับรองความสามารถในด้านต่างๆ ให้เป็นที่ยอมรับในสายงานนั้น ๆ อีกด้วย
     </p>
+      </div>
    </section>
    <!-- คุณสมบัติผู้สมัครเข้าศึกษาของหลักสูตร -->
    <div class="admission-grid">
@@ -119,8 +122,10 @@
       </li>
      </ul>
      <blockquote>
-      &ldquo;&ldquo;ตลอด 4 ปีในรั้ว SCI TU มีส่วนสำคัญมากกับ การทำงานจริงในอนาคต&ldquo;&rdquo;
-     </blockquote>
+    <span>
+        “ตลอด 4 ปีในรั้ว SCI TU มีส่วนสำคัญมากกับ การทำงานจริงในอนาคต”
+    </span>
+</blockquote>
     </section>
    </div>
    <!-- จำนวนหน่วยกิตของหลักสูตร -->
@@ -222,31 +227,47 @@
      คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยธรรมศาสตร์ ศูนย์รังสิต
     </p>
    </section>
-   <section class="contact-section">
-    <h2>
-     ติดต่อหลักสูตร
-    </h2>
+  <section class="contact-section">
+    <h2>ติดต่อหลักสูตร</h2>
+
     <address>
-     <p>
-      โทรศัพท์:
-      <a href="tel:029869157">
-       02-986-9157
-      </a>
-     </p>
-     <p>
-      เว็บไซต์:
-      <a href="https://cs.sci.tu.ac.th">
-       https://cs.sci.tu.ac.th
-      </a>
-     </p>
-     <p>
-      Facebook:
-      <a href="https://www.facebook.com/CSTUadmissioncenter">
-       CSTU Admission Center
-      </a>
-     </p>
+
+        <p class="contact-item">
+            <img
+                src="../src/assets/images/phone.png"
+                alt="โทรศัพท์"
+                class="contact-icon"
+            >
+            <a href="tel:029869157">
+                02-986-9157
+            </a>
+        </p>
+
+        <p class="contact-item">
+            <img
+                src="../src/assets/images/web.png"
+                alt="เว็บไซต์"
+                class="contact-icon"
+            >
+            <a href="https://cs.sci.tu.ac.th">
+                https://cs.sci.tu.ac.th
+            </a>
+        </p>
+
+        <p class="contact-item">
+            <img
+                src="../src/assets/images/facebook.png"
+                alt="Facebook"
+                class="contact-icon"
+            >
+            <a href="https://www.facebook.com/CSTUadmissioncenter">
+                https://www.facebook.com/CSTUadmissioncenter
+            </a>
+        </p>
+
     </address>
-   </section>
+</section>
+
   </main>
   <footer aria-label="พื้นที่ Footer - ดำเนินการโดยทีม Header/Footer">
   </footer>

@@ -30,16 +30,38 @@ main {
 
 header {
     min-height: 360px;
+
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+
     padding: 60px 40px;
-    text-align: center;
-    background-image: url("../assets/images/banner1.jpg");
+
+    text-align: left;
+
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+
+    padding-left: 160px;
+    padding-right: 60px;
     position: relative;
+}
+
+/* =========================================
+   Department Hero Images
+   ========================================= */
+
+.hero-applied {
+    background-image: url("../assets/images/com_pe.png");
+}
+
+.hero-normal {
+    background-image: url("../assets/images/com_normal.png");
+}
+
+.hero-cyber {
+    background-image: url("../assets/images/com_cyber.png");
 }
 
 header::before {
@@ -59,53 +81,214 @@ header h1 {
     font-weight: 700;
     line-height: 1.4;
 }
+/* =========================================
+   Intro Banner
+   ========================================= */
+
+/* Main content wrapper has a max-width rule with higher specificity,
+   so target this section explicitly to make the banner full viewport width. */
+main > section.intro-banner {
+    position: relative;
+
+    width: 100vw;
+    max-width: none !important;
+
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+
+    min-height: 180px;
+
+    padding: 35px 40px;
+
+    display: flex;
+    align-items: center;
+
+    background-image: url("../assets/images/bannerOfMiddle.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    overflow: hidden;
+}
+
+
+/* Dark overlay */
+
+.intro-banner::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.40);
+}
+
+/* Content */
+
+main > section.intro-banner .intro-banner-content {
+    position: relative;
+
+    z-index: 1;
+
+    width: 100%;
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+}
+
+
+/* Text */
+
+.intro-banner p {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 17px;
+
+    font-weight: 500;
+
+    line-height: 1.7;
+}
+
+main > section.intro-banner .intro-banner-content p {
+    margin: 0;
+
+    color: #ffffff !important;
+
+    font-size: 17px;
+
+    font-weight: 500;
+
+    line-height: 1.7;
+}
+
+/* =========================================
+   Intro Banner - Mobile
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .intro-banner {
+        min-height: 220px;
+
+        padding: 30px 20px;
+    }
+
+    .intro-banner p {
+        font-size: 15px;
+
+        line-height: 1.7;
+    }
+}
 
 /* =========================================
    Course Summary
    ========================================= */
 
-main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] {
-    max-width: 1200px;
+.course-summary {
+    width: min(1200px, calc(100% - 80px));
     margin: -35px auto 0;
     padding: 0;
+
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
+
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+
     overflow: hidden;
     position: relative;
     z-index: 2;
 }
 
-main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article {
-    min-height: 150px;
-    padding: 25px 20px;
+.course-summary .summary-item {
+    min-width: 0;
+    min-height: 110px;
+
+    padding: 16px 18px;
+
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
+    justify-content: flex-start;
+    gap: 14px;
+
+    text-align: left;
     border-right: 1px solid #e0e0e0;
 }
 
-main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article:last-child {
+.course-summary .summary-item:last-child {
     border-right: none;
 }
 
-main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article h2 {
-    margin: 0 0 10px;
+.course-summary .summary-icon {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    object-fit: contain;
+    display: block;
+}
+
+.course-summary .summary-content {
+    min-width: 0;
+}
+
+.course-summary .summary-content h2 {
+    margin: 0 0 4px;
     color: #D99A00;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
+    line-height: 1.35;
+}
+
+.course-summary .summary-content p {
+    margin: 2px 0;
+    color: #333333;
+    font-size: 14px;
     line-height: 1.4;
 }
 
-main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article p {
-    margin: 3px 0;
-    color: #333333;
-    font-size: 16px;
-    line-height: 1.5;
+@media (max-width: 900px) {
+    .course-summary {
+        width: calc(100% - 50px);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .course-summary .summary-item:nth-child(2) {
+        border-right: none;
+    }
+
+    .course-summary .summary-item:nth-child(n+3) {
+        border-top: 1px solid #e0e0e0;
+    }
+}
+
+@media (max-width: 600px) {
+    .course-summary {
+        width: calc(100% - 30px);
+        grid-template-columns: 1fr;
+        margin-top: -25px;
+    }
+
+    .course-summary .summary-item {
+        min-height: 90px;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .course-summary .summary-item:last-child {
+        border-bottom: none;
+    }
+
+    .course-summary .summary-icon {
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
+    }
 }
 
 /* =========================================
@@ -114,26 +297,68 @@ main > section[aria-label="ข้อมูลหลักสูตรโดย�
 
 .download-section {
     max-width: 1200px;
+
     margin: 35px auto 45px;
+
     padding: 0 40px;
+
     text-align: center;
 }
 
+
 .download-btn {
-    display: inline-block;
-    padding: 13px 32px;
-    background: #D99A00;
-    color: #ffffff;
+    display: inline-flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    min-width: 180px;
+
+    min-height: 70px;
+
+    padding: 12px 28px;
+
+    background: #FFD23F;
+
+    color: #D9005B;
+
     border-radius: 8px;
+
     font-size: 16px;
+
     font-weight: 700;
+
     text-decoration: none;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
 }
 
+
 .download-btn:hover {
-    background: #B98200;
+    background: #F5C52F;
+
     transform: translateY(-2px);
+}
+
+
+/* Download icon */
+
+.download-icon {
+    width: 24px;
+    height: 24px;
+
+    object-fit: contain;
+
+    display: block;
 }
 
 /* =========================================
@@ -219,16 +444,60 @@ main > section:not([aria-label="ข้อมูลหลักสูตรโด
     line-height: 1.7;
 }
 
+/* =========================================
+   Quote Banner
+   ========================================= */
+
 .credit-section blockquote {
+    position: relative;
+
     margin: 30px 0 0;
-    padding: 20px 22px;
-    background: #f7f7f7;
-    border-left: 4px solid #D99A00;
-    color: #555555;
-    font-size: 15px;
+
+    min-height: 120px;
+
+    padding: 28px 30px;
+
+    display: flex;
+    align-items: center;
+
+    background-image: url("../assets/images/bannerQuote.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    border: none;
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+/* Overlay */
+
+.credit-section blockquote::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+   
+}
+
+
+/* Text */
+
+.credit-section blockquote span {
+    position: relative;
+
+    z-index: 1;
+
+    color: #ffffff;
+
+    font-size: 16px;
     font-style: italic;
     line-height: 1.6;
-    border-radius: 0 6px 6px 0;
+
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* =========================================
@@ -290,6 +559,15 @@ footer {
     min-height: 0;
     margin: 0;
     padding: 0;
+}
+
+.summary-icon {
+    width: 58px;
+    height: 58px;
+
+    object-fit: contain;
+
+    margin-bottom: 12px;
 }
 
 /* =========================================
@@ -417,4 +695,86 @@ footer {
         padding-left: 20px !important;
         padding-right: 20px !important;
     }
+}
+
+
+/* =========================================
+   Contact Section
+   ========================================= */
+
+.contact-section {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 30px 40px 60px;
+}
+
+.contact-section h2 {
+    margin: 0 0 20px;
+
+    color: #D99A00;
+
+    font-size: 24px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+.contact-section address {
+    margin: 0;
+
+    padding: 0;
+
+    font-style: normal;
+}
+
+
+/* แต่ละรายการ */
+
+.contact-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 0 0 14px !important;
+
+    color: #333333;
+
+    font-size: 16px;
+
+    line-height: 1.6;
+}
+
+
+/* Icon */
+
+.contact-icon {
+    width: 26px;
+
+    height: 26px;
+
+    flex: 0 0 26px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* Link */
+
+.contact-item a {
+    color: #333333;
+
+    text-decoration: none;
+}
+
+.contact-item a:hover {
+    color: #D99A00;
+
+    text-decoration: underline;
 }

@@ -10,7 +10,7 @@
  </head>
  <body>
   <!-- ส่วนหัวของเว็บไซต์ -->
-  <header>
+  <header class="hero-cyber">
    <h1>
     สาขาวิชาคอมพิวเตอร์เครือข่ายและ
     <br/>
@@ -19,53 +19,55 @@
   </header>
   <!-- ข้อมูลหลักสูตร -->
   <main>
-   <section aria-label="ข้อมูลหลักสูตรโดยสรุป">
-    <article>
-     <h2>
-      หลักสูตรปริญญาตรี
-     </h2>
-     <p>
-      ภาษาไทย ภาคพิเศษ
-     </p>
+     <section class="course-summary" aria-label="ข้อมูลหลักสูตรโดยสรุป">
+    <article class="summary-item">
+        <img src="../src/assets/images/course.png" alt="หลักสูตร" class="summary-icon">
+        <div class="summary-content">
+            <h2>หลักสูตรปริญญาตรี</h2>
+            <p>ภาษาไทย ภาคพิเศษ</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      ระยะเวลาเรียน
-     </h2>
-     <p>
-      4 ปี
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/time.png" alt="ระยะเวลาเรียน" class="summary-icon">
+        <div class="summary-content">
+            <h2>ระยะเวลาเรียน</h2>
+            <p>4 ปี</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      จำนวนรับเข้า
-     </h2>
-     <p>
-      50 คน
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/student.png" alt="จำนวนรับเข้า" class="summary-icon">
+        <div class="summary-content">
+            <h2>จำนวนรับเข้า</h2>
+            <p>50 คน</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      ค่าเล่าเรียน
-     </h2>
-     <p>
-      ค่าหน่วยกิตละ 1,500 บาท
-     </p>
-     <p>
-      ค่าธรรมเนียมพิเศษ
-     </p>
-     <p>
-      15,000 บาท (เฉพาะปีแรก)
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/fee.png" alt="ค่าเล่าเรียน" class="summary-icon">
+        <div class="summary-content">
+            <h2>ค่าเล่าเรียน</h2>
+            <p>ค่าหน่วยกิตละ 1,500 บาท</p>
+            <p>ค่าธรรมเนียมพิเศษ</p>
+            <p>15,000 บาท (เฉพาะปีแรก)</p>
+        </div>
     </article>
-   </section>
+</section>
+
    <p class="download-section">
     <a class="download-btn" href="#description">
-     ดาวน์โหลดหลักสูตร
+        <span>ดาวน์โหลดหลักสูตร</span>
+        <img
+            src="../src/assets/images/download.png"
+            alt="ดาวน์โหลด"
+            class="download-icon"
+        >
     </a>
-   </p>
+</p>
    <!-- แนะนําหลักสูตร -->
-   <section>
+       <section class="intro-banner">
+    <div class="intro-banner-content">
     <p>
      หลักสูตรที่สอนเกี่ยวกับ &lsquo;คอมพิวเตอร์เครือข่ายและความปลอดภัยทางไซเบอร์&rsquo; ที่เน้นเรียนหลักการทางวิทยาการคอมพิวเตอร์ควบคู่กับความมั่นคงปลอดภัยไซเบอร์อย่างเข้มข้น 
         เพื่อปูพื้นฐานความรู้ โดยเน้นการผลิตบุคลากรทางด้านความปลอดภัยไซเบอร์ที่ตลาดแรงงาน IT ต้องการ ซึ่งจำเป็นต้องมีความพร้อมที่จะปฏิบัติงานได้ทันที 
@@ -74,6 +76,7 @@
         ซึ่งเน้นไปที่การฝึกทักษะในการปฏิบัติงานจริงผ่าน Hands-on Lab และสถานการณ์จำลองที่สอดคล้องกับอุตสาหกรรม ผู้เรียนจะมีโอกาสได้สอบใบประกาศนียบัตรรับรอง
         ความสามารถในด้านต่าง ๆ เช่น CompTIA Security+, CEH และ CISSP ให้เป็นที่ยอมรับในสายงานนั้น ๆ อีกด้วย
     </p>
+    </div>
    </section>
    <!-- คุณสมบัติผู้สมัครเข้าศึกษาของหลักสูตร -->
    <div class="admission-grid">
@@ -114,8 +117,10 @@
      </ul>
      <!-- คําคม -->
      <blockquote>
-      &ldquo;&ldquo;พื้นฐานสำคัญจริงๆทำให้เรามีต้นทุนการต่อยอดได้เร็วหรือช้าต่างจากคนอื่น&ldquo;&rdquo;
-     </blockquote>
+    <span>
+        “ตลอด 4 ปีในรั้ว SCI TU มีส่วนสำคัญมากกับ การทำงานจริงในอนาคต”
+    </span>
+</blockquote>
     </section>
    </div>
    <!-- จำนวนหน่วยกิตของหลักสูตร -->

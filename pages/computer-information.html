@@ -10,7 +10,7 @@
  </head>
  <body>
   <!-- ส่วนหัวของเว็บไซต์ -->
-  <header>
+  <header class="hero-normal">
    <h1>
     สาขาวิชาวิทยาการคอมพิวเตอร์
     <br/>
@@ -19,50 +19,53 @@
   </header>
   <!-- ข้อมูลหลักสูตร -->
   <main>
-   <section aria-label="ข้อมูลหลักสูตรโดยสรุป">
-    <article>
-     <h2>
-      หลักสูตรปริญญาตรี
-     </h2>
-     <p>
-      ภาษาไทย ภาคปกติ
-     </p>
+   <section class="course-summary" aria-label="ข้อมูลหลักสูตรโดยสรุป">
+    <article class="summary-item">
+        <img src="../src/assets/images/course.png" alt="หลักสูตร" class="summary-icon">
+        <div class="summary-content">
+            <h2>หลักสูตรปริญญาตรี</h2>
+            <p>ภาษาไทย ภาคปกติ</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      ระยะเวลาเรียน
-     </h2>
-     <p>
-      4 ปี
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/time.png" alt="ระยะเวลาเรียน" class="summary-icon">
+        <div class="summary-content">
+            <h2>ระยะเวลาเรียน</h2>
+            <p>4 ปี</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      จำนวนรับเข้า
-     </h2>
-     <p>
-      70 คน
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/student.png" alt="จำนวนรับเข้า" class="summary-icon">
+        <div class="summary-content">
+            <h2>จำนวนรับเข้า</h2>
+            <p>70 คน</p>
+        </div>
     </article>
-    <article>
-     <h2>
-      ค่าเล่าเรียน
-     </h2>
-     <p>
-      ภาคการศึกษาละ
-     </p>
-     <p>
-      17,300 บาท (เหมาจ่าย)
-     </p>
+
+    <article class="summary-item">
+        <img src="../src/assets/images/fee.png" alt="ค่าเล่าเรียน" class="summary-icon">
+        <div class="summary-content">
+            <h2>ค่าเล่าเรียน</h2>
+            <p>ภาคการศึกษาละ</p>
+            <p>17,300 บาท (เหมาจ่าย)</p>
+        </div>
     </article>
-   </section>
+</section>
    <p class="download-section">
     <a class="download-btn" href="#description">
-     ดาวน์โหลดหลักสูตร
+        <span>ดาวน์โหลดหลักสูตร</span>
+        <img
+            src="../src/assets/images/download.png"
+            alt="ดาวน์โหลด"
+            class="download-icon"
+        >
     </a>
-   </p>
+</p>
    <!-- แนะนําหลักสูตร -->
-   <section>
+   <section class="intro-banner">
+    <div class="intro-banner-content">
     <p>
      ใครที่ชื่นชอบทางด้านเทคโนโลยีต้องถูกใจหลักสูตรนี้อย่างแน่นอนตอบโจทย์ความต้องการของตลาดในยุคปัจจุบัน 
         โดยเฉพาะได้เรียนรู้เกี่ยวกับการพัฒนาโปรแกรมและแอปพลิเคชันครบทั้งกระบวนการการออกแบบและดูแลระบบสารสนเทศและ
@@ -71,6 +74,7 @@
         ที่ประยุกต์ใช้ความคิดสร้างสรรค์และหลักการตลาด เพื่อออกแบบระบบหรือผลิตสื่อเทคโนโลยีต่างๆ ให้ตรงใจผู้ติดตามทั้งหลาย 
         ทั้งหมดล้วนแล้วแต่เป็นอาชีพที่มีความต้องการสูงมากในทุกวงการ
     </p>
+    </div>
    </section>
    <!-- คุณสมบัติผู้สมัครเข้าศึกษาของหลักสูตร -->
    <div class="admission-grid">
@@ -110,8 +114,10 @@
       </li>
      </ul>
      <blockquote>
-      &ldquo;พื้นฐานสำคัญจริงๆทำให้เรามีต้นทุนการต่อยอดได้เร็วหรือช้าต่างจากคนอื่น&rdquo;
-     </blockquote>
+    <span>
+        “ตลอด 4 ปีในรั้ว SCI TU มีส่วนสำคัญมากกับ การทำงานจริงในอนาคต”
+    </span>
+</blockquote>
     </section>
    </div>
    <!-- จำนวนหน่วยกิตของหลักสูตร -->
