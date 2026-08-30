@@ -9,9 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/css/style.css">
 </head>
-<body>
+<body data-root="./">
+  <div id="site-header"></div>
+  <script src="src/js/header.js"></script>  
 
-  <!-- Hero Carousel -->
   <section class="hero" aria-label="แบนเนอร์หลักสูตร">
     <button class="hero__arrow hero__arrow--prev" aria-label="สไลด์ก่อนหน้า">&lsaquo;</button>
 
@@ -30,7 +31,7 @@
     </div>
 
     <div class="hero__slide">
-      <div class="hero__image-placeholder" aria-hidden="true"></div>
+      <img class="hero__image" src="src/assets/images/banner2.jpg" alt=""></div>
       <div class="hero__overlay"></div>
       <div class="hero__content">
         <h1 class="hero__title"></h1>
@@ -40,7 +41,7 @@
     </div>
 
     <div class="hero__slide">
-      <div class="hero__image-placeholder" aria-hidden="true"></div>
+      <img class="hero__image" src="src/assets/images/banner3.jpg" alt="">
       <div class="hero__overlay"></div>
       <div class="hero__content">
         <h1 class="hero__title"></h1>
@@ -50,7 +51,7 @@
     </div>
 
     <div class="hero__slide">
-      <div class="hero__image-placeholder" aria-hidden="true"></div>
+      <img class="hero__image" src="src/assets/images/banner4.jpg" alt="">
       <div class="hero__overlay"></div>
       <div class="hero__content">
         <h1 class="hero__title"></h1>
@@ -60,7 +61,7 @@
     </div>
 
     <div class="hero__slide">
-      <div class="hero__image-placeholder" aria-hidden="true"></div>
+      <img class="hero__image" src="src/assets/images/banner5.jpg" alt="">
       <div class="hero__overlay"></div>
       <div class="hero__content">
         <h1 class="hero__title"></h1>
@@ -150,6 +151,10 @@
     </div>
   </section>
 
+  <div id="site-footer"></div>
+  <script src="src/js/footer.js"></script>  
   <script src="src/js/main.js"></script>
+  
+
 </body>
 </html>

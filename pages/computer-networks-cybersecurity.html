@@ -6,11 +6,17 @@
   <title>
    สาขาวิชาคอมพิวเตอร์เครือข่ายและความปลอดภัยทางไซเบอร์
   </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="../src/css/style.css" rel="stylesheet"/>
   <link href="../src/css/department.css" rel="stylesheet"/>
  </head>
- <body>
-  <!-- ส่วนหัวของเว็บไซต์ -->
-  <header class="hero-cyber">
+ <body data-root="../">
+  <!-- Header กลางของเว็บไซต์ (สร้างโดย src/js/header.js) -->
+  <div id="site-header"></div>
+  <!-- ส่วนหัวของหน้า -->
+  <header class="page-hero hero-cyber">
    <h1>
     สาขาวิชาคอมพิวเตอร์เครือข่ายและ
     <br/>
@@ -63,7 +69,7 @@
     > 
         <span>ดาวน์โหลดหลักสูตร</span> 
         <img 
-            src="../src/assets/images/download.png" 
+            src="../src/assets/images/Download.png"
             alt="ดาวน์โหลด" 
             class="download-icon" 
         > 
@@ -270,7 +276,11 @@
     </address>
    </section>
   </main>
-  <footer aria-label="พื้นที่ Footer - ดำเนินการโดยทีม Header/Footer">
-  </footer>
+  <!-- Footer กลางของเว็บไซต์ (สร้างโดย src/js/footer.js) -->
+  <div id="site-footer"></div>
+
+  <script src="../src/js/header.js"></script>
+  <script src="../src/js/footer.js"></script>
+  <script src="../src/js/main.js"></script>
  </body>
 </html>
