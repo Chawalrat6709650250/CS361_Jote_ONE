@@ -9,7 +9,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="${root}index.html" class="logo">
-            <img class="logo-icon" src="${root}src/assets/images/cstu_logo.png" width="42" height="42" alt="CSTU">
+            <img class="logo-icon" src="https://my-website-assets-cs361.s3.amazonaws.com/images/cstu_logo.png" width="42" height="42" alt="CSTU">
           </a>
           <p>
             อาคารบรรยายรวม 2 คณะวิทยาศาสตร์และเทคโนโลยี<br>

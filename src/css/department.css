@@ -53,15 +53,15 @@ main {
    ========================================= */
 
 .hero-applied {
-    background-image: url("../assets/images/com_pe.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_pe.png");
 }
 
 .hero-normal {
-    background-image: url("../assets/images/com_normal.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_normal.png");
 }
 
 .hero-cyber {
-    background-image: url("../assets/images/com_cyber.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_cyber.png");
 }
 
 .page-hero::before {
@@ -103,7 +103,7 @@ main > section.intro-banner {
     display: flex;
     align-items: center;
 
-    background-image: url("../assets/images/bannerOfMiddle.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/bannerOfMiddle.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -460,7 +460,7 @@ main > section:not([aria-label="ข้อมูลหลักสูตรโด
     display: flex;
     align-items: center;
 
-    background-image: url("../assets/images/bannerQuote.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/bannerQuote.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

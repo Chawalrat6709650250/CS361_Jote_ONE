@@ -7,7 +7,7 @@
   mount.innerHTML = `
     <header class="site-header">
       <a href="${root}index.html" class="logo">
-        <img class="logo-icon" src="${root}src/assets/images/cstu_logo.png" alt="CSTU">
+        <img class="logo-icon" src="https://my-website-assets-cs361.s3.amazonaws.com/images/cstu_logo.png" alt="CSTU">
       </a>
       <nav class="main-nav">
         <a href="#">เกี่ยวกับ CSTU</a>
