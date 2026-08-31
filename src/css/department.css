@@ -1,0 +1,772 @@
+/* =========================================
+   Department Pages
+   Commit 4
+   Hero + Course Summary + Content Layout
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, "Noto Sans Thai", sans-serif;
+    color: #333333;
+    background: #ffffff;
+}
+
+main {
+    width: 100%;
+}
+
+/* =========================================
+   Hero
+   ========================================= */
+
+.page-hero {
+    min-height: 360px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding: 60px 40px;
+
+    text-align: left;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    padding-left: 160px;
+    padding-right: 60px;
+    position: relative;
+}
+
+/* =========================================
+   Department Hero Images
+   ========================================= */
+
+.hero-applied {
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_pe.png");
+}
+
+.hero-normal {
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_normal.png");
+}
+
+.hero-cyber {
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_cyber.png");
+}
+
+.page-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.page-hero h1 {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0;
+    color: #ffffff;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+/* =========================================
+   Intro Banner
+   ========================================= */
+
+/* Main content wrapper has a max-width rule with higher specificity,
+   so target this section explicitly to make the banner full viewport width. */
+main > section.intro-banner {
+    position: relative;
+
+    width: 100vw;
+    max-width: none !important;
+
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+
+    min-height: 180px;
+
+    padding: 35px 40px;
+
+    display: flex;
+    align-items: center;
+
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/bannerOfMiddle.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    overflow: hidden;
+}
+
+
+/* Dark overlay */
+
+.intro-banner::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.40);
+}
+
+/* Content */
+
+main > section.intro-banner .intro-banner-content {
+    position: relative;
+
+    z-index: 1;
+
+    width: 100%;
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+}
+
+
+/* Text */
+
+.intro-banner p {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 17px;
+
+    font-weight: 500;
+
+    line-height: 1.7;
+}
+
+main > section.intro-banner .intro-banner-content p {
+    margin: 0;
+
+    color: #ffffff !important;
+
+    font-size: 17px;
+
+    font-weight: 500;
+
+    line-height: 1.7;
+}
+
+/* =========================================
+   Intro Banner - Mobile
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .intro-banner {
+        min-height: 220px;
+
+        padding: 30px 20px;
+    }
+
+    .intro-banner p {
+        font-size: 15px;
+
+        line-height: 1.7;
+    }
+}
+
+/* =========================================
+   Course Summary
+   ========================================= */
+
+.course-summary {
+    width: min(1200px, calc(100% - 80px));
+    margin: -35px auto 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}
+
+.course-summary .summary-item {
+    min-width: 0;
+    min-height: 110px;
+
+    padding: 16px 18px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+
+    text-align: left;
+    border-right: 1px solid #e0e0e0;
+}
+
+.course-summary .summary-item:last-child {
+    border-right: none;
+}
+
+.course-summary .summary-icon {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    object-fit: contain;
+    display: block;
+}
+
+.course-summary .summary-content {
+    min-width: 0;
+}
+
+.course-summary .summary-content h2 {
+    margin: 0 0 4px;
+    color: #D99A00;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.course-summary .summary-content p {
+    margin: 2px 0;
+    color: #333333;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+    .course-summary {
+        width: calc(100% - 50px);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .course-summary .summary-item:nth-child(2) {
+        border-right: none;
+    }
+
+    .course-summary .summary-item:nth-child(n+3) {
+        border-top: 1px solid #e0e0e0;
+    }
+}
+
+@media (max-width: 600px) {
+    .course-summary {
+        width: calc(100% - 30px);
+        grid-template-columns: 1fr;
+        margin-top: -25px;
+    }
+
+    .course-summary .summary-item {
+        min-height: 90px;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .course-summary .summary-item:last-child {
+        border-bottom: none;
+    }
+
+    .course-summary .summary-icon {
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
+    }
+}
+
+/* =========================================
+   Download Button
+   ========================================= */
+
+.download-section {
+    max-width: 1200px;
+
+    margin: 35px auto 45px;
+
+    padding: 0 40px;
+
+    text-align: center;
+}
+
+
+.download-btn {
+    display: inline-flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    min-width: 180px;
+
+    min-height: 70px;
+
+    padding: 12px 28px;
+
+    background: #FFD23F;
+
+    color: #D9005B;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.download-btn:hover {
+    background: #F5C52F;
+
+    transform: translateY(-2px);
+}
+
+
+/* Download icon */
+
+.download-icon {
+    width: 24px;
+    height: 24px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+/* =========================================
+   General Content
+   ========================================= */
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]),
+.admission-grid {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) {
+    padding: 45px 40px;
+}
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) h2 {
+    margin: 0 0 20px;
+    color: #D99A00;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) p {
+    margin: 0 0 18px;
+    color: #333333;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) ul {
+    margin: 15px 0;
+    padding-left: 25px;
+}
+
+main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) li {
+    margin-bottom: 7px;
+    color: #333333;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+/* =========================================
+   Applicant + Credit: Two Columns
+   ========================================= */
+
+.admission-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+    gap: 60px;
+    padding: 0 40px;
+    margin-bottom: 20px;
+}
+
+.admission-section,
+.credit-section {
+    max-width: none;
+    margin: 0;
+    padding: 45px 0;
+}
+
+.admission-section h2,
+.credit-section h2 {
+    margin: 0 0 20px;
+    color: #D99A00;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.admission-section ul,
+.credit-section ul {
+    margin: 15px 0;
+    padding-left: 25px;
+}
+
+.admission-section li,
+.credit-section li {
+    margin-bottom: 8px;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+/* =========================================
+   Quote Banner
+   ========================================= */
+
+.credit-section blockquote {
+    position: relative;
+
+    margin: 30px 0 0;
+
+    min-height: 120px;
+
+    padding: 28px 30px;
+
+    display: flex;
+    align-items: center;
+
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/bannerQuote.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    border: none;
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+/* Overlay */
+
+.credit-section blockquote::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+   
+}
+
+
+/* Text */
+
+.credit-section blockquote span {
+    position: relative;
+
+    z-index: 1;
+
+    color: #ffffff;
+
+    font-size: 16px;
+    font-style: italic;
+    line-height: 1.6;
+
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================
+   Section Separators
+   ========================================= */
+
+.admission-grid + section,
+.admission-grid + #description,
+#description + section,
+section + section {
+    border-top: 1px solid #D9D9D9;
+}
+
+/* =========================================
+   Description / Career / Location
+   ========================================= */
+
+#description {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.location-section {
+    padding-top: 45px !important;
+    padding-bottom: 25px !important;
+}
+
+.contact-section {
+    padding-top: 30px !important;
+    padding-bottom: 60px !important;
+    border-top: none !important;
+}
+
+.contact-section address {
+    margin: 0;
+    padding: 0;
+    font-style: normal;
+}
+
+.contact-section p {
+    margin: 0 0 12px !important;
+}
+
+.contact-section a {
+    color: #333333;
+    text-decoration: none;
+}
+
+.contact-section a:hover {
+    color: #D99A00;
+    text-decoration: underline;
+}
+
+/* Footer is injected by src/js/footer.js and styled by src/css/style.css */
+
+.summary-icon {
+    width: 58px;
+    height: 58px;
+
+    object-fit: contain;
+
+    margin-bottom: 12px;
+}
+
+/* =========================================
+   Tablet
+   ========================================= */
+
+@media (max-width: 900px) {
+    .page-hero {
+        min-height: 320px;
+        padding: 50px 30px;
+    }
+
+    .page-hero h1 {
+        font-size: 34px;
+    }
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-left: 25px;
+        margin-right: 25px;
+    }
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article {
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article:nth-child(2) {
+        border-right: none;
+    }
+
+    .admission-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0 30px;
+    }
+
+    .credit-section {
+        border-top: 1px solid #D9D9D9;
+    }
+
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+}
+
+/* =========================================
+   Mobile
+   ========================================= */
+
+@media (max-width: 600px) {
+    .page-hero {
+        min-height: 280px;
+        padding: 40px 20px;
+    }
+
+    .page-hero h1 {
+        font-size: 28px;
+        line-height: 1.35;
+    }
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] {
+        grid-template-columns: 1fr;
+        margin: -25px 15px 0;
+    }
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article {
+        min-height: 120px;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    main > section[aria-label="ข้อมูลหลักสูตรโดยสรุป"] article:last-child {
+        border-bottom: none;
+    }
+
+    .download-section {
+        margin: 30px auto 35px;
+        padding: 0 20px;
+    }
+
+    .download-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .admission-grid {
+        grid-template-columns: 1fr;
+        padding: 0 20px;
+        margin-bottom: 0;
+    }
+
+    .admission-section,
+    .credit-section {
+        padding: 30px 0;
+    }
+
+    .admission-section h2,
+    .credit-section h2,
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) h2 {
+        font-size: 21px;
+    }
+
+    .admission-section p,
+    .admission-section li,
+    .credit-section p,
+    .credit-section li,
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) p,
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) li {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .credit-section blockquote {
+        font-size: 15px;
+        padding: 18px 20px;
+    }
+
+    main > section:not([aria-label="ข้อมูลหลักสูตรโดยสรุป"]) {
+        padding: 35px 20px;
+    }
+
+    .location-section,
+    .contact-section {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
+
+
+/* =========================================
+   Contact Section
+   ========================================= */
+
+.contact-section {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 30px 40px 60px;
+}
+
+.contact-section h2 {
+    margin: 0 0 20px;
+
+    color: #D99A00;
+
+    font-size: 24px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+.contact-section address {
+    margin: 0;
+
+    padding: 0;
+
+    font-style: normal;
+}
+
+
+/* แต่ละรายการ */
+
+.contact-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 0 0 14px !important;
+
+    color: #333333;
+
+    font-size: 16px;
+
+    line-height: 1.6;
+}
+
+
+/* Icon */
+
+.contact-icon {
+    width: 26px;
+
+    height: 26px;
+
+    flex: 0 0 26px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* Link */
+
+.contact-item a {
+    color: #333333;
+
+    text-decoration: none;
+}
+
+.contact-item a:hover {
+    color: #D99A00;
+
+    text-decoration: underline;
+}
