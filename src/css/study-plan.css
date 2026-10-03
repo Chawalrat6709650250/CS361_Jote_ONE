@@ -497,6 +497,10 @@ a {
 }
 
 /* Modal */
+/* =========================
+   Course Detail Modal
+========================= */
+
 .modal {
     position: fixed;
     inset: 0;
@@ -512,81 +516,231 @@ a {
 .modal-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,.55);
+    background: rgba(0, 0, 0, 0.55);
 }
 
+/* กล่องหลัก */
 .modal-card {
     position: relative;
-    width: min(92%, 560px);
+    width: min(92%, 720px);
+    max-height: 88vh;
+
     background: #fff;
     border-radius: 16px;
-    padding: 28px;
-    box-shadow: 0 10px 40px rgba(0,0,0,.3);
+
+    padding: 22px 26px 30px;
+
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+
+    overflow-y: auto;
     z-index: 1;
 }
 
+/* ปุ่ม X */
 .modal-close {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 18px;
+    right: 22px;
+
     border: 0;
     background: transparent;
-    font-size: 30px;
+
+    font-size: 36px;
+    line-height: 1;
+
     cursor: pointer;
+    color: #222;
 }
 
-.modal-label {
-    color: #d7a500;
-    font-weight: 800;
-    margin: 0 0 5px;
-}
-
-.modal-card h2 {
-    margin: 0;
+.modal-close:hover {
     color: var(--red);
 }
 
-.modal-card > p:not(.modal-label) {
-    margin-top: 5px;
+/* =========================
+   Course Header
+========================= */
+
+.modal-course-header {
+    padding-right: 45px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #d8d8d8;
 }
 
-.modal-info-grid {
+.modal-course-header h2 {
+    margin: 0;
+
+    color: var(--red);
+
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.modal-course-header p {
+    margin: 4px 0 0;
+
+    color: #666;
+
+    font-size: 18px;
+}
+
+/* =========================
+   Section
+========================= */
+
+.modal-section {
+    margin-top: 20px;
+}
+
+.modal-section-title {
+    margin: 0 0 10px;
+
+    font-size: 19px;
+    font-weight: 700;
+}
+
+/* =========================
+   Course information
+========================= */
+
+.course-info-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+
+    grid-template-columns: repeat(3, 1fr);
+
     gap: 12px;
-    margin: 22px 0;
 }
 
-.modal-info-grid div,
-.prerequisite-box {
-    border-radius: 9px;
-    background: #fafafa;
+.course-info-box {
+    min-height: 66px;
+
+    padding: 10px 14px;
+
     border: 1px solid #ddd;
-    padding: 14px;
+    border-radius: 8px;
+
+    background: #fff;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
 }
 
-.modal-info-grid span,
-.modal-info-grid strong {
+.course-info-box span {
     display: block;
-}
 
-.modal-info-grid span {
     color: #777;
+
     font-size: 13px;
 }
 
-.modal-info-grid strong {
+.course-info-box strong {
+    display: block;
+
     margin-top: 4px;
+
+    font-size: 16px;
 }
 
-.prerequisite-box h3 {
-    margin: 0 0 6px;
-}
+/* =========================
+   Description
+========================= */
 
-.prerequisite-box p {
+.course-description {
     margin: 0;
+
+    padding: 0 12px;
+
+    color: #555;
+
+    line-height: 1.8;
+
+    font-size: 15px;
 }
 
+/* =========================
+   PLO
+========================= */
+
+.plo-list {
+    margin: 0;
+    padding-left: 28px;
+}
+
+.plo-list li {
+    margin-bottom: 7px;
+
+    line-height: 1.6;
+
+    font-size: 14px;
+}
+
+.plo-list strong {
+    margin-right: 8px;
+}
+
+/* =========================
+   Next courses
+========================= */
+
+.next-course-list {
+    margin: 0;
+    padding-left: 32px;
+}
+
+.next-course-list li {
+    margin-bottom: 12px;
+    padding-left: 3px;
+}
+
+.next-course-list li::marker {
+    color: var(--red);
+    font-size: 18px;
+}
+
+.next-course-list strong {
+    display: block;
+
+    color: var(--red);
+
+    font-size: 16px;
+}
+
+.next-course-list span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+/* =========================
+   Responsive Modal
+========================= */
+
+@media (max-width: 700px) {
+
+    .modal-card {
+        width: 94%;
+        max-height: 90vh;
+
+        padding: 20px;
+    }
+
+    .course-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .modal-course-header h2 {
+        font-size: 23px;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .course-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
 /* Footer */
 .site-footer {
     background: var(--yellow);

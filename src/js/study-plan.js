@@ -190,19 +190,108 @@ function bindCourseButtons() {
 }
 
 function openCourseModal(course) {
-    document.getElementById("modalTitle").textContent = course.code;
+
+    // หัวข้อ
+    document.getElementById("modalTitle").textContent =
+        course.code;
+
     document.getElementById("modalCourseName").textContent =
         `${course.name} (${course.english})`;
-    document.getElementById("modalCredits").textContent = course.credits;
+
+
+    // ข้อมูลพื้นฐาน
+    document.getElementById("modalCredits").textContent =
+        `${course.credits} หน่วยกิต`;
+
+    document.getElementById("modalCourseType").textContent =
+        course.courseType || "XXX";
+
+    document.getElementById("modalCourseGroup").textContent =
+        course.courseGroup || "XXX";
+
+    document.getElementById("modalCourseSubType").textContent =
+        course.courseSubType || "XXX";
+
+    document.getElementById("modalCurriculumType").textContent =
+        course.curriculumType || "XXX";
+
     document.getElementById("modalPrerequisite").textContent =
         course.prerequisite || "ไม่มี";
-    document.getElementById("modalPrerequisiteDetail").textContent =
-        course.prerequisite && course.prerequisite !== "ไม่มี"
-            ? `ต้องผ่าน ${course.prerequisite} ก่อนจึงสามารถลงทะเบียนวิชานี้ได้`
-            : "ไม่มีวิชาบังคับก่อน";
 
-    document.getElementById("courseModal").classList.add("open");
-    document.getElementById("courseModal").setAttribute("aria-hidden", "false");
+
+    // คำอธิบายรายวิชา
+    document.getElementById("modalDescription").textContent =
+        course.description || "ไม่มีข้อมูล";
+
+
+    // Course-PLO Mapping
+    const ploContainer =
+        document.getElementById("modalPloMapping");
+
+    ploContainer.innerHTML = "";
+
+    if (course.ploMapping && course.ploMapping.length > 0) {
+
+        course.ploMapping.forEach(plo => {
+
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+                <strong>${escapeHtml(plo.code)}</strong>
+                <span>${escapeHtml(plo.description)}</span>
+            `;
+
+            ploContainer.appendChild(li);
+        });
+
+    } else {
+
+        ploContainer.innerHTML =
+            "<li>ไม่มีข้อมูล PLO Mapping</li>";
+    }
+
+
+    // รายวิชาที่ต่อยอด
+    const nextCoursesContainer =
+        document.getElementById("modalNextCourses");
+
+    nextCoursesContainer.innerHTML = "";
+
+    if (course.nextCourses && course.nextCourses.length > 0) {
+
+        course.nextCourses.forEach(nextCourse => {
+
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+                <strong>
+                    ${escapeHtml(nextCourse.code)}
+                    ${escapeHtml(nextCourse.name)}
+                </strong>
+
+                <span>
+                    ${escapeHtml(nextCourse.description)}
+                </span>
+            `;
+
+            nextCoursesContainer.appendChild(li);
+        });
+
+    } else {
+
+        nextCoursesContainer.innerHTML =
+            "<li>ไม่มีรายวิชาที่ต่อยอดจากวิชานี้</li>";
+    }
+
+
+    // เปิด Modal
+    document
+        .getElementById("courseModal")
+        .classList.add("open");
+
+    document
+        .getElementById("courseModal")
+        .setAttribute("aria-hidden", "false");
 }
 
 function closeCourseModal() {

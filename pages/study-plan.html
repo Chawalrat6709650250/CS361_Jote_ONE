@@ -212,30 +212,118 @@
 
     <!-- Course detail modal -->
     <div id="courseModal" class="modal" aria-hidden="true">
-        <div class="modal-backdrop" data-close-modal></div>
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-            <button class="modal-close" type="button" data-close-modal aria-label="ปิด">×</button>
-            <p class="modal-label">รายละเอียดรายวิชา</p>
-            <h2 id="modalTitle">CS XXX</h2>
-            <p id="modalCourseName">ชื่อวิชาภาษาไทย</p>
+    <div class="modal-backdrop" data-close-modal></div>
 
-            <div class="modal-info-grid">
-                <div>
-                    <span>หน่วยกิต</span>
-                    <strong id="modalCredits">3</strong>
-                </div>
-                <div>
-                    <span>วิชาบังคับก่อน</span>
-                    <strong id="modalPrerequisite">ไม่มี</strong>
-                </div>
-            </div>
+    <div class="modal-card" role="dialog" aria-modal="true">
 
-            <div class="prerequisite-box">
-                <h3>วิชาบังคับก่อน</h3>
-                <p id="modalPrerequisiteDetail">ไม่มีวิชาบังคับก่อน</p>
+        <!-- ปุ่มปิด -->
+        <button
+            class="modal-close"
+            type="button"
+            data-close-modal
+            aria-label="ปิด"
+        >
+            ×
+        </button>
+
+        <!-- หัวข้อวิชา -->
+        <div class="modal-course-header">
+            <div>
+                <h2 id="modalTitle">CS XXX</h2>
+                <p id="modalCourseName">ชื่อวิชาภาษาไทย</p>
             </div>
         </div>
+
+        <!-- วิชาบังคับ -->
+        <section class="modal-section">
+            <h3 class="modal-section-title">วิชาบังคับ</h3>
+
+            <div class="course-info-grid">
+
+                <div class="course-info-box">
+                    <span>หน่วยกิต</span>
+                    <strong id="modalCredits">XX หน่วยกิต</strong>
+                </div>
+
+                <div class="course-info-box">
+                    <span>ประเภทวิชา</span>
+                    <strong id="modalCourseType">XXX</strong>
+                </div>
+
+                <div class="course-info-box">
+                    <span>กลุ่มรายวิชา</span>
+                    <strong id="modalCourseGroup">XXX</strong>
+                </div>
+
+                <div class="course-info-box">
+                    <span>ประเภทย่อย</span>
+                    <strong id="modalCourseSubType">XXX</strong>
+                </div>
+
+                <div class="course-info-box">
+                    <span>ลักษณะในหลักสูตร</span>
+                    <strong id="modalCurriculumType">XXX</strong>
+                </div>
+
+                <div class="course-info-box">
+                    <span>วิชาบังคับก่อน</span>
+                    <strong id="modalPrerequisite">XXX</strong>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- คำอธิบายรายวิชา -->
+        <section class="modal-section">
+            <h3 class="modal-section-title">
+                คำอธิบายรายวิชา
+            </h3>
+
+            <p id="modalDescription" class="course-description">
+                รายละเอียดคำอธิบายรายวิชาจะแสดงตรงนี้
+            </p>
+        </section>
+
+        <!-- Course-PLO Mapping -->
+        <section class="modal-section">
+            <h3 class="modal-section-title">
+                Course-PLO Mapping
+            </h3>
+
+            <ul id="modalPloMapping" class="plo-list">
+                <li>
+                    <strong>K1</strong>
+                    <span>สามารถประยุกต์หลักการและทฤษฎีพื้นฐานที่สำคัญในศาสตร์ด้านวิทยาการคอมพิวเตอร์</span>
+                </li>
+
+                <li>
+                    <strong>E1</strong>
+                    <span>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- รายวิชาที่ต่อยอด -->
+        <section class="modal-section">
+            <h3 class="modal-section-title">
+                รายวิชาที่ต่อยอดจากวิชานี้
+            </h3>
+
+            <ul id="modalNextCourses" class="next-course-list">
+                <li>
+                    <strong>CS XXX ชื่อวิชาภาษาไทย</strong>
+                    <span>ใช้รายวิชานี้เป็นวิชาที่ต้องเคยศึกษา</span>
+                </li>
+
+                <li>
+                    <strong>CS XXX ชื่อวิชาภาษาไทย</strong>
+                    <span>ใช้รายวิชานี้เป็นวิชาที่ต้องเคยศึกษา</span>
+                </li>
+            </ul>
+        </section>
+
     </div>
+</div>
 
     <!-- Footer -->
     <footer class="site-footer">
