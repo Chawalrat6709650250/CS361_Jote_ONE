@@ -6,11 +6,17 @@
   <title>
    สาขาวิชาวิทยาการคอมพิวเตอร์ (คอมพิวเตอร์และวิทยาการสารสนเทศ)
   </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="../src/css/style.css" rel="stylesheet"/>
   <link href="../src/css/department.css" rel="stylesheet"/>
  </head>
- <body>
-  <!-- ส่วนหัวของเว็บไซต์ -->
-  <header class="hero-normal">
+ <body data-root="../">
+  <!-- Header กลางของเว็บไซต์ (สร้างโดย src/js/header.js) -->
+  <div id="site-header"></div>
+  <!-- ส่วนหัวของหน้า -->
+  <header class="page-hero hero-normal">
    <h1>
     สาขาวิชาวิทยาการคอมพิวเตอร์
     <br/>
@@ -21,7 +27,7 @@
   <main>
    <section class="course-summary" aria-label="ข้อมูลหลักสูตรโดยสรุป">
     <article class="summary-item">
-        <img src="../src/assets/images/course.png" alt="หลักสูตร" class="summary-icon">
+        <img src="https://my-website-assets-cs361.s3.amazonaws.com/images/course.png" alt="หลักสูตร" class="summary-icon">
         <div class="summary-content">
             <h2>หลักสูตรปริญญาตรี</h2>
             <p>ภาษาไทย ภาคปกติ</p>
@@ -29,7 +35,7 @@
     </article>
 
     <article class="summary-item">
-        <img src="../src/assets/images/time.png" alt="ระยะเวลาเรียน" class="summary-icon">
+        <img src="https://my-website-assets-cs361.s3.amazonaws.com/images/time.png" alt="ระยะเวลาเรียน" class="summary-icon">
         <div class="summary-content">
             <h2>ระยะเวลาเรียน</h2>
             <p>4 ปี</p>
@@ -37,7 +43,7 @@
     </article>
 
     <article class="summary-item">
-        <img src="../src/assets/images/student.png" alt="จำนวนรับเข้า" class="summary-icon">
+        <img src="https://my-website-assets-cs361.s3.amazonaws.com/images/student.png" alt="จำนวนรับเข้า" class="summary-icon">
         <div class="summary-content">
             <h2>จำนวนรับเข้า</h2>
             <p>70 คน</p>
@@ -45,7 +51,7 @@
     </article>
 
     <article class="summary-item">
-        <img src="../src/assets/images/fee.png" alt="ค่าเล่าเรียน" class="summary-icon">
+        <img src="https://my-website-assets-cs361.s3.amazonaws.com/images/fee.png" alt="ค่าเล่าเรียน" class="summary-icon">
         <div class="summary-content">
             <h2>ค่าเล่าเรียน</h2>
             <p>ภาคการศึกษาละ</p>
@@ -56,12 +62,12 @@
  <p class="download-section"> 
     <a 
         class="download-btn" 
-        href="https://cs361-jote-one-documents-pdf.s3.us-east-1.amazonaws.com/documents/applied-computer.pdf"
+        href="https://my-website-assets-cs361.s3.amazonaws.com/pdf/applied-computer.pdf"
         target="_blank"
     > 
         <span>ดาวน์โหลดหลักสูตร</span> 
         <img 
-            src="../src/assets/images/download.png" 
+            src="https://my-website-assets-cs361.s3.amazonaws.com/images/Download.png"
             alt="ดาวน์โหลด" 
             class="download-icon" 
         > 
@@ -246,7 +252,11 @@
     </address>
    </section>
   </main>
-  <footer aria-label="พื้นที่ Footer - ดำเนินการโดยทีม Header/Footer">
-  </footer>
+  <!-- Footer กลางของเว็บไซต์ (สร้างโดย src/js/footer.js) -->
+  <div id="site-footer"></div>
+
+  <script src="../src/js/header.js"></script>
+  <script src="../src/js/footer.js"></script>
+  <script src="../src/js/main.js"></script>
  </body>
 </html>

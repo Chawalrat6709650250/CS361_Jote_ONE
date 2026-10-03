@@ -28,7 +28,7 @@ main {
    Hero
    ========================================= */
 
-header {
+.page-hero {
     min-height: 360px;
 
     display: flex;
@@ -53,25 +53,25 @@ header {
    ========================================= */
 
 .hero-applied {
-    background-image: url("../assets/images/com_pe.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_pe.png");
 }
 
 .hero-normal {
-    background-image: url("../assets/images/com_normal.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_normal.png");
 }
 
 .hero-cyber {
-    background-image: url("../assets/images/com_cyber.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/com_cyber.png");
 }
 
-header::before {
+.page-hero::before {
     content: "";
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
 }
 
-header h1 {
+.page-hero h1 {
     position: relative;
     z-index: 1;
     max-width: 900px;
@@ -103,7 +103,7 @@ main > section.intro-banner {
     display: flex;
     align-items: center;
 
-    background-image: url("../assets/images/bannerOfMiddle.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/bannerOfMiddle.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -460,7 +460,7 @@ main > section:not([aria-label="ข้อมูลหลักสูตรโด
     display: flex;
     align-items: center;
 
-    background-image: url("../assets/images/bannerQuote.png");
+    background-image: url("https://my-website-assets-cs361.s3.amazonaws.com/images/bannerQuote.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -551,15 +551,7 @@ section + section {
     text-decoration: underline;
 }
 
-/* =========================================
-   Footer placeholder
-   ========================================= */
-
-footer {
-    min-height: 0;
-    margin: 0;
-    padding: 0;
-}
+/* Footer is injected by src/js/footer.js and styled by src/css/style.css */
 
 .summary-icon {
     width: 58px;
@@ -575,12 +567,12 @@ footer {
    ========================================= */
 
 @media (max-width: 900px) {
-    header {
+    .page-hero {
         min-height: 320px;
         padding: 50px 30px;
     }
 
-    header h1 {
+    .page-hero h1 {
         font-size: 34px;
     }
 
@@ -619,12 +611,12 @@ footer {
    ========================================= */
 
 @media (max-width: 600px) {
-    header {
+    .page-hero {
         min-height: 280px;
         padding: 40px 20px;
     }
 
-    header h1 {
+    .page-hero h1 {
         font-size: 28px;
         line-height: 1.35;
     }
