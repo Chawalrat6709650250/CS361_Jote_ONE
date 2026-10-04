@@ -227,6 +227,14 @@ body {
 .search-button:hover {
   background: #ad0034;
 }
+/* แยกสถานะที่ค้นหาไม่ได้ให้ผู้ใช้มองเห็นชัดเจน */
+.search-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.search-button:disabled:hover {
+  background: #d50045;
+}
 .requirements-panel {
   width: min(1185px, calc(100% - 48px));
   min-height: 550px;

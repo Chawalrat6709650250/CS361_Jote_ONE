@@ -11,6 +11,14 @@
   const criteriaList = document.getElementById("graduation-criteria-list");
   const status = document.getElementById("requirements-status");
   const selectedProgram = document.getElementById("selected-program");
+  const searchButton = form.querySelector(".search-button");
+  // ชุดข้อมูลที่มีหลักสูตรรองรับในระบบปัจจุบัน
+  // หากเพิ่มหลักสูตรใหม่ ให้เพิ่มตัวเลือกใน HTML และเพิ่มกติกาที่นี่คู่กัน
+  const supportedPrograms = {
+    "BSC-CS-2566-CIS-PROJECT": { type: "regular", year: "2566" },
+    "BSC-CS-2566-ACS-PROJECT": { type: "special", year: "2566" },
+    "BSC-CNC-2568-PROJECT": { type: "special", year: "2568" },
+  };
 
   // ข้อมูลสำรอง: ใช้แสดงผลระหว่างที่ API ยังตอบไม่ได้หรือยังติด CORS
   function getMockPlan(studyPlanId = programSelect.value) {
@@ -430,6 +438,35 @@
     });
   }
 
+  function setSearchAvailability() {
+    // ป้องกันการเรียก API ด้วยชุดประเภทหลักสูตร/สาขา/ปีที่ไม่มีอยู่จริง
+    const supportedProgram = supportedPrograms[programSelect.value];
+    const incorrectFields = [];
+    const requiredType = typeSelect.querySelector(
+      `option[value="${supportedProgram.type}"]`,
+    ).textContent;
+    if (typeSelect.value !== supportedProgram.type) {
+      incorrectFields.push(requiredType);
+    }
+    if (yearSelect.value !== supportedProgram.year) {
+      incorrectFields.push(`ปี ${supportedProgram.year}`);
+    }
+    const isSupported = incorrectFields.length === 0;
+
+    searchButton.disabled = !isSupported;
+    searchButton.setAttribute("aria-disabled", String(!isSupported));
+
+    if (!isSupported) {
+      status.className = "requirements-status is-error";
+      status.textContent = `ยังไม่มีหลักสูตร ${programSelect.selectedOptions[0].textContent} ในชุดที่เลือก กรุณาเลือก${incorrectFields.join(" และ ")}`;
+    } else if (status.textContent.startsWith("ยังไม่มีหลักสูตร")) {
+      status.className = "requirements-status";
+      status.textContent = "พร้อมค้นหาเงื่อนไขการสำเร็จการศึกษา";
+    }
+
+    return isSupported;
+  }
+
   async function loadRequirements() {
     status.className = "requirements-status is-loading";
     status.textContent = "กำลังโหลดข้อมูลเงื่อนไขการสำเร็จการศึกษา...";
@@ -456,12 +493,17 @@
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    if (!setSearchAvailability()) return;
     loadRequirements();
   });
+  programSelect.addEventListener("change", setSearchAvailability);
+  yearSelect.addEventListener("change", setSearchAvailability);
+  typeSelect.addEventListener("change", setSearchAvailability);
   createCustomDropdowns();
   displayPlan(
     getMockPlan(),
     "กำลังแสดงข้อมูลตัวอย่าง กรุณาเลือกข้อมูลแล้วกดค้นหา",
   );
+  setSearchAvailability();
   bindAccordions();
 })();
