@@ -20,9 +20,9 @@ html {
 
 body {
     margin: 0;
-    font-family: "Noto Sans Thai", "Tahoma", sans-serif;
-    color: var(--text);
-    background: var(--page);
+    font-family: Arial, "Noto Sans Thai", sans-serif;
+    color: #333333;
+    background: #ffffff;
 }
 
 button,
