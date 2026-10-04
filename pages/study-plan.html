@@ -81,32 +81,34 @@
          HERO
     ========================== -->
     <section class="hero">
+    <div class="hero-overlay">
 
-        <div class="hero-overlay">
-
-            <div class="container hero-content">
-
-                <h1>
-                    แผนการเรียนและวิชาบังคับ
-                </h1>
-
-                <p>
-                    เลือกแผนการเรียนและปีหลักสูตร
-                    เพื่อดูรายวิชาแยกตามชั้นปีและภาคการศึกษา
-                </p>
-
-            </div>
-
+        <!-- ปุ่มย้อนกลับ -->
+        <div class="hero-back">
+            <a href="#" id="backToDepartment" class="hero-back-btn">
+                ← ย้อนกลับไปหน้าหลักสูตร
+            </a>
         </div>
 
-    </section>
+        <div class="container hero-content">
+            <h1>
+                แผนการเรียนและวิชาบังคับ
+            </h1>
+
+            <p>
+                เลือกแผนการเรียนและปีหลักสูตร
+                เพื่อดูรายวิชาแยกตามชั้นปีและภาคการศึกษา
+            </p>
+        </div>
+
+    </div>
+</section>
 
 
     <!-- =========================
          MAIN
     ========================== -->
     <main class="container page-content">
-
 
         <!-- =========================
              SELECTORS
@@ -191,24 +193,7 @@
         </section>
 
 
-        <!-- =========================
-             PLAN HEADING
-        ========================== -->
-        <section class="plan-heading">
-
-            <h2 id="planTitle">
-                กำลังโหลดแผนการเรียน...
-            </h2>
-
-            <p id="curriculumText"></p>
-
-            <!-- notes จาก study_plan -->
-            <p
-                id="planNotes"
-                class="plan-note"
-            ></p>
-
-        </section>
+       
 
 
         <!-- =========================

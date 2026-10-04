@@ -8,6 +8,7 @@ let allStudyPlans = [];
 // ========================================
 
 document.addEventListener("DOMContentLoaded", async () => {
+     setupBackButton();
   const curriculumSelect = document.getElementById("curriculumSelect");
   const studyPlanSelect = document.getElementById("studyPlanSelect");
 
@@ -27,6 +28,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadSelectedPlan();
   });
 
+  document
+  .querySelectorAll("[data-close-modal]")
+  .forEach((element) => {
+
+    element.addEventListener(
+      "click",
+      closeCourseModal
+    );
+
+  });
+  
   await loadStudyPlans();
 });
 
@@ -226,6 +238,10 @@ async function loadSelectedPlan() {
       mapApiStudyPlan(result.data);
 
     renderStudyPlan(mappedPlan);
+    await loadElectiveCourses(
+  mappedPlan.curriculumId,
+  mappedPlan.pathwayId
+);
   } catch (error) {
     console.error(
       "Failed to load selected plan:",
@@ -361,20 +377,16 @@ function mapApiStudyPlan(data) {
   });
 
   return {
-    id:
-      studyPlan.study_plan_id || "",
-    title:
-      studyPlan.plan_name_th || "",
-    titleEn:
-      studyPlan.plan_name_en || "",
-    curriculumId:
-      studyPlan.curriculum_id || "",
-    notes:
-      studyPlan.notes || "",
-    years,
-    totalCourses,
-    totalCredits,
-  };
+  id: studyPlan.study_plan_id,
+  title: studyPlan.plan_name_th,
+  titleEn: studyPlan.plan_name_en,
+  curriculumId: studyPlan.curriculum_id,
+  pathwayId: studyPlan.pathway_id,
+  notes: studyPlan.notes,
+  years,
+  totalCourses,
+  totalCredits,
+};
 }
 
 // ========================================
@@ -413,13 +425,16 @@ function renderStudyPlan(plan) {
         : ""
     }
 
-    ${
-      plan.notes
-        ? `<p class="plan-note">${escapeHtml(
-            plan.notes
-          )}</p>`
-        : ""
-    }
+   ${
+  plan.notes
+    ? `
+      <div class="plan-note-box">
+        <strong>หมายเหตุแผนการเรียน</strong>
+        <p>${escapeHtml(plan.notes)}</p>
+      </div>
+    `
+    : ""
+}
   `;
 
   container.appendChild(header);
@@ -524,10 +539,10 @@ function createSemesterSection(semesterData) {
   });
 
   semesterData.requirements.forEach((requirement) => {
-    courseList.appendChild(
-      createRequirementRow(requirement)
-    );
-  });
+  courseList.appendChild(
+    createRequirementRow(requirement)
+  );
+});
 
   semester.appendChild(title);
   semester.appendChild(courseList);
@@ -626,65 +641,79 @@ function createCourseRow(course) {
   return row;
 }
 
-// ========================================
-// REQUIREMENT CARD
-// ========================================
+function createRequirementRow(requirement) {
+  const row = document.createElement("div");
 
-function createRequirementCard(
-  requirement
-) {
-  const card =
-    document.createElement("div");
+  row.className = "course-row requirement-row";
 
-  card.className =
-    "requirement-card";
+  row.innerHTML = `
+    <div class="course-code requirement-code">
+      เลือก
+    </div>
 
-  card.innerHTML = `
-    <div class="requirement-info">
-
-      <div class="requirement-title">
+    <div class="course-name">
+      <strong>
         ${escapeHtml(
-          requirement.course_group ||
-            "รายวิชาเลือก"
+          requirement.course_group || "รายวิชาเลือก"
         )}
-      </div>
+      </strong>
 
       ${
         requirement.alternatives
           ? `
-          <div class="requirement-alternatives">
-            ${escapeHtml(
-              requirement.alternatives
-            )}
-          </div>
-        `
+            <span>
+              ${escapeHtml(requirement.alternatives)}
+            </span>
+          `
           : ""
       }
 
       ${
         requirement.notes
           ? `
-          <div class="requirement-note">
-            ${escapeHtml(
-              requirement.notes
-            )}
-          </div>
-        `
+            <span class="requirement-note">
+              ${escapeHtml(requirement.notes)}
+            </span>
+          `
           : ""
       }
-
     </div>
 
-    <div class="requirement-credit">
-      ${
-        requirement.credits_required ||
-        0
-      } หน่วยกิต
+    <div class="course-meta">
+      <strong>
+        ${Number(requirement.credits_required || 0)}
+        หน่วยกิต
+      </strong>
+
+      <span class="requirement-type">
+        ${getRequirementTypeText(requirement.requirement_type)}
+      </span>
     </div>
   `;
 
-  return card;
+  return row;
 }
+
+function getRequirementTypeText(type) {
+  switch (type) {
+    case "required":
+      return "วิชาบังคับ";
+
+    case "general_choice":
+      return "วิชาเลือก";
+
+    case "free_elective":
+      return "วิชาเลือกเสรี";
+
+    default:
+      return type || "-";
+  }
+}
+// ========================================
+// REQUIREMENT CARD
+// ========================================
+
+
 
 // ========================================
 // COURSE DETAIL
@@ -741,34 +770,49 @@ async function loadCourseDetail(
 // MODAL
 // ========================================
 
-function openCourseModal(
-  apiData,
-  fallbackCourse
-) {
-  /*
-    ตอนนี้ยังไม่รู้ JSON ของ resource=course แบบเต็ม
-    จึงใช้ข้อมูลจาก study_plan เป็น fallback ก่อน
+function openCourseModal(apiData, fallbackCourse) {
+  const modal =
+    document.getElementById("courseModal");
 
-    ถ้า HTML เดิมของเธอมี modal อยู่แล้ว
-    function นี้สามารถปรับ selector
-    ให้ตรงกับ modal เดิมได้ภายหลัง
-  */
+  if (!modal) return;
+
+  const detail =
+    apiData?.detail || {};
 
   const course =
-    apiData?.course ||
-    apiData?.detail ||
-    apiData ||
-    fallbackCourse ||
+    detail.course || {};
+
+  const classification =
+    detail.classification || {};
+
+  const curriculum =
+    detail.curriculum || {};
+
+  const prerequisite =
+    detail.prerequisite ||
+    apiData?.prerequisites ||
     {};
 
-  const code =
-    course.course_code ||
-    fallbackCourse?.courseCode ||
-    "";
+  const ploMappings =
+    detail.plo_mappings ||
+    apiData?.plo_mappings ||
+    [];
+
+  const dependentCourses =
+    detail.dependent_courses || [];
+
+  // =========================
+  // HEADER
+  // =========================
 
   const codeTh =
     course.course_code_th ||
     fallbackCourse?.courseCodeTh ||
+    "";
+
+  const code =
+    course.course_code ||
+    fallbackCourse?.courseCode ||
     "";
 
   const titleTh =
@@ -781,150 +825,228 @@ function openCourseModal(
     fallbackCourse?.titleEn ||
     "";
 
-  const credits =
-    course.credits_total ??
-    fallbackCourse?.credits ??
-    "";
-
-  // ลองหา modal เดิมก่อน
-  const existingModal =
-    document.getElementById(
-      "courseModal"
-    );
-
   setTextIfExists(
-  "modalTitle",
-  codeTh || code
-);
-
-setTextIfExists(
-  "modalCourseName",
-  titleTh
-);
-
-setTextIfExists(
-  "modalCourseNameEn",
-  titleEn
-);
-
-setTextIfExists(
-  "modalCredits",
-  credits
-    ? `${credits} หน่วยกิต`
-    : "-"
-);
-    existingModal.classList.add("open");
-existingModal.setAttribute(
-  "aria-hidden",
-  "false"
-);
-
-  // fallback modal กรณี HTML ยังไม่มี
-  const modal =
-    document.createElement("div");
-
-  modal.className =
-    "simple-course-modal";
-
-  modal.style.position = "fixed";
-  modal.style.inset = "0";
-  modal.style.background =
-    "rgba(0,0,0,0.45)";
-  modal.style.display = "flex";
-  modal.style.alignItems = "center";
-  modal.style.justifyContent =
-    "center";
-  modal.style.zIndex = "9999";
-
-  modal.innerHTML = `
-    <div
-      style="
-        background:#fff;
-        width:min(620px,90%);
-        max-height:85vh;
-        overflow:auto;
-        border-radius:16px;
-        padding:24px;
-      "
-    >
-
-      <button
-        type="button"
-        class="simple-modal-close"
-        style="
-          float:right;
-          border:none;
-          background:none;
-          font-size:24px;
-          cursor:pointer;
-        "
-      >
-        ×
-      </button>
-
-      <h2>
-        ${escapeHtml(
-          codeTh || code
-        )}
-      </h2>
-
-      <h3>
-        ${escapeHtml(titleTh)}
-      </h3>
-
-      <p>
-        ${escapeHtml(titleEn)}
-      </p>
-
-      ${
-        credits !== ""
-          ? `
-          <p>
-            <strong>
-              หน่วยกิต:
-            </strong>
-            ${escapeHtml(
-              String(credits)
-            )}
-          </p>
-        `
-          : ""
-      }
-
-      <p style="color:#666;">
-        ข้อมูลรายละเอียดเพิ่มเติม
-        เช่น PLO และวิชาบังคับก่อน
-        จะเชื่อมจาก API course
-        เมื่อกำหนดโครง JSON
-        ครบแล้ว
-      </p>
-
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-
-  const closeBtn =
-    modal.querySelector(
-      ".simple-modal-close"
-    );
-
-  closeBtn.addEventListener(
-    "click",
-    () => {
-      modal.remove();
-    }
+    "modalTitle",
+    codeTh || code
   );
 
-  modal.addEventListener(
-    "click",
-    (event) => {
-      if (
-        event.target === modal
-      ) {
-        modal.remove();
-      }
+  setTextIfExists(
+    "modalCourseName",
+    titleTh
+  );
+
+  setTextIfExists(
+    "modalCourseNameEn",
+    titleEn
+  );
+
+  // =========================
+  // BASIC INFO
+  // =========================
+
+  const credits =
+    course.credits?.total ??
+    fallbackCourse?.credits ??
+    "-";
+
+  setTextIfExists(
+    "modalCredits",
+    `${credits} หน่วยกิต`
+  );
+
+  setTextIfExists(
+    "modalCourseType",
+    classification.course_type?.label_th || "-"
+  );
+
+  setTextIfExists(
+    "modalCourseGroup",
+    curriculum.course_group || "-"
+  );
+
+  const subcategoryText =
+    classification.subcategories
+      ?.map(item => item.label_th)
+      .filter(Boolean)
+      .join(", ") || "-";
+
+  setTextIfExists(
+    "modalCourseSubType",
+    subcategoryText
+  );
+
+  setTextIfExists(
+    "modalCurriculumType",
+    getRequirementTypeText(
+      curriculum.requirement_type
+    )
+  );
+
+  // =========================
+  // PREREQUISITE
+  // =========================
+
+  let prerequisiteText = "-";
+
+  if (
+    prerequisite.prerequisite_text_th
+  ) {
+    prerequisiteText =
+      prerequisite.prerequisite_text_th;
+  } else if (
+    prerequisite.rules &&
+    prerequisite.rules.length > 0
+  ) {
+    prerequisiteText =
+      prerequisite.rules
+        .map(rule =>
+          rule.course_code_th ||
+          rule.course_code ||
+          ""
+        )
+        .filter(Boolean)
+        .join(", ");
+  }
+
+  setTextIfExists(
+    "modalPrerequisite",
+    prerequisiteText
+  );
+
+  // =========================
+  // DESCRIPTION
+  // =========================
+
+  setTextIfExists(
+    "modalDescription",
+    course.description_th || "-"
+  );
+
+  // =========================
+  // PLO MAPPING
+  // =========================
+
+  const ploList =
+    document.getElementById(
+      "modalPloMapping"
+    );
+
+  if (ploList) {
+    ploList.innerHTML = "";
+
+    if (ploMappings.length === 0) {
+      const li =
+        document.createElement("li");
+
+      li.textContent =
+        "ไม่มีข้อมูล PLO Mapping";
+
+      ploList.appendChild(li);
+    } else {
+      const sortedPlo =
+        [...ploMappings].sort(
+          (a, b) =>
+            Number(
+              a.display_order || 0
+            ) -
+            Number(
+              b.display_order || 0
+            )
+        );
+
+      sortedPlo.forEach((mapping) => {
+        const li =
+          document.createElement("li");
+
+        li.innerHTML = `
+          <strong>
+            ${escapeHtml(
+              mapping.plo_code || ""
+            )}
+            ${
+              mapping.contribution_level
+                ? `(${escapeHtml(
+                    mapping.contribution_level
+                  )})`
+                : ""
+            }
+          </strong>
+          ${escapeHtml(
+            mapping.description_th || ""
+          )}
+        `;
+
+        ploList.appendChild(li);
+      });
     }
+  }
+
+  // =========================
+  // DEPENDENT / NEXT COURSES
+  // =========================
+
+  const nextCoursesList =
+    document.getElementById(
+      "modalNextCourses"
+    );
+
+  if (nextCoursesList) {
+    nextCoursesList.innerHTML = "";
+
+    if (
+      dependentCourses.length === 0
+    ) {
+      const li =
+        document.createElement("li");
+
+      li.textContent =
+        "ไม่มีรายวิชาที่ต่อยอดจากวิชานี้";
+
+      nextCoursesList.appendChild(li);
+    } else {
+      dependentCourses.forEach(
+        (item) => {
+          const li =
+            document.createElement("li");
+
+          li.innerHTML = `
+            <strong>
+              ${escapeHtml(
+                item.course_code_th ||
+                item.course_code ||
+                ""
+              )}
+              ${escapeHtml(
+                item.title_th || ""
+              )}
+            </strong>
+
+            <span>
+              ${escapeHtml(
+                item.relationship_type_th ||
+                item.notes ||
+                ""
+              )}
+            </span>
+          `;
+
+          nextCoursesList.appendChild(
+            li
+          );
+        }
+      );
+    }
+  }
+
+  // =========================
+  // OPEN MODAL
+  // =========================
+
+  modal.classList.add("open");
+
+  modal.setAttribute(
+    "aria-hidden",
+    "false"
   );
 }
 
@@ -1084,4 +1206,282 @@ function escapeHtml(value) {
 
 function escapeAttribute(value) {
   return escapeHtml(value);
+}
+
+function closeCourseModal() {
+  const modal =
+    document.getElementById("courseModal");
+
+  if (!modal) return;
+
+  modal.classList.remove("open");
+
+  modal.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+}
+
+async function loadElectiveCourses(
+  curriculumId,
+  pathwayId
+) {
+  const container =
+    document.getElementById(
+      "electiveCoursesContainer"
+    );
+
+  const countElement =
+    document.getElementById(
+      "electiveCourseCount"
+    );
+
+  if (!container) return;
+
+  container.innerHTML = `
+    <p class="loading-message">
+      กำลังโหลดรายวิชาเลือก...
+    </p>
+  `;
+
+  try {
+    // ตอนนี้ยังไม่ใช้ curriculum_id parameter
+    // เพราะ backend filter ยังคืน [] อยู่
+    const response = await fetch(
+      `${API_URL}?resource=courses`
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+    }
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(
+        "API returned success = false"
+      );
+    }
+
+    const allCourses =
+      result.data?.courses || [];
+
+    // กรองให้ตรงหลักสูตร + วิชาเอก + elective
+    const electiveCourses =
+      allCourses.filter((course) => {
+        const curriculum =
+          course.curriculum || {};
+
+        return (
+          course.active === true &&
+          course.status === "active" &&
+          curriculum.curriculum_id ===
+            curriculumId &&
+          curriculum.pathway_id ===
+            pathwayId &&
+          curriculum.requirement_type ===
+            "elective"
+        );
+      });
+
+    renderElectiveCourses(
+      electiveCourses
+    );
+
+    if (countElement) {
+      countElement.textContent =
+        `${electiveCourses.length} รายวิชา`;
+    }
+
+  } catch (error) {
+    console.error(
+      "Failed to load elective courses:",
+      error
+    );
+
+    container.innerHTML = `
+      <p class="empty-message">
+        ไม่สามารถโหลดรายวิชาเลือกได้
+      </p>
+    `;
+
+    if (countElement) {
+      countElement.textContent = "-";
+    }
+  }
+}
+
+function renderElectiveCourses(courses) {
+  const container =
+    document.getElementById(
+      "electiveCoursesContainer"
+    );
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (courses.length === 0) {
+    container.innerHTML = `
+      <p class="empty-message">
+        ไม่พบรายวิชาเลือกสำหรับแผนการเรียนนี้
+      </p>
+    `;
+    return;
+  }
+
+  // จัดกลุ่มตาม course_group
+  const groups = {};
+
+  courses.forEach((course) => {
+    const group =
+      course.curriculum?.course_group ||
+      "รายวิชาเลือก";
+
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+
+    groups[group].push(course);
+  });
+
+  Object.entries(groups).forEach(
+    ([groupName, groupCourses]) => {
+
+      const group =
+        document.createElement("div");
+
+      group.className =
+        "elective-group";
+
+      const heading =
+        document.createElement("h3");
+
+      heading.textContent =
+        groupName;
+
+      group.appendChild(heading);
+
+      const list =
+        document.createElement("div");
+
+      list.className =
+        "course-list";
+
+      groupCourses.forEach((course) => {
+        const row =
+          document.createElement("div");
+
+        row.className = "course-row";
+
+        row.innerHTML = `
+          <div class="course-code">
+            ${escapeHtml(
+              course.course_code_th ||
+              course.course_code
+            )}
+          </div>
+
+          <div class="course-name">
+            <strong>
+              ${escapeHtml(
+                course.title_th || ""
+              )}
+            </strong>
+
+            <span>
+              ${escapeHtml(
+                course.title_en || ""
+              )}
+            </span>
+          </div>
+
+          <div class="course-meta">
+            <strong>
+              ${Number(
+                course.credits_total || 0
+              )} หน่วยกิต
+            </strong>
+
+            <span>
+              วิชาเลือก
+            </span>
+
+            <button
+              type="button"
+              class="detail-btn"
+            >
+              ดูรายละเอียด →
+            </button>
+          </div>
+        `;
+
+        const button =
+          row.querySelector(
+            ".detail-btn"
+          );
+
+        button.addEventListener(
+          "click",
+          () => {
+            loadCourseDetail(
+              course.course_code,
+              {
+                courseCode:
+                  course.course_code,
+                courseCodeTh:
+                  course.course_code_th,
+                titleTh:
+                  course.title_th,
+                titleEn:
+                  course.title_en,
+                credits:
+                  course.credits_total,
+              }
+            );
+          }
+        );
+
+        list.appendChild(row);
+      });
+
+      group.appendChild(list);
+      container.appendChild(group);
+    }
+  );
+}
+
+function setupBackButton() {
+  const backButton =
+    document.getElementById("backToDepartment");
+
+  if (!backButton) return;
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const department =
+    params.get("department");
+
+  const departmentPages = {
+    "computer-information":
+      "computer-information.html",
+
+    "applied-computer":
+      "applied-computer.html",
+
+    "computer-network":
+      "computer-network.html",
+  };
+
+  const targetPage =
+    departmentPages[department];
+
+  if (targetPage) {
+    backButton.href = `./${targetPage}`;
+  } else {
+    backButton.href = "../index.html";
+  }
 }
