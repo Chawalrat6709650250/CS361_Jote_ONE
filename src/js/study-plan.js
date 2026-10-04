@@ -1,367 +1,1087 @@
-const API_URL = "https://uuo1em3vlb.execute-api.us-east-1.amazonaws.com/prod/api";
+const API_URL =
+  "https://uuo1em3vlb.execute-api.us-east-1.amazonaws.com/prod/api";
 
-/*
- * ตอนนี้หน้านี้ใช้ mock data เพื่อให้ทำ UI และทดสอบ interaction ได้ก่อน
- * เมื่อพร้อมเชื่อม API ให้เปลี่ยน USE_API เป็น true
- */
-const USE_API = false;
+let allStudyPlans = [];
 
-const mockPlans = {
-    "PLAN-APPLIED-2566": {
-        title: "วิชาเอกคอมพิวเตอร์ประยุกต์ — แผนสหกิจศึกษา",
-        curriculum: "2566",
-        totalCourses: 54,
-        totalCredits: "XX",
-        years: [
-            {
-                year: "ชั้นปีที่ 1",
-                semesters: [
-                    {
-                        name: "ภาคการศึกษาที่ 1",
-                        courses: [
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "ไม่มี" },
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "ไม่มี" }
-                        ]
-                    },
-                    {
-                        name: "ภาคการศึกษาที่ 2",
-                        courses: [
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "CS XXX" },
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "ไม่มี" }
-                        ]
-                    },
-                    {
-                        name: "ภาคฤดูร้อน",
-                        courses: [
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "ไม่มี" },
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "ไม่มี" }
-                        ]
-                    }
-                ]
-            },
-            {
-                year: "ชั้นปีที่ 2",
-                semesters: [
-                    {
-                        name: "ภาคการศึกษาที่ 1",
-                        courses: [
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "CS XXX" },
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "ไม่มี" }
-                        ]
-                    }
-                ]
-            },
-            {
-                year: "ชั้นปีที่ 3",
-                semesters: [
-                    {
-                        name: "ภาคการศึกษาที่ 1",
-                        courses: [
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "ไม่มี" }
-                        ]
-                    }
-                ]
-            },
-            {
-                year: "ชั้นปีที่ 4",
-                semesters: [
-                    {
-                        name: "ภาคการศึกษาที่ 1",
-                        courses: [
-                            { code: "CS XXX", name: "ชื่อวิชาภาษาไทย", english: "Course Title in English", credits: "XX", prerequisite: "ไม่มี" }
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
-    "PLAN-APPLIED-2566-GENERAL": {
-        title: "วิชาเอกคอมพิวเตอร์ประยุกต์ — แผนปกติ",
-        curriculum: "2566",
-        totalCourses: 52,
-        totalCredits: "XX",
-        years: []
-    }
-};
+// ========================================
+// INIT
+// ========================================
 
-const studyPlanSelect = document.getElementById("studyPlanSelect");
-const curriculumSelect = document.getElementById("curriculumSelect");
-const studyPlanContainer = document.getElementById("studyPlanContainer");
-const planTitle = document.getElementById("planTitle");
-const curriculumText = document.getElementById("curriculumText");
-const summaryCourses = document.getElementById("summaryCourses");
-const summaryCredits = document.getElementById("summaryCredits");
+document.addEventListener("DOMContentLoaded", async () => {
+  const curriculumSelect = document.getElementById("curriculumSelect");
+  const studyPlanSelect = document.getElementById("studyPlanSelect");
 
-function escapeHtml(value) {
-    return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
+  if (!curriculumSelect || !studyPlanSelect) {
+    console.error(
+      "ไม่พบ curriculumSelect หรือ studyPlanSelect ใน HTML"
+    );
+    return;
+  }
 
-function renderStudyPlan(plan) {
-    if (!plan) {
-        studyPlanContainer.innerHTML = `
-            <section class="plan-section">
-                <p>ไม่พบข้อมูลแผนการเรียน</p>
-            </section>
-        `;
-        return;
-    }
-
-    planTitle.textContent = plan.title;
-    curriculumText.textContent = `ปีหลักสูตร ${plan.curriculum}`;
-    summaryCourses.textContent = `${plan.totalCourses} วิชา`;
-    summaryCredits.textContent = `${plan.totalCredits} หน่วยกิต`;
-
-    if (!plan.years.length) {
-        studyPlanContainer.innerHTML = `
-            <section class="plan-section">
-                <p>ยังไม่มีข้อมูลตัวอย่างของแผนนี้</p>
-            </section>
-        `;
-        return;
-    }
-
-    studyPlanContainer.innerHTML = plan.years.map((year, yearIndex) => `
-        <section class="plan-section year-section ${yearIndex === 0 ? "" : "collapsed"}">
-            <button class="year-header" type="button" aria-expanded="${yearIndex === 0}">
-                <span>${escapeHtml(year.year)}</span>
-                <span class="chevron"></span>
-            </button>
-
-            <div class="year-body">
-                ${year.semesters.map(semester => `
-                    <div class="semester">
-                        <h3 class="semester-title">${escapeHtml(semester.name)}</h3>
-                        <div class="course-list">
-                            ${semester.courses.map(course => `
-                                <article class="course-row">
-                                    <div class="course-code">${escapeHtml(course.code)}</div>
-
-                                    <div class="course-name">
-                                        <strong>${escapeHtml(course.name)}</strong>
-                                        <span>${escapeHtml(course.english)}</span>
-                                    </div>
-
-                                    <div class="course-meta">
-                                        <strong>${escapeHtml(course.credits)} หน่วยกิต</strong>
-                                        <span>รายวิชา</span>
-                                        <button
-                                            type="button"
-                                            class="detail-btn"
-                                            data-course='${encodeURIComponent(JSON.stringify(course))}'
-                                        >
-                                            ดูรายละเอียด →
-                                        </button>
-                                    </div>
-                                </article>
-                            `).join("")}
-                        </div>
-                    </div>
-                `).join("")}
-            </div>
-        </section>
-    `).join("");
-
-    bindYearToggles();
-    bindCourseButtons();
-}
-
-function bindYearToggles() {
-    document.querySelectorAll(".year-header").forEach(button => {
-        button.addEventListener("click", () => {
-            const section = button.closest(".year-section");
-            const isCollapsed = section.classList.toggle("collapsed");
-            button.setAttribute("aria-expanded", String(!isCollapsed));
-        });
-    });
-}
-
-function bindCourseButtons() {
-    document.querySelectorAll(".detail-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            const course = JSON.parse(decodeURIComponent(button.dataset.course));
-            openCourseModal(course);
-        });
-    });
-}
-
-function openCourseModal(course) {
-
-    // หัวข้อ
-    document.getElementById("modalTitle").textContent =
-        course.code;
-
-    document.getElementById("modalCourseName").textContent =
-        `${course.name} (${course.english})`;
-
-
-    // ข้อมูลพื้นฐาน
-    document.getElementById("modalCredits").textContent =
-        `${course.credits} หน่วยกิต`;
-
-    document.getElementById("modalCourseType").textContent =
-        course.courseType || "XXX";
-
-    document.getElementById("modalCourseGroup").textContent =
-        course.courseGroup || "XXX";
-
-    document.getElementById("modalCourseSubType").textContent =
-        course.courseSubType || "XXX";
-
-    document.getElementById("modalCurriculumType").textContent =
-        course.curriculumType || "XXX";
-
-    document.getElementById("modalPrerequisite").textContent =
-        course.prerequisite || "ไม่มี";
-
-
-    // คำอธิบายรายวิชา
-    document.getElementById("modalDescription").textContent =
-        course.description || "ไม่มีข้อมูล";
-
-
-    // Course-PLO Mapping
-    const ploContainer =
-        document.getElementById("modalPloMapping");
-
-    ploContainer.innerHTML = "";
-
-    if (course.ploMapping && course.ploMapping.length > 0) {
-
-        course.ploMapping.forEach(plo => {
-
-            const li = document.createElement("li");
-
-            li.innerHTML = `
-                <strong>${escapeHtml(plo.code)}</strong>
-                <span>${escapeHtml(plo.description)}</span>
-            `;
-
-            ploContainer.appendChild(li);
-        });
-
-    } else {
-
-        ploContainer.innerHTML =
-            "<li>ไม่มีข้อมูล PLO Mapping</li>";
-    }
-
-
-    // รายวิชาที่ต่อยอด
-    const nextCoursesContainer =
-        document.getElementById("modalNextCourses");
-
-    nextCoursesContainer.innerHTML = "";
-
-    if (course.nextCourses && course.nextCourses.length > 0) {
-
-        course.nextCourses.forEach(nextCourse => {
-
-            const li = document.createElement("li");
-
-            li.innerHTML = `
-                <strong>
-                    ${escapeHtml(nextCourse.code)}
-                    ${escapeHtml(nextCourse.name)}
-                </strong>
-
-                <span>
-                    ${escapeHtml(nextCourse.description)}
-                </span>
-            `;
-
-            nextCoursesContainer.appendChild(li);
-        });
-
-    } else {
-
-        nextCoursesContainer.innerHTML =
-            "<li>ไม่มีรายวิชาที่ต่อยอดจากวิชานี้</li>";
-    }
-
-
-    // เปิด Modal
-    document
-        .getElementById("courseModal")
-        .classList.add("open");
-
-    document
-        .getElementById("courseModal")
-        .setAttribute("aria-hidden", "false");
-}
-
-function closeCourseModal() {
-    document.getElementById("courseModal").classList.remove("open");
-    document.getElementById("courseModal").setAttribute("aria-hidden", "true");
-}
-
-document.querySelectorAll("[data-close-modal]").forEach(element => {
-    element.addEventListener("click", closeCourseModal);
-});
-
-document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-        closeCourseModal();
-    }
-});
-
-studyPlanSelect.addEventListener("change", async () => {
+  curriculumSelect.addEventListener("change", async () => {
+    populateStudyPlanDropdown();
     await loadSelectedPlan();
+  });
+
+  studyPlanSelect.addEventListener("change", async () => {
+    await loadSelectedPlan();
+  });
+
+  await loadStudyPlans();
 });
 
-curriculumSelect.addEventListener("change", async () => {
+// ========================================
+// LOAD ALL STUDY PLANS
+// ========================================
+
+async function loadStudyPlans() {
+  try {
+    showLoading();
+
+    const response = await fetch(
+      `${API_URL}?resource=study_plans`
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error("API returned success = false");
+    }
+
+    allStudyPlans = result.data?.study_plans || [];
+
+    allStudyPlans = allStudyPlans.filter(
+      (plan) =>
+        plan.active === true &&
+        plan.status === "active"
+    );
+
+    // สร้าง dropdown ปี
+    populateYearDropdown();
+
+    // สร้าง dropdown แผน
+    populateStudyPlanDropdown();
+
+    // หา element ใหม่ใน scope นี้
+    const curriculumSelect =
+      document.getElementById("curriculumSelect");
+
+    const studyPlanSelect =
+      document.getElementById("studyPlanSelect");
+
+    curriculumSelect.disabled = false;
+    studyPlanSelect.disabled = false;
+
+    // โหลดแผนแรก
     await loadSelectedPlan();
-});
+
+  } catch (error) {
+    console.error(
+      "Failed to load study plans:",
+      error
+    );
+
+    showError(
+      "ไม่สามารถโหลดข้อมูลแผนการเรียนได้"
+    );
+  }
+}
+// ========================================
+// YEAR DROPDOWN
+// ========================================
+
+function populateYearDropdown() {
+  const curriculumSelect =
+    document.getElementById("curriculumSelect");
+
+  const years = [
+    ...new Set(
+      allStudyPlans
+        .map((plan) =>
+          getYearFromCurriculumId(
+            plan.curriculum_id
+          )
+        )
+        .filter(Boolean)
+    ),
+  ].sort((a, b) => Number(a) - Number(b));
+
+  curriculumSelect.innerHTML = "";
+
+  years.forEach((year) => {
+    const option =
+      document.createElement("option");
+
+    option.value = year;
+    option.textContent = year;
+
+    curriculumSelect.appendChild(option);
+  });
+}
+
+function getYearFromCurriculumId(
+  curriculumId
+) {
+  if (!curriculumId) return "";
+
+  const parts = curriculumId.split("-");
+
+  return parts[parts.length - 1] || "";
+}
+
+// ========================================
+// STUDY PLAN DROPDOWN
+// ========================================
+
+function populateStudyPlanDropdown() {
+  const curriculumSelect =
+    document.getElementById("curriculumSelect");
+
+  const studyPlanSelect =
+    document.getElementById("studyPlanSelect");
+
+  const selectedYear =
+    curriculumSelect.value;
+
+  const filteredPlans =
+    allStudyPlans.filter((plan) => {
+      const year =
+        getYearFromCurriculumId(
+          plan.curriculum_id
+        );
+
+      return year === selectedYear;
+    });
+
+  studyPlanSelect.innerHTML = "";
+
+  if (filteredPlans.length === 0) {
+    const option =
+      document.createElement("option");
+
+    option.value = "";
+    option.textContent =
+      "ไม่พบแผนการเรียน";
+
+    studyPlanSelect.appendChild(option);
+
+    return;
+  }
+
+  filteredPlans.forEach((plan) => {
+    const option =
+      document.createElement("option");
+
+    option.value =
+      plan.study_plan_id;
+
+    option.textContent =
+      plan.plan_name_th;
+
+    studyPlanSelect.appendChild(option);
+  });
+}
+
+// ========================================
+// LOAD SELECTED PLAN
+// ========================================
 
 async function loadSelectedPlan() {
-    const planId = studyPlanSelect.value;
+  const studyPlanSelect =
+    document.getElementById("studyPlanSelect");
 
-    if (!USE_API) {
-        renderStudyPlan(mockPlans[planId]);
-        return;
+  const planId =
+    studyPlanSelect?.value;
+
+  if (!planId) return;
+
+  try {
+    showLoading();
+
+    const response = await fetch(
+      `${API_URL}?resource=study_plan&study_plan_id=${encodeURIComponent(
+        planId
+      )}`
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `HTTP ${response.status}`
+      );
     }
 
-    try {
-        const url =
-            `${API_URL}?resource=study_plan&study_plan_id=${encodeURIComponent(planId)}`;
+    const result = await response.json();
 
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // TODO:
-        // ปรับ mapApiStudyPlan() ให้ตรงกับ JSON จริงจาก API ของอาจารย์
-        renderStudyPlan(mapApiStudyPlan(data));
-    } catch (error) {
-        console.error("Study plan API error:", error);
-        studyPlanContainer.innerHTML = `
-            <section class="plan-section">
-                <p>ไม่สามารถโหลดข้อมูลแผนการเรียนได้ กรุณาลองใหม่อีกครั้ง</p>
-            </section>
-        `;
+    if (!result.success) {
+      throw new Error(
+        "API returned success = false"
+      );
     }
+
+    const mappedPlan =
+      mapApiStudyPlan(result.data);
+
+    renderStudyPlan(mappedPlan);
+  } catch (error) {
+    console.error(
+      "Failed to load selected plan:",
+      error
+    );
+
+    showError(
+      "ไม่สามารถโหลดรายละเอียดแผนการเรียนได้"
+    );
+  }
 }
+
+// ========================================
+// MAP API DATA
+// ========================================
 
 function mapApiStudyPlan(data) {
-    /*
-     * จุดนี้ตั้งใจแยกไว้เพื่อให้ตอน API จริงมา
-     * เราแก้เฉพาะการ map JSON ไม่ต้องรื้อ HTML/CSS
-     */
-    return {
-        title: data.title || "แผนการเรียน",
-        curriculum: data.curriculum || curriculumSelect.value,
-        totalCourses: data.total_courses ?? "XX",
-        totalCredits: data.total_credits ?? "XX",
-        years: data.years || []
-    };
+  const studyPlan =
+    data?.detail?.study_plan ||
+    data?.summary ||
+    {};
+
+  const terms =
+    data?.detail?.terms || [];
+
+  const yearsMap = {};
+
+  terms.forEach((term) => {
+    const year = term.study_year;
+    const semester =
+      term.semester;
+
+    if (!yearsMap[year]) {
+      yearsMap[year] = {
+        year,
+        semesters: [],
+      };
+    }
+
+    const courses = (
+      term.courses || []
+    ).map((item) => {
+      const course =
+        item.course || {};
+
+      return {
+        courseCode:
+          course.course_code || "",
+        courseCodeTh:
+          course.course_code_th || "",
+        titleTh:
+          course.title_th || "",
+        titleEn:
+          course.title_en || "",
+        credits:
+          Number(
+            course.credits_total || 0
+          ),
+        role:
+          item.course_role || "",
+        recommended:
+          item.recommended ?? true,
+        notes:
+          item.notes || "",
+        curriculumCourseId:
+          item.curriculum_course_id ||
+          "",
+        studyPlanCourseId:
+          item.study_plan_course_id ||
+          "",
+        sequence:
+          item.sequence ?? null,
+      };
+    });
+
+    const requirements =
+      term.requirements || [];
+
+    yearsMap[year].semesters.push({
+      semester,
+      courses,
+      requirements,
+    });
+  });
+
+  const years = Object.values(
+    yearsMap
+  ).sort(
+    (a, b) =>
+      Number(a.year) -
+      Number(b.year)
+  );
+
+  years.forEach((year) => {
+    year.semesters.sort(
+      (a, b) =>
+        Number(a.semester) -
+        Number(b.semester)
+    );
+  });
+
+  let totalCourses = 0;
+  let totalCredits = 0;
+
+  years.forEach((year) => {
+    year.semesters.forEach(
+      (semester) => {
+        totalCourses +=
+          semester.courses.length;
+
+        totalCredits +=
+          semester.courses.reduce(
+            (sum, course) =>
+              sum +
+              Number(
+                course.credits || 0
+              ),
+            0
+          );
+
+        totalCredits +=
+          semester.requirements.reduce(
+            (sum, req) =>
+              sum +
+              Number(
+                req.credits_required ||
+                  0
+              ),
+            0
+          );
+      }
+    );
+  });
+
+  return {
+    id:
+      studyPlan.study_plan_id || "",
+    title:
+      studyPlan.plan_name_th || "",
+    titleEn:
+      studyPlan.plan_name_en || "",
+    curriculumId:
+      studyPlan.curriculum_id || "",
+    notes:
+      studyPlan.notes || "",
+    years,
+    totalCourses,
+    totalCredits,
+  };
 }
 
-loadSelectedPlan();
+// ========================================
+// RENDER STUDY PLAN
+// ========================================
+
+function renderStudyPlan(plan) {
+  const container =
+    getStudyPlanContainer();
+
+  if (!container) {
+    console.error(
+      "ไม่พบ container สำหรับแสดง Study Plan"
+    );
+    return;
+  }
+
+  container.innerHTML = "";
+
+  const header =
+    document.createElement("div");
+
+  header.className =
+    "study-plan-header";
+
+  header.innerHTML = `
+    <h2>${escapeHtml(
+      plan.title
+    )}</h2>
+
+    ${
+      plan.titleEn
+        ? `<p>${escapeHtml(
+            plan.titleEn
+          )}</p>`
+        : ""
+    }
+
+    ${
+      plan.notes
+        ? `<p class="plan-note">${escapeHtml(
+            plan.notes
+          )}</p>`
+        : ""
+    }
+  `;
+
+  container.appendChild(header);
+
+  if (
+    !plan.years ||
+    plan.years.length === 0
+  ) {
+    container.innerHTML += `
+      <div class="empty-message">
+        ไม่พบข้อมูลแผนการเรียน
+      </div>
+    `;
+
+    return;
+  }
+
+  plan.years.forEach(
+    (yearData, index) => {
+      const yearSection =
+        createYearSection(
+          yearData,
+          index === 0
+        );
+
+      container.appendChild(
+        yearSection
+      );
+    }
+  );
+
+  updateSummary(plan);
+}
+
+// ========================================
+// CREATE YEAR ACCORDION
+// ========================================
+
+function createYearSection(yearData, openByDefault = false) {
+  const section = document.createElement("section");
+
+  section.className = "plan-section year-section";
+
+  if (!openByDefault) {
+    section.classList.add("collapsed");
+  }
+
+  const header = document.createElement("button");
+
+  header.type = "button";
+  header.className = "year-header";
+
+  header.innerHTML = `
+    <span>ชั้นปีที่${yearData.year}</span>
+    <span class="chevron"></span>
+  `;
+
+  const body = document.createElement("div");
+
+  body.className = "year-body";
+
+  yearData.semesters.forEach((semester) => {
+    body.appendChild(
+      createSemesterSection(semester)
+    );
+  });
+
+  header.addEventListener("click", () => {
+    section.classList.toggle("collapsed");
+  });
+
+  section.appendChild(header);
+  section.appendChild(body);
+
+  return section;
+}
+
+// ========================================
+// CREATE SEMESTER SECTION
+// ========================================
+
+function createSemesterSection(semesterData) {
+  const semester = document.createElement("div");
+
+  semester.className = "semester";
+
+  const title = document.createElement("h3");
+
+  title.className = "semester-title";
+  title.textContent = getSemesterName(
+    semesterData.semester
+  );
+
+  const courseList = document.createElement("div");
+
+  courseList.className = "course-list";
+
+  semesterData.courses.forEach((course) => {
+    courseList.appendChild(
+      createCourseRow(course)
+    );
+  });
+
+  semesterData.requirements.forEach((requirement) => {
+    courseList.appendChild(
+      createRequirementRow(requirement)
+    );
+  });
+
+  semester.appendChild(title);
+  semester.appendChild(courseList);
+
+  return semester;
+}
+
+function getSemesterName(
+  semester
+) {
+  const value =
+    String(semester).toLowerCase();
+
+  if (
+    value === "1" ||
+    value === "semester1"
+  ) {
+    return "ภาคการศึกษาที่ 1";
+  }
+
+  if (
+    value === "2" ||
+    value === "semester2"
+  ) {
+    return "ภาคการศึกษาที่ 2";
+  }
+
+  if (
+    value === "3" ||
+    value === "summer"
+  ) {
+    return "ภาคฤดูร้อน";
+  }
+
+  return `ภาคการศึกษา ${semester}`;
+}
+
+// ========================================
+// COURSE CARD
+// ========================================
+
+function createCourseRow(course) {
+  const row = document.createElement("div");
+
+  row.className = "course-row";
+
+  const roleText =
+    getCourseRoleText(course.role);
+
+  row.innerHTML = `
+    <div class="course-code">
+      ${escapeHtml(
+        course.courseCodeTh ||
+        course.courseCode
+      )}
+    </div>
+
+    <div class="course-name">
+      <strong>
+        ${escapeHtml(course.titleTh)}
+      </strong>
+
+      <span>
+        ${escapeHtml(course.titleEn)}
+      </span>
+    </div>
+
+    <div class="course-meta">
+      <strong>
+        ${course.credits} หน่วยกิต
+      </strong>
+
+      <span>
+        ${escapeHtml(roleText)}
+      </span>
+
+      <button
+        type="button"
+        class="detail-btn"
+      >
+        ดูรายละเอียด →
+      </button>
+    </div>
+  `;
+
+  const button =
+    row.querySelector(".detail-btn");
+
+  button.addEventListener("click", () => {
+    loadCourseDetail(
+      course.courseCode,
+      course
+    );
+  });
+
+  return row;
+}
+
+// ========================================
+// REQUIREMENT CARD
+// ========================================
+
+function createRequirementCard(
+  requirement
+) {
+  const card =
+    document.createElement("div");
+
+  card.className =
+    "requirement-card";
+
+  card.innerHTML = `
+    <div class="requirement-info">
+
+      <div class="requirement-title">
+        ${escapeHtml(
+          requirement.course_group ||
+            "รายวิชาเลือก"
+        )}
+      </div>
+
+      ${
+        requirement.alternatives
+          ? `
+          <div class="requirement-alternatives">
+            ${escapeHtml(
+              requirement.alternatives
+            )}
+          </div>
+        `
+          : ""
+      }
+
+      ${
+        requirement.notes
+          ? `
+          <div class="requirement-note">
+            ${escapeHtml(
+              requirement.notes
+            )}
+          </div>
+        `
+          : ""
+      }
+
+    </div>
+
+    <div class="requirement-credit">
+      ${
+        requirement.credits_required ||
+        0
+      } หน่วยกิต
+    </div>
+  `;
+
+  return card;
+}
+
+// ========================================
+// COURSE DETAIL
+// ========================================
+
+async function loadCourseDetail(
+  courseCode,
+  fallbackCourse = null
+) {
+  if (!courseCode) return;
+
+  try {
+    const response = await fetch(
+      `${API_URL}?resource=course&course_code=${encodeURIComponent(
+        courseCode
+      )}`
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+    }
+
+    const result =
+      await response.json();
+
+    if (!result.success) {
+      throw new Error(
+        "API returned success = false"
+      );
+    }
+
+    openCourseModal(
+      result.data,
+      fallbackCourse
+    );
+  } catch (error) {
+    console.error(
+      "Failed to load course detail:",
+      error
+    );
+
+    if (fallbackCourse) {
+      openCourseModal(
+        null,
+        fallbackCourse
+      );
+    }
+  }
+}
+
+// ========================================
+// MODAL
+// ========================================
+
+function openCourseModal(
+  apiData,
+  fallbackCourse
+) {
+  /*
+    ตอนนี้ยังไม่รู้ JSON ของ resource=course แบบเต็ม
+    จึงใช้ข้อมูลจาก study_plan เป็น fallback ก่อน
+
+    ถ้า HTML เดิมของเธอมี modal อยู่แล้ว
+    function นี้สามารถปรับ selector
+    ให้ตรงกับ modal เดิมได้ภายหลัง
+  */
+
+  const course =
+    apiData?.course ||
+    apiData?.detail ||
+    apiData ||
+    fallbackCourse ||
+    {};
+
+  const code =
+    course.course_code ||
+    fallbackCourse?.courseCode ||
+    "";
+
+  const codeTh =
+    course.course_code_th ||
+    fallbackCourse?.courseCodeTh ||
+    "";
+
+  const titleTh =
+    course.title_th ||
+    fallbackCourse?.titleTh ||
+    "";
+
+  const titleEn =
+    course.title_en ||
+    fallbackCourse?.titleEn ||
+    "";
+
+  const credits =
+    course.credits_total ??
+    fallbackCourse?.credits ??
+    "";
+
+  // ลองหา modal เดิมก่อน
+  const existingModal =
+    document.getElementById(
+      "courseModal"
+    );
+
+  setTextIfExists(
+  "modalTitle",
+  codeTh || code
+);
+
+setTextIfExists(
+  "modalCourseName",
+  titleTh
+);
+
+setTextIfExists(
+  "modalCourseNameEn",
+  titleEn
+);
+
+setTextIfExists(
+  "modalCredits",
+  credits
+    ? `${credits} หน่วยกิต`
+    : "-"
+);
+    existingModal.classList.add("open");
+existingModal.setAttribute(
+  "aria-hidden",
+  "false"
+);
+
+  // fallback modal กรณี HTML ยังไม่มี
+  const modal =
+    document.createElement("div");
+
+  modal.className =
+    "simple-course-modal";
+
+  modal.style.position = "fixed";
+  modal.style.inset = "0";
+  modal.style.background =
+    "rgba(0,0,0,0.45)";
+  modal.style.display = "flex";
+  modal.style.alignItems = "center";
+  modal.style.justifyContent =
+    "center";
+  modal.style.zIndex = "9999";
+
+  modal.innerHTML = `
+    <div
+      style="
+        background:#fff;
+        width:min(620px,90%);
+        max-height:85vh;
+        overflow:auto;
+        border-radius:16px;
+        padding:24px;
+      "
+    >
+
+      <button
+        type="button"
+        class="simple-modal-close"
+        style="
+          float:right;
+          border:none;
+          background:none;
+          font-size:24px;
+          cursor:pointer;
+        "
+      >
+        ×
+      </button>
+
+      <h2>
+        ${escapeHtml(
+          codeTh || code
+        )}
+      </h2>
+
+      <h3>
+        ${escapeHtml(titleTh)}
+      </h3>
+
+      <p>
+        ${escapeHtml(titleEn)}
+      </p>
+
+      ${
+        credits !== ""
+          ? `
+          <p>
+            <strong>
+              หน่วยกิต:
+            </strong>
+            ${escapeHtml(
+              String(credits)
+            )}
+          </p>
+        `
+          : ""
+      }
+
+      <p style="color:#666;">
+        ข้อมูลรายละเอียดเพิ่มเติม
+        เช่น PLO และวิชาบังคับก่อน
+        จะเชื่อมจาก API course
+        เมื่อกำหนดโครง JSON
+        ครบแล้ว
+      </p>
+
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const closeBtn =
+    modal.querySelector(
+      ".simple-modal-close"
+    );
+
+  closeBtn.addEventListener(
+    "click",
+    () => {
+      modal.remove();
+    }
+  );
+
+  modal.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.target === modal
+      ) {
+        modal.remove();
+      }
+    }
+  );
+}
+
+function setTextIfExists(
+  id,
+  value
+) {
+  const element =
+    document.getElementById(id);
+
+  if (element) {
+    element.textContent =
+      value ?? "";
+  }
+}
+
+// ========================================
+// COURSE ROLE
+// ========================================
+
+function getCourseRoleText(role) {
+  switch (role) {
+    case "required":
+      return "วิชาบังคับ";
+
+    case "project":
+      return "วิชาโครงงาน";
+
+    case "elective":
+      return "วิชาเลือก";
+
+    case "free_elective":
+      return "วิชาเลือกเสรี";
+
+    default:
+      return role || "";
+  }
+}
+
+// ========================================
+// SUMMARY
+// ========================================
+
+function updateSummary(plan) {
+  const totalSemesters =
+    plan.years.reduce(
+      (sum, year) =>
+        sum + year.semesters.length,
+      0
+    );
+
+  setTextIfExists(
+    "totalCourses",
+    `${plan.totalCourses} รายการ`
+  );
+
+  setTextIfExists(
+    "totalYears",
+    `${plan.years.length} ปี`
+  );
+
+  setTextIfExists(
+    "totalSemesters",
+    `${totalSemesters} ภาคการศึกษา`
+  );
+
+  setTextIfExists(
+    "totalCredits",
+    `${plan.totalCredits} หน่วยกิต`
+  );
+
+  setTextIfExists(
+    "planTitle",
+    plan.title
+  );
+
+  const year =
+    getYearFromCurriculumId(
+      plan.curriculumId
+    );
+
+  setTextIfExists(
+    "curriculumText",
+    year
+      ? `ปีหลักสูตร ${year}`
+      : ""
+  );
+
+  setTextIfExists(
+    "planNotes",
+    plan.notes || ""
+  );
+}
+
+// ========================================
+// LOADING / ERROR
+// ========================================
+
+function getStudyPlanContainer() {
+  return (
+    document.getElementById(
+      "studyPlanContent"
+    ) ||
+    document.getElementById(
+      "studyPlanContainer"
+    ) ||
+    document.querySelector(
+      ".study-plan-content"
+    ) ||
+    document.querySelector(
+      ".study-plan-container"
+    )
+  );
+}
+
+function showLoading() {
+  const container =
+    getStudyPlanContainer();
+
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="loading-message">
+      กำลังโหลดข้อมูล...
+    </div>
+  `;
+}
+
+function showError(message) {
+  const container =
+    getStudyPlanContainer();
+
+  if (!container) {
+    alert(message);
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="error-message">
+      ${escapeHtml(message)}
+    </div>
+  `;
+}
+
+// ========================================
+// SAFE HTML
+// ========================================
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value);
+}

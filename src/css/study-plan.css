@@ -510,7 +510,6 @@ a {
 
 .modal.open {
     display: grid;
-    place-items: center;
 }
 
 .modal-backdrop {

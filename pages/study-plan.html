@@ -3,362 +3,728 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>แผนการเรียนและวิชาบังคับ</title>
-    <link rel="stylesheet" href="../src/css/study-plan.css">
+
+    <link
+        rel="stylesheet"
+        href="../src/css/study-plan.css"
+    >
 </head>
 
 <body>
-    <!-- Header -->
+
+    <!-- =========================
+         HEADER
+    ========================== -->
     <header class="site-header">
-        <a href="../index.html" class="logo-link">
-            <img src="../src/assets/images/cstu_logo.png" alt="Computer Science">
+
+        <a
+            href="../index.html"
+            class="logo-link"
+        >
+            <img
+                src="../src/assets/images/cstu_logo.png"
+                alt="Computer Science"
+            >
         </a>
 
         <nav class="main-nav">
-            <a href="../index.html">เกี่ยวกับ CSTU</a>
-            <a href="#" class="active">หลักสูตร</a>
-            <a href="#">ผลงานและนวัตกรรม</a>
-            <a href="#">ติดต่อ</a>
+            <a href="../index.html">
+                เกี่ยวกับ CSTU
+            </a>
+
+            <a
+                href="#"
+                class="active"
+            >
+                หลักสูตร
+            </a>
+
+            <a href="#">
+                ผลงานและนวัตกรรม
+            </a>
+
+            <a href="#">
+                ติดต่อ
+            </a>
         </nav>
 
         <div class="header-tools">
-            <button type="button" class="lang-active">TH</button>
+
+            <button
+                type="button"
+                class="lang-active"
+            >
+                TH
+            </button>
+
             <span>/</span>
-            <button type="button">EN</button>
-            <span class="search-icon" aria-label="ค้นหา">⌕</span>
+
+            <button type="button">
+                EN
+            </button>
+
+            <span
+                class="search-icon"
+                aria-label="ค้นหา"
+            >
+                ⌕
+            </span>
+
         </div>
+
     </header>
 
-    <!-- Hero -->
+
+    <!-- =========================
+         HERO
+    ========================== -->
     <section class="hero">
+
         <div class="hero-overlay">
+
             <div class="container hero-content">
-                <h1>แผนการเรียนและวิชาบังคับ</h1>
-                <p>เลือกหลักสูตรและปี เพื่อดูรายวิชาแยกตามชั้นปีและภาคการศึกษา</p>
+
+                <h1>
+                    แผนการเรียนและวิชาบังคับ
+                </h1>
+
+                <p>
+                    เลือกแผนการเรียนและปีหลักสูตร
+                    เพื่อดูรายวิชาแยกตามชั้นปีและภาคการศึกษา
+                </p>
+
             </div>
+
         </div>
+
     </section>
 
+
+    <!-- =========================
+         MAIN
+    ========================== -->
     <main class="container page-content">
 
-        <!-- Selectors -->
+
+        <!-- =========================
+             SELECTORS
+        ========================== -->
         <section class="selector-card">
+
+
+            <!-- Study Plan -->
             <div class="selector-group">
-            <div class="selector-icon">
-            <img
-                src="../src/assets/images/study-plan.png"
-                alt="แผนการเรียน"
-            >
-        </div>
-                <div class="selector-field">
-                    <label for="studyPlanSelect">แผนการเรียน</label>
-                    <select id="studyPlanSelect">
-                        <option value="PLAN-APPLIED-2566">วิชาเอกคอมพิวเตอร์ประยุกต์ — แผนสหกิจศึกษา</option>
-                        <option value="PLAN-APPLIED-2566-GENERAL">วิชาเอกคอมพิวเตอร์ประยุกต์ — แผนปกติ</option>
-                    </select>
+
+                <div class="selector-icon">
+                    <img
+                        src="../src/assets/images/study-plan.png"
+                        alt="แผนการเรียน"
+                    >
                 </div>
+
+                <div class="selector-field">
+
+                    <label for="studyPlanSelect">
+                        แผนการเรียน
+                    </label>
+
+                    <!--
+                        ไม่ hard-code แผนการเรียนแล้ว
+                        JavaScript จะดึงจาก
+                        ?resource=study_plans
+                    -->
+                    <select
+                        id="studyPlanSelect"
+                        disabled
+                    >
+                        <option value="">
+                            กำลังโหลดแผนการเรียน...
+                        </option>
+                    </select>
+
+                </div>
+
             </div>
+
 
             <div class="selector-divider"></div>
 
+
+            <!-- Curriculum Year -->
             <div class="selector-group">
-               <div class="selector-icon">
-            <img
-                src="../src/assets/images/time2.png"
-                alt="ปีหลักสูตร"
-            >
-        </div>
+
+                <div class="selector-icon">
+
+                    <img
+                        src="../src/assets/images/time2.png"
+                        alt="ปีหลักสูตร"
+                    >
+
+                </div>
+
                 <div class="selector-field small">
-                    <label for="curriculumSelect">หลักสูตร</label>
-                    <select id="curriculumSelect">
-                        <option value="2566">2566</option>
-                        <option value="2565">2565</option>
+
+                    <label for="curriculumSelect">
+                        ปีหลักสูตร
+                    </label>
+
+                    <!--
+                        ไม่ hard-code 2566 / 2568
+                        JavaScript จะอ่านปีจาก
+                        curriculum_id
+                    -->
+                    <select
+                        id="curriculumSelect"
+                        disabled
+                    >
+                        <option value="">
+                            กำลังโหลด...
+                        </option>
                     </select>
+
                 </div>
+
             </div>
+
         </section>
 
-        <!-- Page title -->
+
+        <!-- =========================
+             PLAN HEADING
+        ========================== -->
         <section class="plan-heading">
-            <h2 id="planTitle">วิชาเอกคอมพิวเตอร์ประยุกต์ — แผนสหกิจศึกษา</h2>
-            <p id="curriculumText">ปีหลักสูตร 2566</p>
+
+            <h2 id="planTitle">
+                กำลังโหลดแผนการเรียน...
+            </h2>
+
+            <p id="curriculumText"></p>
+
+            <!-- notes จาก study_plan -->
+            <p
+                id="planNotes"
+                class="plan-note"
+            ></p>
+
         </section>
 
-        <!-- Summary -->
+
+        <!-- =========================
+             SUMMARY
+        ========================== -->
         <section class="summary-bar">
+
+
+            <!-- Course / Requirement count -->
             <div class="summary-item">
-    <img
-        src="../src/assets/images/education.png"
-        alt="รายวิชา"
-        class="summary-icon"
-    >
-    <div>
-                    <strong>รายวิชา/ข้อกำหนด</strong>
-                    <small id="summaryCourses">XX วิชา</small>
-                </div>
-            </div>
 
+                <img
+                    src="../src/assets/images/education.png"
+                    alt="รายวิชา"
+                    class="summary-icon"
+                >
 
-           <div class="summary-item">
-            <img
-             src="../src/assets/images/calendar.png"
-                alt="จำนวนปี"
-                class="summary-icon">
-            <div>
-                    <strong>จำนวนปี</strong>
-                    <small>4 ปี</small>
-                </div>
-            </div>
-
-            <div class="summary-item">
-            <img
-             src="../src/assets/images/calendar.png"
-                alt="จำนวนภาคการศึกษา"
-                class="summary-icon">
-            <div>
-                    <strong>จำนวนภาคการศึกษา</strong>
-                    <small>XX ภาคการศึกษา</small>
-                </div>
-            </div>
-
-            <div class="summary-item">
-            <img
-             src="../src/assets/images/transcript.png"
-                alt="จำนวนหน่วยกิต"
-                class="summary-icon">
-            <div>
-                    <strong>จำนวนหน่วยกิตทั้งหมด</strong>
-                    <small id="summaryCredits">XX หน่วยกิต</small>
-                </div>
-            </div>
-        </section>
-
-        <!-- Study years -->
-        <section id="studyPlanContainer"></section>
-
-        <!-- Elective courses -->
-        <section class="plan-section elective-section">
-            <div class="section-header-row">
                 <div>
-                    <h2>รายวิชาเลือกที่อยู่ในหลักสูตร</h2>
-                    <p>รวบรวมรายวิชาเลือกที่นักศึกษาสามารถกดดูรายละเอียดได้</p>
+
+                    <strong>
+                        รายวิชา/ข้อกำหนด
+                    </strong>
+
+                    <small id="totalCourses">
+                        -
+                    </small>
+
                 </div>
-                <span class="course-count">54 รายวิชา</span>
+
             </div>
 
-            <div class="elective-group">
-                <h3>วิชาโทการออกแบบและพัฒนาผลิตภัณฑ์ดิจิทัล</h3>
-                <div class="course-list">
-                    <article class="course-row">
-                        <div class="course-code">CS XXX</div>
-                        <div class="course-name">
-                            <strong>ชื่อวิชาภาษาไทย</strong>
-                            <span>Course Title in English</span>
-                        </div>
-                        <div class="course-meta">
-                            <strong>XX หน่วยกิต</strong>
-                            <span>รายวิชา</span>
-                            <button type="button" class="detail-btn" data-course="CS XXX">ดูรายละเอียด →</button>
-                        </div>
-                    </article>
 
-                    <article class="course-row">
-                        <div class="course-code">CS XXX</div>
-                        <div class="course-name">
-                            <strong>ชื่อวิชาภาษาไทย</strong>
-                            <span>Course Title in English</span>
-                        </div>
-                        <div class="course-meta">
-                            <strong>XX หน่วยกิต</strong>
-                            <span>รายวิชา</span>
-                            <button type="button" class="detail-btn" data-course="CS XXX">ดูรายละเอียด →</button>
-                        </div>
-                    </article>
+            <!-- Years -->
+            <div class="summary-item">
+
+                <img
+                    src="../src/assets/images/calendar.png"
+                    alt="จำนวนปี"
+                    class="summary-icon"
+                >
+
+                <div>
+
+                    <strong>
+                        จำนวนปี
+                    </strong>
+
+                    <small id="totalYears">
+                        -
+                    </small>
+
                 </div>
+
             </div>
 
-            <div class="elective-group">
-                <h3>วิชาโทเว็ป</h3>
-                <div class="course-list">
-                    <article class="course-row">
-                        <div class="course-code">CS XXX</div>
-                        <div class="course-name">
-                            <strong>ชื่อวิชาภาษาไทย</strong>
-                            <span>Course Title in English</span>
-                        </div>
-                        <div class="course-meta">
-                            <strong>XX หน่วยกิต</strong>
-                            <span>รายวิชา</span>
-                            <button type="button" class="detail-btn" data-course="CS XXX">ดูรายละเอียด →</button>
-                        </div>
-                    </article>
 
-                    <article class="course-row">
-                        <div class="course-code">CS XXX</div>
-                        <div class="course-name">
-                            <strong>ชื่อวิชาภาษาไทย</strong>
-                            <span>Course Title in English</span>
-                        </div>
-                        <div class="course-meta">
-                            <strong>XX หน่วยกิต</strong>
-                            <span>รายวิชา</span>
-                            <button type="button" class="detail-btn" data-course="CS XXX">ดูรายละเอียด →</button>
-                        </div>
-                    </article>
+            <!-- Semesters -->
+            <div class="summary-item">
+
+                <img
+                    src="../src/assets/images/calendar.png"
+                    alt="จำนวนภาคการศึกษา"
+                    class="summary-icon"
+                >
+
+                <div>
+
+                    <strong>
+                        จำนวนภาคการศึกษา
+                    </strong>
+
+                    <small id="totalSemesters">
+                        -
+                    </small>
+
                 </div>
+
             </div>
+
+
+            <!-- Credits -->
+            <div class="summary-item">
+
+                <img
+                    src="../src/assets/images/transcript.png"
+                    alt="จำนวนหน่วยกิต"
+                    class="summary-icon"
+                >
+
+                <div>
+
+                    <strong>
+                        จำนวนหน่วยกิตทั้งหมด
+                    </strong>
+
+                    <small id="totalCredits">
+                        -
+                    </small>
+
+                </div>
+
+            </div>
+
         </section>
+
+
+        <!-- =========================
+             STUDY PLAN
+        ========================== -->
+
+        <!--
+            JavaScript จะ render:
+
+            ปี 1
+              เทอม 1
+              เทอม 2
+
+            ปี 2
+              ...
+
+            จาก detail.terms
+        -->
+        <section
+            id="studyPlanContainer"
+            aria-live="polite"
+        >
+
+            <div class="loading-message">
+                กำลังโหลดข้อมูลแผนการเรียน...
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             ELECTIVE COURSES
+        ========================== -->
+        <section
+            class="plan-section elective-section"
+            id="electiveSection"
+        >
+
+            <div class="section-header-row">
+
+                <div>
+
+                    <h2>
+                        รายวิชาเลือกที่อยู่ในหลักสูตร
+                    </h2>
+
+                    <p>
+                        รายวิชาเลือกที่สามารถเลือกเรียนได้ตามหลักสูตร
+                    </p>
+
+                </div>
+
+                <span
+                    class="course-count"
+                    id="electiveCourseCount"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <!--
+                ไม่มี CS XXX แบบ hard-code แล้ว
+
+                ภายหลังสามารถดึงจาก:
+                ?resource=courses&curriculum_id=...
+            -->
+            <div id="electiveCoursesContainer">
+
+                <p class="loading-message">
+                    กำลังโหลดรายวิชาเลือก...
+                </p>
+
+            </div>
+
+        </section>
+
+
     </main>
 
-    <!-- Course detail modal -->
-    <div id="courseModal" class="modal" aria-hidden="true">
-    <div class="modal-backdrop" data-close-modal></div>
 
-    <div class="modal-card" role="dialog" aria-modal="true">
+    <!-- =========================
+         COURSE DETAIL MODAL
+    ========================== -->
+    <div
+        id="courseModal"
+        class="modal"
+        aria-hidden="true"
+    >
 
-        <!-- ปุ่มปิด -->
-        <button
-            class="modal-close"
-            type="button"
+        <div
+            class="modal-backdrop"
             data-close-modal
-            aria-label="ปิด"
+        ></div>
+
+
+        <div
+            class="modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modalTitle"
         >
-            ×
-        </button>
 
-        <!-- หัวข้อวิชา -->
-        <div class="modal-course-header">
-            <div>
-                <h2 id="modalTitle">CS XXX</h2>
-                <p id="modalCourseName">ชื่อวิชาภาษาไทย</p>
+
+            <!-- Close -->
+            <button
+                class="modal-close"
+                type="button"
+                data-close-modal
+                aria-label="ปิด"
+            >
+                ×
+            </button>
+
+
+            <!-- Course header -->
+            <div class="modal-course-header">
+
+                <div>
+
+                    <h2 id="modalTitle">
+                        -
+                    </h2>
+
+                    <p id="modalCourseName">
+                        -
+                    </p>
+
+                    <p
+                        id="modalCourseNameEn"
+                        class="modal-course-name-en"
+                    ></p>
+
+                </div>
+
             </div>
+
+
+            <!-- =========================
+                 BASIC INFO
+            ========================== -->
+            <section class="modal-section">
+
+                <h3 class="modal-section-title">
+                    ข้อมูลรายวิชา
+                </h3>
+
+
+                <div class="course-info-grid">
+
+
+                    <div class="course-info-box">
+
+                        <span>
+                            หน่วยกิต
+                        </span>
+
+                        <strong id="modalCredits">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="course-info-box">
+
+                        <span>
+                            ประเภทวิชา
+                        </span>
+
+                        <strong id="modalCourseType">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="course-info-box">
+
+                        <span>
+                            กลุ่มรายวิชา
+                        </span>
+
+                        <strong id="modalCourseGroup">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="course-info-box">
+
+                        <span>
+                            ประเภทย่อย
+                        </span>
+
+                        <strong id="modalCourseSubType">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="course-info-box">
+
+                        <span>
+                            ลักษณะในหลักสูตร
+                        </span>
+
+                        <strong id="modalCurriculumType">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="course-info-box">
+
+                        <span>
+                            วิชาบังคับก่อน
+                        </span>
+
+                        <strong id="modalPrerequisite">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 DESCRIPTION
+            ========================== -->
+            <section class="modal-section">
+
+                <h3 class="modal-section-title">
+                    คำอธิบายรายวิชา
+                </h3>
+
+                <p
+                    id="modalDescription"
+                    class="course-description"
+                >
+                    -
+                </p>
+
+            </section>
+
+
+            <!-- =========================
+                 PLO
+            ========================== -->
+            <section class="modal-section">
+
+                <h3 class="modal-section-title">
+                    Course-PLO Mapping
+                </h3>
+
+                <!--
+                    JS จะสร้าง <li>
+                    จาก API จริง
+                -->
+                <ul
+                    id="modalPloMapping"
+                    class="plo-list"
+                ></ul>
+
+            </section>
+
+
+            <!-- =========================
+                 NEXT COURSES
+            ========================== -->
+            <section class="modal-section">
+
+                <h3 class="modal-section-title">
+                    รายวิชาที่ต่อยอดจากวิชานี้
+                </h3>
+
+                <!-- ไม่มี CS XXX mock แล้ว -->
+                <ul
+                    id="modalNextCourses"
+                    class="next-course-list"
+                ></ul>
+
+            </section>
+
+
         </div>
-
-        <!-- วิชาบังคับ -->
-        <section class="modal-section">
-            <h3 class="modal-section-title">วิชาบังคับ</h3>
-
-            <div class="course-info-grid">
-
-                <div class="course-info-box">
-                    <span>หน่วยกิต</span>
-                    <strong id="modalCredits">XX หน่วยกิต</strong>
-                </div>
-
-                <div class="course-info-box">
-                    <span>ประเภทวิชา</span>
-                    <strong id="modalCourseType">XXX</strong>
-                </div>
-
-                <div class="course-info-box">
-                    <span>กลุ่มรายวิชา</span>
-                    <strong id="modalCourseGroup">XXX</strong>
-                </div>
-
-                <div class="course-info-box">
-                    <span>ประเภทย่อย</span>
-                    <strong id="modalCourseSubType">XXX</strong>
-                </div>
-
-                <div class="course-info-box">
-                    <span>ลักษณะในหลักสูตร</span>
-                    <strong id="modalCurriculumType">XXX</strong>
-                </div>
-
-                <div class="course-info-box">
-                    <span>วิชาบังคับก่อน</span>
-                    <strong id="modalPrerequisite">XXX</strong>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- คำอธิบายรายวิชา -->
-        <section class="modal-section">
-            <h3 class="modal-section-title">
-                คำอธิบายรายวิชา
-            </h3>
-
-            <p id="modalDescription" class="course-description">
-                รายละเอียดคำอธิบายรายวิชาจะแสดงตรงนี้
-            </p>
-        </section>
-
-        <!-- Course-PLO Mapping -->
-        <section class="modal-section">
-            <h3 class="modal-section-title">
-                Course-PLO Mapping
-            </h3>
-
-            <ul id="modalPloMapping" class="plo-list">
-                <li>
-                    <strong>K1</strong>
-                    <span>สามารถประยุกต์หลักการและทฤษฎีพื้นฐานที่สำคัญในศาสตร์ด้านวิทยาการคอมพิวเตอร์</span>
-                </li>
-
-                <li>
-                    <strong>E1</strong>
-                    <span>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span>
-                </li>
-            </ul>
-        </section>
-
-        <!-- รายวิชาที่ต่อยอด -->
-        <section class="modal-section">
-            <h3 class="modal-section-title">
-                รายวิชาที่ต่อยอดจากวิชานี้
-            </h3>
-
-            <ul id="modalNextCourses" class="next-course-list">
-                <li>
-                    <strong>CS XXX ชื่อวิชาภาษาไทย</strong>
-                    <span>ใช้รายวิชานี้เป็นวิชาที่ต้องเคยศึกษา</span>
-                </li>
-
-                <li>
-                    <strong>CS XXX ชื่อวิชาภาษาไทย</strong>
-                    <span>ใช้รายวิชานี้เป็นวิชาที่ต้องเคยศึกษา</span>
-                </li>
-            </ul>
-        </section>
 
     </div>
-</div>
 
-    <!-- Footer -->
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
     <footer class="site-footer">
+
         <div class="container footer-grid">
+
+
             <div class="footer-brand">
-                <img src="../src/assets/images/cstu_logo.png" alt="Computer Science">
-                <p>สาขาวิชาวิทยาการคอมพิวเตอร์<br>คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยธรรมศาสตร์</p>
+
+                <img
+                    src="../src/assets/images/cstu_logo.png"
+                    alt="Computer Science"
+                >
+
+                <p>
+                    สาขาวิชาวิทยาการคอมพิวเตอร์
+                    <br>
+                    คณะวิทยาศาสตร์และเทคโนโลยี
+                    มหาวิทยาลัยธรรมศาสตร์
+                </p>
+
             </div>
 
-            <div>
-                <h3>เกี่ยวกับรายวิชา</h3>
-                <a href="#">หลักสูตร</a>
-                <a href="#">คณาจารย์</a>
-                <a href="#">บุคลากร</a>
-                <a href="#">ติดต่อสาขาวิชา</a>
-            </div>
 
             <div>
-                <h3>หลักสูตร</h3>
-                <a href="#">ปริญญาตรี</a>
-                <a href="#">ปริญญาโท</a>
-                <a href="#">ปริญญาเอก</a>
-                <a href="#">แผนการศึกษา</a>
+
+                <h3>
+                    เกี่ยวกับรายวิชา
+                </h3>
+
+                <a href="#">
+                    หลักสูตร
+                </a>
+
+                <a href="#">
+                    คณาจารย์
+                </a>
+
+                <a href="#">
+                    บุคลากร
+                </a>
+
+                <a href="#">
+                    ติดต่อสาขาวิชา
+                </a>
+
             </div>
 
+
             <div>
-                <h3>ติดต่อ</h3>
-                <p>☎ 02-986-9157</p>
-                <p>◎ https://cs.sci.tu.ac.th</p>
-                <p>f ศูนย์วิทยาศาสตร์และเทคโนโลยี</p>
+
+                <h3>
+                    หลักสูตร
+                </h3>
+
+                <a href="#">
+                    ปริญญาตรี
+                </a>
+
+                <a href="#">
+                    ปริญญาโท
+                </a>
+
+                <a href="#">
+                    ปริญญาเอก
+                </a>
+
+                <a href="#">
+                    แผนการศึกษา
+                </a>
+
             </div>
+
+
+            <div>
+
+                <h3>
+                    ติดต่อ
+                </h3>
+
+                <p>
+                    ☎ 02-986-9157
+                </p>
+
+                <p>
+                    ◎ https://cs.sci.tu.ac.th
+                </p>
+
+                <p>
+                    f ศูนย์วิทยาศาสตร์และเทคโนโลยี
+                </p>
+
+            </div>
+
+
         </div>
-        <div class="footer-bottom">Copyright © 2026 Faculty of Science and Technology - Thammasat University</div>
+
+
+        <div class="footer-bottom">
+
+            Copyright © 2026
+            Faculty of Science and Technology -
+            Thammasat University
+
+        </div>
+
     </footer>
 
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
     <script src="../src/js/study-plan.js"></script>
+
 </body>
 </html>
