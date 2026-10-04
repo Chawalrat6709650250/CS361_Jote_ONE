@@ -3,6 +3,7 @@
   if (!mount) return;
 
   const root = document.body.dataset.root || "./";
+  const page = document.body.dataset.page || "programs";
 
   mount.innerHTML = `
     <header class="site-header">
@@ -11,7 +12,8 @@
       </a>
       <nav class="main-nav">
         <a href="#">เกี่ยวกับ CSTU</a>
-        <a href="${root}index.html" class="active">หลักสูตร</a>
+        <a href="${root}index.html" class="${page === "programs" ? "active" : ""}">หลักสูตร</a>
+        <a href="${root}pages/graduation-requirements.html" class="${page === "graduation" ? "active" : ""}">เงื่อนไขการสำเร็จการศึกษา</a>
         <a href="#">ผลงานและนวัตกรรม</a>
         <a href="#">ติดต่อ</a>
       </nav>
