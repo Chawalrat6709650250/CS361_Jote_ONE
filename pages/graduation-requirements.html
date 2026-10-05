@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>เงื่อนไขการสำเร็จการศึกษา | CSTU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/graduation-requirements.css" />
+  </head>
+  <body data-root="../" data-page="graduation">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="requirements-hero" aria-labelledby="page-title">
+        <div class="requirements-hero__content">
+          <h1 id="page-title">เงื่อนไขการสำเร็จการศึกษา</h1>
+          <p>
+            ตรวจสอบโครงสร้างหลักสูตรและหน่วยกิตขั้นต่ำของแต่ละสาขา/ปีหลักสูตร
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="requirements-search"
+        aria-label="ค้นหาเงื่อนไขการสำเร็จการศึกษา"
+      >
+        <form id="requirements-form" class="requirements-search__form">
+          <label class="field-group">
+            <span class="field-group__icon" aria-hidden="true"
+              ><i class="fa-solid fa-graduation-cap"></i
+            ></span>
+            <span class="field-group__body"
+              ><span>ประเภทหลักสูตร</span>
+              <select id="program-type" name="program-type">
+                <option value="regular">ภาคปกติ</option>
+                <option value="special">ภาคพิเศษ</option>
+              </select>
+            </span>
+          </label>
+          <label class="field-group">
+            <span class="field-group__icon" aria-hidden="true"
+              ><i class="fa-solid fa-book-open"></i
+            ></span>
+            <span class="field-group__body"
+              ><span>สาขาวิชา</span>
+              <select id="program-select" name="program">
+                <option value="BSC-CS-2566-CIS-PROJECT">
+                  วิทยาการคอมพิวเตอร์
+                </option>
+                <option value="BSC-CS-2566-ACS-PROJECT">
+                  วิทยาการคอมพิวเตอร์ประยุกต์
+                </option>
+                <option value="BSC-CNC-2568-PROJECT">
+                  วิทยาการคอมพิวเตอร์เครือข่ายและความปลอดภัย
+                </option>
+              </select>
+            </span>
+          </label>
+          <label class="field-group">
+            <span class="field-group__icon" aria-hidden="true"
+              ><i class="fa-solid fa-calendar-days"></i
+            ></span>
+            <span class="field-group__body"
+              ><span>ปีหลักสูตร</span>
+              <select id="year-select" name="year">
+                <option value="2566">2566</option>
+                <option value="2568">2568</option>
+              </select>
+            </span>
+          </label>
+          <button class="search-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-4-4" /></svg
+            >ค้นหา
+          </button>
+        </form>
+      </section>
+
+      <section class="requirements-panel" aria-live="polite">
+        <p id="requirements-status" class="requirements-status">
+          กำลังแสดงข้อมูลตัวอย่าง กรุณาเลือกข้อมูลแล้วกดค้นหา
+        </p>
+        <div id="requirements-result">
+          <h2>โครงสร้างหลักสูตรและเงื่อนไขการสำเร็จการศึกษา</h2>
+          <p id="selected-program" class="selected-program">
+            ภาคปกติ | วิทยาการคอมพิวเตอร์ | หลักสูตรปี 2569
+          </p>
+
+          <div id="summary-cards" class="summary-cards"></div>
+          <h3>รายละเอียดเงื่อนไขในแต่ละหมวด</h3>
+          <div id="requirement-accordions" class="requirement-accordions"></div>
+          <section
+            class="graduation-criteria"
+            aria-labelledby="graduation-criteria-title"
+          >
+            <h3 id="graduation-criteria-title">เกณฑ์การสำเร็จการศึกษา</h3>
+            <ul id="graduation-criteria-list"></ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+    <script src="../src/js/header.js"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/graduation-requirements.js"></script>
+  </body>
+</html>
