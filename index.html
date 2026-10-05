@@ -151,6 +151,32 @@
     </div>
   </section>
 
+  <section id="system-status" class="system-status" aria-label="สถานะระบบและหลักสูตรที่รองรับ">
+    <div class="system-status__inner">
+      <div class="system-status__curriculums">
+        <span class="system-status__label">ข้อมูลหลักสูตรที่รองรับ:</span>
+        <div class="system-status__badges" data-status-curriculums aria-live="polite">
+          <span class="system-status__skeleton"></span>
+          <span class="system-status__skeleton"></span>
+        </div>
+      </div>
+
+      <div class="system-status__health">
+        <span>
+          สถานะระบบ:
+          <span class="system-status__state" data-status-state aria-live="polite">กำลังตรวจสอบ…</span>
+        </span>
+        <span class="system-status__divider" aria-hidden="true"></span>
+        <span>
+          อัปเดตล่าสุด:
+          <time class="system-status__time" data-status-updated>—</time>
+        </span>
+      </div>
+    </div>
+    <p class="system-status__error" data-status-error hidden></p>
+  </section>
+  <script src="src/js/system-status.js"></script>
+
   <div id="site-footer"></div>
   <script src="src/js/footer.js"></script>  
   <script src="src/js/main.js"></script>

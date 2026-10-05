@@ -472,6 +472,116 @@ body {
 
 
 
+/* ================= SYSTEM STATUS ================= */
+.system-status {
+  background-color: #fafafa;
+  border-top: 1px solid #e5e5e5;
+  padding: 20px 40px;
+  font-size: 14px;
+  color: #555;
+}
+
+.system-status__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.system-status__curriculums {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.system-status__label {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.system-status__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.system-status__badge {
+  padding: 2px 10px;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  background-color: var(--white);
+  font-family: ui-monospace, "Consolas", monospace;
+  font-size: 12px;
+  color: var(--text-dark);
+}
+
+.system-status__skeleton {
+  display: inline-block;
+  width: 96px;
+  height: 22px;
+  border-radius: 999px;
+  background-color: #e8e8e8;
+  animation: system-status-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes system-status-pulse {
+  50% { opacity: 0.45; }
+}
+
+.system-status__muted {
+  font-size: 12px;
+  color: #999;
+}
+
+.system-status__health {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  font-size: 13px;
+}
+
+.system-status__divider {
+  width: 1px;
+  height: 14px;
+  background-color: #ccc;
+}
+
+.system-status__state,
+.system-status__time {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.system-status__state--online {
+  color: #1e8e4e;
+}
+
+.system-status__state--offline {
+  color: var(--red-accent);
+}
+
+.system-status__error {
+  max-width: 1200px;
+  margin: 10px auto 0;
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .system-status {
+    padding: 16px 20px;
+  }
+  .system-status__divider {
+    display: none;
+  }
+}
+
 /* ================= RESPONSIVE ================= */
   @media (max-width: 900px) {
     .site-header {
