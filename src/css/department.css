@@ -297,10 +297,13 @@ main > section.intro-banner .intro-banner-content p {
 
 .download-section {
     max-width: 1200px;
-
     margin: 35px auto 45px;
-
     padding: 0 40px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
 
     text-align: center;
 }
@@ -637,9 +640,12 @@ section + section {
     }
 
     .download-section {
-        margin: 30px auto 35px;
-        padding: 0 20px;
-    }
+    margin: 30px auto 35px;
+    padding: 0 20px;
+
+    flex-direction: column;
+    gap: 12px;
+}
 
     .download-btn {
         width: 100%;
@@ -769,4 +775,33 @@ section + section {
     color: #D99A00;
 
     text-decoration: underline;
+}
+
+.page-hero { position: relative; }
+
+.hero-search-btn {
+    position: absolute;
+    top: 18px;
+    right: 40px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1.5px solid #ffffff;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.hero-search-btn:hover,
+.hero-search-btn:focus-visible {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 900px) {
+    .hero-search-btn { top: 12px; right: 16px; }
 }
