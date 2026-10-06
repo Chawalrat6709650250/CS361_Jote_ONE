@@ -17,7 +17,7 @@
         <a href="${root}index.html" data-nav="home" class="${page === "home" ? "active" : ""}">เกี่ยวกับ CSTU</a>
         <a href="${root}index.html#programs" data-nav="programs" class="${page === "programs" ? "active" : ""}">หลักสูตร</a>
         <a href="${root}pages/graduation-requirements.html" class="${page === "graduation" ? "active" : ""}">เงื่อนไขการสำเร็จการศึกษา</a>
-        <a href="#">ผลงานและนวัตกรรม</a>
+        <a href="${root}pages/course-search.html" class="${page === "course-search" ? "active" : ""}">ค้นหารายวิชา</a>
         <a href="#">ติดต่อ</a>
       </nav>
       <div class="header-right">
