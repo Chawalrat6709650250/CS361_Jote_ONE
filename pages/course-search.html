@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ค้นหารายวิชา - CSTU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../src/css/style.css" rel="stylesheet">
+  <link href="../src/css/course-search.css" rel="stylesheet">
+</head>
+<body data-root="../" data-page="course-search">
+  <div id="site-header"></div>
+
+  <header class="cs-hero">
+    <h1>ค้นหารายวิชา</h1>
+    <form class="cs-search" id="searchForm" role="search">
+      <input id="q" type="search" placeholder="กรอกรหัสวิชา หรือ ชื่อวิชา" aria-label="ค้นหารายวิชา" autocomplete="off">
+      <button type="submit" aria-label="ค้นหา">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#222" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </form>
+  </header>
+
+  <main class="cs-wrap">
+    <section class="cs-filter" aria-label="ตัวกรอง">
+      <div class="cs-dd">
+        <div class="cs-dd-item">
+          <span class="cs-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></span>
+          <div><label for="yr">ชั้นปีการศึกษา</label>
+            <select id="yr"><option value="">ทุกชั้นปี</option><option value="1">ปี 1</option><option value="2">ปี 2</option><option value="3">ปี 3</option><option value="4">ปี 4</option></select></div>
+        </div>
+        <div class="cs-dd-item">
+          <span class="cs-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg></span>
+          <div><label for="plan">แผนการเรียน</label>
+            <select id="plan"><option value="">ทั้งหมด</option></select></div>
+        </div>
+        <div class="cs-dd-item">
+          <span class="cs-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="9.5" r="2.2"/><circle cx="18.5" cy="9.5" r="2.2"/><path d="M12 12.5c-3 0-5 1.6-5 3.8V18h10v-1.7c0-2.2-2-3.8-5-3.8z"/></svg></span>
+          <div><label for="cr">หน่วยกิต</label>
+            <select id="cr"><option value="">ทุกหน่วยกิต</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+        </div>
+      </div>
+      <div class="cs-types"><b>ประเภทวิชา</b><div class="cs-chips" id="chips"></div></div>
+    </section>
+
+    <div class="cs-bar">
+      <h2 id="count" class="cs-count">พบ - รายวิชา</h2>
+      <select id="sort" aria-label="เรียงลำดับ"><option value="code">เรียงตามรหัสวิชา</option><option value="name">เรียงตามชื่อวิชา</option><option value="cr">เรียงตามหน่วยกิต</option></select>
+    </div>
+    <div class="cs-active" id="active"></div>
+    <div id="err" class="cs-err" hidden></div>
+    <section id="results" class="cs-results" aria-live="polite"></section>
+  </main>
+
+  <dialog id="dlg" class="cs-dlg" aria-labelledby="dlgTitle"></dialog>
+  <div id="site-footer"></div>
+
+  <script src="../src/js/header.js"></script>
+  <script src="../src/js/footer.js"></script>
+  <script src="../src/js/course-search.js"></script>
+</body>
+</html>
