@@ -78,11 +78,38 @@
     return !p || !p.exp || p.exp * 1000 <= Date.now() + skewSec * 1000;
   };
 
+  // ---------- EnsureUser: เช็ครหัสกับ TU + สร้าง user ใน Cognito ให้ถ้ายังไม่มี ----------
+  // ต้องเรียก "ก่อน" InitiateAuth เสมอ (เพื่อให้คนที่ยังไม่เคยล็อกอินมี user ใน pool ก่อน)
+  async function ensureUser(username, password) {
+    if (!C.ensureUserUrl) {
+      console.warn("[auth] ยังไม่ได้ตั้ง ensureUserUrl ใน config.js -- ข้ามขั้นสร้าง user");
+      return;
+    }
+    let res;
+    try {
+      res = await fetch(C.ensureUserUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+    } catch {
+      throw new Error("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ต หรือแจ้งผู้ดูแล (อาจติด CORS)");
+    }
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401) throw new Error("รหัสผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+    if (res.status === 400) throw new Error("กรุณากรอกรหัสผู้ใช้และรหัสผ่านให้ครบ");
+    if (!res.ok || data.success === false) {
+      console.error("[auth] EnsureUser failed:", res.status, data);
+      throw new Error("ระบบตรวจสอบบัญชี TU ขัดข้อง กรุณาลองใหม่ภายหลัง");
+    }
+  }
+
   // ---------- Login ----------
   async function login(username, password) {
     username = String(username || "").trim();
     if (!username || !password) throw new Error("กรุณากรอกรหัสผู้ใช้และรหัสผ่านให้ครบ");
     try {
+      await ensureUser(username, password);
       const init = await cognito("InitiateAuth", {
         AuthFlow: "CUSTOM_AUTH",
         ClientId: C.clientId,
@@ -112,6 +139,7 @@
       });
       return getUser();
     } catch (err) {
+      console.error("[auth] login failed:", err.code, "|", err.message);
       throw new Error(err.code || err.name === "TypeError" ? friendlyError(err) : err.message);
     }
   }

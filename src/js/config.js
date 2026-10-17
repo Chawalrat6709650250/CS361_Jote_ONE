@@ -14,4 +14,8 @@ window.APP_CONFIG = {
   tokenType: "idToken", // หรือ "accessToken"
 
   loginPage: "pages/login.html",
+
+  // URL ของ Lambda EnsureUser (POST, body: {username, password}) -- ขอจากเพื่อนคนที่ 4
+  // ตัวอย่าง: "https://uuo1em3vlb.execute-api.us-east-1.amazonaws.com/prod/ensure-user"
+  ensureUserUrl: "https://uuo1em3vlb.execute-api.us-east-1.amazonaws.com/prod/auth/ensure-user",
 };
