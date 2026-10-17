@@ -1,31 +1,59 @@
-(function () {
-  const form = document.getElementById("loginForm");
-  const errEl = document.getElementById("loginError");
-  const btn = document.getElementById("loginBtn");
+(() => {
+  const sessionKey = "cstu.loginUi.user";
+  const form = document.getElementById("login-form");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+  const passwordToggle = document.getElementById("password-toggle");
+  const submitButton = document.getElementById("login-submit");
+  const status = document.getElementById("login-status");
 
-  // กลับไปหน้าที่ผู้ใช้ตั้งใจจะเข้า (กัน open redirect: รับเฉพาะ path ในเว็บเรา)
-  function nextUrl() {
-    const n = new URLSearchParams(location.search).get("next");
-    return n && n.startsWith("/") && !n.startsWith("//") ? n : "../index.html";
+  function setFieldError(input, message) {
+    const group = input.closest(".login-form__group");
+    const error = group.querySelector(".login-form__error");
+    group.classList.toggle("is-invalid", Boolean(message));
+    error.textContent = message;
   }
 
-  if (Auth.isLoggedIn()) location.replace(nextUrl());
+  function validate() {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+    setFieldError(
+      usernameInput,
+      username ? "" : "กรุณากรอกชื่อผู้ใช้หรือรหัสประจำตัวนักศึกษา",
+    );
+    setFieldError(passwordInput, password ? "" : "กรุณากรอกรหัสผ่าน");
+    return Boolean(username && password);
+  }
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    errEl.hidden = true;
-    btn.disabled = true;
-    btn.textContent = "กำลังตรวจสอบ...";
-    try {
-      await Auth.login(form.username.value, form.password.value);
-      location.replace(nextUrl());
-    } catch (err) {
-      errEl.textContent = err.message;
-      errEl.hidden = false;
-      form.password.value = "";
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "เข้าสู่ระบบ";
-    }
+  passwordToggle.addEventListener("click", () => {
+    const isHidden = passwordInput.type === "password";
+    passwordInput.type = isHidden ? "text" : "password";
+    passwordToggle.setAttribute(
+      "aria-label",
+      isHidden ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน",
+    );
+  });
+
+  [usernameInput, passwordInput].forEach((input) => {
+    input.addEventListener("input", () => setFieldError(input, ""));
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    status.className = "login-form__status";
+    status.textContent = "";
+    if (!validate()) return;
+
+    // Demo only: Cognito integration in V3 will replace this simulated response.
+    submitButton.disabled = true;
+    submitButton.textContent = "กำลังเข้าสู่ระบบ...";
+    status.classList.add("is-loading");
+    status.textContent = "กำลังตรวจสอบข้อมูล...";
+
+    window.setTimeout(() => {
+      // Never store passwords. This temporary display name lets the Header show Login/Logout states.
+      sessionStorage.setItem(sessionKey, usernameInput.value.trim());
+      window.location.assign("../index.html");
+    }, 700);
   });
 })();
