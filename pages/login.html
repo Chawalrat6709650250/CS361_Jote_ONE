@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เข้าสู่ระบบ - CSTU</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../src/css/style.css">
+  <link rel="stylesheet" href="../src/css/login.css">
+</head>
+<body data-root="../" data-page="login">
+  <div id="site-header"></div>
+
+  <!-- หน้านี้เป็นแบบชั่วคราวไว้ทดสอบ auth: เพื่อนฝั่ง UI แก้หน้าตาได้เลย
+       แต่ให้คง id ของ form/input/error/button ไว้ (loginForm, username, password, loginError) -->
+  <main class="login">
+    <form id="loginForm" class="login__card" novalidate>
+      <h1>เข้าสู่ระบบ</h1>
+      <p class="login__hint">ใช้บัญชี TU เดียวกับระบบมหาวิทยาลัย</p>
+      <label for="username">รหัสผู้ใช้ (TU)</label>
+      <input id="username" name="username" autocomplete="username" required>
+      <label for="password">รหัสผ่าน</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <p id="loginError" class="login__error" role="alert" hidden></p>
+      <button id="loginBtn" type="submit">เข้าสู่ระบบ</button>
+    </form>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../src/js/config.js"></script>
+  <script src="../src/js/auth.js"></script>
+  <script src="../src/js/header.js"></script>
+  <script src="../src/js/footer.js"></script>
+  <script src="../src/js/login.js"></script>
+</body>
+</html>
