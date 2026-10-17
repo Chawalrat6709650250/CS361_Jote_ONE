@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>เปรียบเทียบหลักสูตร - CSTU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../src/css/style.css?v=20261016-login-header-12" rel="stylesheet">
+  <link href="../src/css/curriculum-compare.css" rel="stylesheet">
+</head>
+<body data-root="../" data-page="compare">
+  <div id="site-header"></div>
+
+  <header class="cc-hero">
+    <h1>เปรียบเทียบหลักสูตร</h1>
+    <p>เลือกแผนการเรียน 2 แผน เพื่อดูความแตกต่างของรายวิชา หน่วยกิต และเงื่อนไขการสำเร็จการศึกษา</p>
+  </header>
+
+  <main class="cc-wrap">
+    <section class="cc-pick" aria-label="เลือกหลักสูตรที่ต้องการเปรียบเทียบ">
+      <div class="cc-side cc-a">
+        <span class="cc-badge">A</span>
+        <label for="planA">หลักสูตร / แผนการเรียน A</label>
+        <select id="planA"><option value="">กำลังโหลด…</option></select>
+      </div>
+      <button class="cc-swap" id="swap" type="button" aria-label="สลับ A และ B" title="สลับ A และ B">⇄</button>
+      <div class="cc-side cc-b">
+        <span class="cc-badge">B</span>
+        <label for="planB">หลักสูตร / แผนการเรียน B</label>
+        <select id="planB"><option value="">กำลังโหลด…</option></select>
+      </div>
+      <button class="cc-go" id="go" type="button">เปรียบเทียบ</button>
+    </section>
+
+    <div id="err" class="cc-err" hidden></div>
+    <div id="empty" class="cc-empty">เลือกแผนการเรียน A และ B แล้วกด “เปรียบเทียบ”</div>
+
+    <div id="result" hidden>
+      <section class="cc-cards" id="cards" aria-label="สรุปเปรียบเทียบ"></section>
+
+      <div class="cc-tabs" role="tablist">
+        <button role="tab" id="tab-courses" aria-selected="true" data-tab="courses">รายวิชา</button>
+        <button role="tab" id="tab-grad" aria-selected="false" data-tab="grad">เงื่อนไขการสำเร็จการศึกษา</button>
+      </div>
+
+      <section id="pane-courses">
+        <div class="cc-tools">
+          <h2 id="count">พบ - รายวิชา</h2>
+          <input id="q" type="search" placeholder="ค้นหารหัสหรือชื่อวิชา" aria-label="ค้นหารายวิชาในตาราง">
+          <div class="cc-chips" id="chips" role="group" aria-label="กรองตามความแตกต่าง"></div>
+        </div>
+        <div class="cc-tablewrap">
+          <table class="cc-table">
+            <thead>
+              <tr><th rowspan="2">รหัส / ชื่อวิชา</th><th colspan="2" class="ha">A</th><th colspan="2" class="hb">B</th><th rowspan="2">สถานะ</th></tr>
+              <tr><th class="ha">ปี/ภาค</th><th class="ha">หน่วยกิต</th><th class="hb">ปี/ภาค</th><th class="hb">หน่วยกิต</th></tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pane-grad" hidden>
+        <div class="cc-tablewrap">
+          <table class="cc-table cc-grad">
+            <thead><tr><th>หมวดวิชา</th><th class="ha">A (หน่วยกิตขั้นต่ำ)</th><th class="hb">B (หน่วยกิตขั้นต่ำ)</th><th>ผลต่าง</th></tr></thead>
+            <tbody id="gradRows"></tbody>
+          </table>
+        </div>
+        <p class="cc-note" id="gradNote"></p>
+      </section>
+
+      <nav class="cc-links" aria-label="ไปยังหน้าที่เกี่ยวข้อง">
+        <a id="lnkSearch" href="course-search.html">ค้นหารายวิชา →</a>
+        <a id="lnkPlan" href="study-plan.html">ดูแผนการเรียนเต็ม →</a>
+        <a id="lnkGrad" href="graduation-requirements.html">เงื่อนไขการสำเร็จการศึกษา →</a>
+        <button type="button" id="copy" class="cc-copy">คัดลอกลิงก์เปรียบเทียบนี้</button>
+      </nav>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="../src/js/config.js"></script>
+  <script src="../src/js/auth.js"></script>
+  <script src="../src/js/header.js?v=20261016-login-header-11"></script>
+  <script src="../src/js/footer.js"></script>
+  <script src="../src/js/curriculum-compare.js"></script>
+</body>
+</html>
