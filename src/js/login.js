@@ -1,5 +1,4 @@
 (() => {
-  const sessionKey = "cstu.loginUi.user";
   const form = document.getElementById("login-form");
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
@@ -38,22 +37,35 @@
     input.addEventListener("input", () => setFieldError(input, ""));
   });
 
-  form.addEventListener("submit", (event) => {
+  // กลับไปหน้าที่ผู้ใช้ตั้งใจจะเข้า (รับเฉพาะ path ในเว็บเรา กัน open redirect)
+  function nextUrl() {
+    const n = new URLSearchParams(window.location.search).get("next");
+    return n && n.startsWith("/") && !n.startsWith("//") ? n : "../index.html";
+  }
+
+  if (window.Auth && Auth.isLoggedIn()) window.location.replace(nextUrl());
+
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     status.className = "login-form__status";
     status.textContent = "";
     if (!validate()) return;
 
-    // Demo only: Cognito integration in V3 will replace this simulated response.
     submitButton.disabled = true;
     submitButton.textContent = "กำลังเข้าสู่ระบบ...";
     status.classList.add("is-loading");
     status.textContent = "กำลังตรวจสอบข้อมูล...";
 
-    window.setTimeout(() => {
-      // Never store passwords. This temporary display name lets the Header show Login/Logout states.
-      sessionStorage.setItem(sessionKey, usernameInput.value.trim());
-      window.location.assign("../index.html");
-    }, 700);
+    try {
+      // ส่ง username/password ไปให้ Cognito -> Lambda -> TU API ตรวจจริง
+      await Auth.login(usernameInput.value, passwordInput.value);
+      window.location.replace(nextUrl());
+    } catch (err) {
+      status.className = "login-form__status is-error";
+      status.textContent = err.message;
+      passwordInput.value = "";
+      submitButton.disabled = false;
+      submitButton.textContent = "เข้าสู่ระบบ";
+    }
   });
 })();

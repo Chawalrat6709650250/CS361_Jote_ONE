@@ -4,7 +4,6 @@
 
   const root = document.body.dataset.root || "./";
   const page = document.body.dataset.page || "programs";
-  const sessionKey = "cstu.loginUi.user";
 
   const personIcon = `
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -97,14 +96,14 @@
     accountMenu.focus();
   }
 
-  function signOut() {
-    sessionStorage.removeItem(sessionKey);
+  async function signOut() {
+    if (window.Auth) await Auth.logout(); // ล้าง token + แจ้ง Cognito
     // Add a harmless query string so logging out from index.html always reloads its Header state.
     window.location.assign(`${root}index.html?logout=1`);
   }
 
-  // V3 demo state only. Cognito will replace sessionStorage when authentication is connected.
-  const username = sessionStorage.getItem(sessionKey);
+  // อ่านผู้ใช้จาก token จริงของ Cognito (ผ่าน auth.js)
+  const username = window.Auth && Auth.isLoggedIn() ? Auth.getUser()?.username : null;
   if (username) {
     const trimmedUsername = username.trim();
     loginLink.hidden = true;
