@@ -83,7 +83,7 @@
   async function ensureUser(username, password) {
     if (!C.ensureUserUrl) {
       console.warn("[auth] ยังไม่ได้ตั้ง ensureUserUrl ใน config.js -- ข้ามขั้นสร้าง user");
-      return;
+      return null;
     }
     let res;
     try {
@@ -107,6 +107,7 @@
       console.error("[auth] EnsureUser failed:", res.status, data);
       throw new Error("ระบบตรวจสอบบัญชี TU ขัดข้อง กรุณาลองใหม่ภายหลัง");
     }
+    return data; // อาจมี data.name (ชื่อจาก TU) ถ้า Lambda ส่งมา
   }
 
   // ---------- Login ----------
@@ -114,7 +115,7 @@
     username = String(username || "").trim();
     if (!username || !password) throw new Error("กรุณากรอกรหัสผู้ใช้และรหัสผ่านให้ครบ");
     try {
-      await ensureUser(username, password);
+      const ensured = await ensureUser(username, password);
       const init = await cognito("InitiateAuth", {
         AuthFlow: "CUSTOM_AUTH",
         ClientId: C.clientId,
@@ -141,6 +142,9 @@
         accessToken: r.AccessToken,
         refreshToken: r.RefreshToken,
         username,
+        // ชื่อจาก TU (ถ้า EnsureUser ส่งมา): name_th = ชื่อไทยเต็ม, name_en = ชื่ออังกฤษเต็ม
+        displayName: ensured?.name_th || ensured?.name || "",
+        displayNameEn: ensured?.name_en || "",
       });
       return getUser();
     } catch (err) {
@@ -205,9 +209,19 @@
     if (!p) return null;
     return {
       username: p["cognito:username"] || t.username,
+      name: p.name || t.displayName || "", // ชื่อไทยเต็ม (ถ้ายังไม่มีจะเป็นค่าว่าง)
+      nameEn: t.displayNameEn || "",
+      shortName: shortName(t.displayNameEn), // เช่น "Wanwisa.j" ตามดีไซน์ใน Figma
       groups: p["cognito:groups"] || [],
       claims: p,
     };
+  }
+  // "Wanwisa Janthakham" -> "Wanwisa.j"
+  function shortName(en) {
+    const parts = String(en || "").replace(/^(mr|mrs|miss|ms)\.?\s+/i, "").trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return "";
+    const first = parts[0][0].toUpperCase() + parts[0].slice(1).toLowerCase();
+    return parts.length > 1 ? `${first}.${parts[parts.length - 1][0].toLowerCase()}` : first;
   }
   const hasRole = (role) => !!getUser()?.groups.includes(role);
 

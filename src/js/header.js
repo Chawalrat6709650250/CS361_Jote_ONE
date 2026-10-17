@@ -103,13 +103,28 @@
   }
 
   // อ่านผู้ใช้จาก token จริงของ Cognito (ผ่าน auth.js)
-  const username = window.Auth && Auth.isLoggedIn() ? Auth.getUser()?.username : null;
-  if (username) {
-    const trimmedUsername = username.trim();
+  const me = window.Auth && Auth.isLoggedIn() ? Auth.getUser() : null;
+  const fullName = me ? (me.claims?.name || me.name || me.username || "").trim() : "";
+
+  // ชื่อต้นโดยตัดคำนำหน้าออก เช่น "นางสาวชวัลรัตน์ ภาคอารีย์" -> "ชวัลรัตน์"
+  function givenName(name) {
+    const noTitle = name.replace(/^(นางสาว|น\.ส\.|นาย|นาง|ด\.ช\.|ด\.ญ\.|Mr\.?|Mrs\.?|Miss|Ms\.?)\s*/i, "");
+    return noTitle.split(/\s+/)[0] || name;
+  }
+  // ข้อความใน header: ชื่อต้น ถ้ายาวเกินตัดด้วย "…" (กันเบียดเมนู)
+  const shortLabel = (name, max = 12) => {
+    const g = givenName(name);
+    return g.length > max ? g.slice(0, max) + "…" : g;
+  };
+  // ตัวอักษรในวงกลม: ข้ามสระนำหน้า (เ แ โ ใ ไ) เอาพยัญชนะ/ตัวอักษรแรกของชื่อต้น
+  const initialOf = (name) => (givenName(name).match(/[ก-ฮA-Za-z0-9]/) || [name.charAt(0)])[0].toUpperCase();
+
+  if (fullName) {
     loginLink.hidden = true;
     accountMenu.hidden = false;
-    avatar.textContent = trimmedUsername.charAt(0).toUpperCase();
-    userLabel.textContent = trimmedUsername;
+    avatar.textContent = initialOf(fullName);
+    userLabel.textContent = shortLabel(fullName);
+    accountMenu.title = fullName; // เอาเมาส์ชี้เพื่อดูชื่อเต็ม
   }
 
   accountMenu.addEventListener("click", () => {
