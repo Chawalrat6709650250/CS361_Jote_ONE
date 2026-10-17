@@ -38,9 +38,15 @@
   });
 
   // กลับไปหน้าที่ผู้ใช้ตั้งใจจะเข้า (รับเฉพาะ path ในเว็บเรา กัน open redirect)
-  function nextUrl() {
+    function nextUrl() {
     const n = new URLSearchParams(window.location.search).get("next");
-    return n && n.startsWith("/") && !n.startsWith("//") ? n : "../index.html";
+    if (!n) return "../index.html";
+    try {
+      const u = new URL(n, window.location.origin);
+      return u.origin === window.location.origin ? u.pathname + u.search + u.hash : "../index.html";
+    } catch {
+      return "../index.html";
+    }
   }
 
   if (window.Auth && Auth.isLoggedIn()) window.location.replace(nextUrl());

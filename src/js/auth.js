@@ -98,6 +98,11 @@
     const data = await res.json().catch(() => ({}));
     if (res.status === 401) throw new Error("รหัสผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
     if (res.status === 400) throw new Error("กรุณากรอกรหัสผู้ใช้และรหัสผ่านให้ครบ");
+        if (res.status === 429) {
+      const min = Math.ceil((data.retry_after_sec || 900) / 60);
+      throw new Error(`ใส่รหัสผิดหลายครั้ง กรุณาลองใหม่ในอีก ${min} นาที`);
+    }
+    if (res.status === 403) throw new Error("ประเภทบัญชีนี้ยังไม่รองรับในระบบ");
     if (!res.ok || data.success === false) {
       console.error("[auth] EnsureUser failed:", res.status, data);
       throw new Error("ระบบตรวจสอบบัญชี TU ขัดข้อง กรุณาลองใหม่ภายหลัง");
