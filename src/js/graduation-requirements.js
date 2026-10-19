@@ -14,16 +14,56 @@
   const searchButton = form.querySelector(".search-button");
   // ชุดข้อมูลที่มีหลักสูตรรองรับในระบบปัจจุบัน
   // หากเพิ่มหลักสูตรใหม่ ให้เพิ่มตัวเลือกใน HTML และเพิ่มกติกาที่นี่คู่กัน
-  const supportedPrograms = {
-    "BSC-CS-2566-CIS-PROJECT": { type: "regular", year: "2566" },
-    "BSC-CS-2566-ACS-PROJECT": { type: "special", year: "2566" },
-    "BSC-CNC-2568-PROJECT": { type: "special", year: "2568" },
-  };
+  // program = ค่าในช่องสาขาวิชา, studyPlanId = รหัสแผนที่ใช้เรียก API
+  const supportedPrograms = [
+    {
+      studyPlanId: "BSC-CS-2562-CIS-PROJECT",
+      program: "CIS",
+      type: "regular",
+      year: "2562",
+    },
+    {
+      studyPlanId: "BSC-CS-2562-ACS-PROJECT",
+      program: "ACS",
+      type: "special",
+      year: "2562",
+    },
+    {
+      studyPlanId: "BSC-CS-2566-CIS-PROJECT",
+      program: "CIS",
+      type: "regular",
+      year: "2566",
+    },
+    {
+      studyPlanId: "BSC-CS-2566-ACS-PROJECT",
+      program: "ACS",
+      type: "special",
+      year: "2566",
+    },
+    {
+      studyPlanId: "BSC-CNC-2568-PROJECT",
+      program: "CNC",
+      type: "special",
+      year: "2568",
+    },
+  ];
+
+  // หาแผนการศึกษาที่ตรงกับประเภทหลักสูตร/สาขา/ปีที่เลือกอยู่
+  const findSelectedPlan = () =>
+    supportedPrograms.find(
+      (item) =>
+        item.program === programSelect.value &&
+        item.type === typeSelect.value &&
+        item.year === yearSelect.value,
+    );
 
   // ข้อมูลสำรอง: ใช้แสดงผลระหว่างที่ API ยังตอบไม่ได้หรือยังติด CORS
-  function getMockPlan(studyPlanId = programSelect.value) {
+  function getMockPlan(
+    studyPlanId = findSelectedPlan()?.studyPlanId ?? "BSC-CS-2566-CIS-PROJECT",
+  ) {
     const isCnc = studyPlanId.startsWith("BSC-CNC-2568");
     const isCis = studyPlanId.includes("-CIS-");
+    const csYear = studyPlanId.match(/(25\d{2})/)?.[1] ?? "2566";
     const programName =
       programSelect.selectedOptions[0]?.textContent ?? "หลักสูตร";
 
@@ -74,7 +114,7 @@
 
     return {
       programName,
-      year: "2566",
+      year: csYear,
       type: typeSelect.selectedOptions[0]?.textContent ?? "ภาคพิเศษ",
       categories: [
         {
@@ -440,25 +480,14 @@
 
   function setSearchAvailability() {
     // ป้องกันการเรียก API ด้วยชุดประเภทหลักสูตร/สาขา/ปีที่ไม่มีอยู่จริง
-    const supportedProgram = supportedPrograms[programSelect.value];
-    const incorrectFields = [];
-    const requiredType = typeSelect.querySelector(
-      `option[value="${supportedProgram.type}"]`,
-    ).textContent;
-    if (typeSelect.value !== supportedProgram.type) {
-      incorrectFields.push(requiredType);
-    }
-    if (yearSelect.value !== supportedProgram.year) {
-      incorrectFields.push(`ปี ${supportedProgram.year}`);
-    }
-    const isSupported = incorrectFields.length === 0;
+    const isSupported = Boolean(findSelectedPlan());
 
     searchButton.disabled = !isSupported;
     searchButton.setAttribute("aria-disabled", String(!isSupported));
 
     if (!isSupported) {
       status.className = "requirements-status is-error";
-      status.textContent = `ยังไม่มีหลักสูตร ${programSelect.selectedOptions[0].textContent} ในชุดที่เลือก กรุณาเลือก${incorrectFields.join(" และ ")}`;
+      status.textContent = `ยังไม่มีหลักสูตร ${programSelect.selectedOptions[0].textContent} ในชุดที่เลือก กรุณาเลือกประเภทหลักสูตรหรือปีหลักสูตรอื่น`;
     } else if (status.textContent.startsWith("ยังไม่มีหลักสูตร")) {
       status.className = "requirements-status";
       status.textContent = "พร้อมค้นหาเงื่อนไขการสำเร็จการศึกษา";
@@ -472,7 +501,7 @@
     status.textContent = "กำลังโหลดข้อมูลเงื่อนไขการสำเร็จการศึกษา...";
     try {
       const detail = await request("study_plan", {
-        study_plan_id: programSelect.value,
+        study_plan_id: findSelectedPlan().studyPlanId,
       });
       const normalised = normalisePlan(detail);
       if (!normalised)
@@ -491,14 +520,52 @@
     }
   }
 
+  // อัปเดตข้อความและตัวเลือกที่ถูกเลือกของ custom dropdown ให้ตรงกับ native select
+  function syncCustomSelect(select) {
+    const customSelect = select.nextElementSibling;
+    if (!customSelect?.classList.contains("custom-select")) return;
+    customSelect.querySelector(".custom-select__trigger span").textContent =
+      select.selectedOptions[0].textContent;
+    customSelect.querySelectorAll(".custom-select__option").forEach((choice) => {
+      const selected = choice.dataset.value === select.value;
+      choice.classList.toggle("is-selected", selected);
+      choice.setAttribute("aria-selected", String(selected));
+    });
+  }
+
+  // เมื่อกรองช่องใดช่องหนึ่ง ให้ช่องที่เหลือขยับไปเป็นชุดหลักสูตรที่มีอยู่จริง
+  // โดยพยายามคงค่าเดิมของช่องอื่นไว้ให้มากที่สุด
+  function alignFilters(changedField) {
+    const current = {
+      program: programSelect.value,
+      type: typeSelect.value,
+      year: yearSelect.value,
+    };
+    const candidates = supportedPrograms.filter(
+      (item) => item[changedField] === current[changedField],
+    );
+    if (!candidates.length) return;
+
+    const score = (item) =>
+      ["program", "type", "year"].filter((key) => item[key] === current[key])
+        .length;
+    const best = candidates.reduce((a, b) => (score(b) > score(a) ? b : a));
+
+    programSelect.value = best.program;
+    typeSelect.value = best.type;
+    yearSelect.value = best.year;
+    [programSelect, typeSelect, yearSelect].forEach(syncCustomSelect);
+    setSearchAvailability();
+  }
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!setSearchAvailability()) return;
     loadRequirements();
   });
-  programSelect.addEventListener("change", setSearchAvailability);
-  yearSelect.addEventListener("change", setSearchAvailability);
-  typeSelect.addEventListener("change", setSearchAvailability);
+  programSelect.addEventListener("change", () => alignFilters("program"));
+  yearSelect.addEventListener("change", () => alignFilters("year"));
+  typeSelect.addEventListener("change", () => alignFilters("type"));
   createCustomDropdowns();
   displayPlan(
     getMockPlan(),
