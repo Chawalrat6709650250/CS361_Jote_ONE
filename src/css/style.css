@@ -276,7 +276,7 @@ body {
     justify-content: space-between;
     min-height: 0;
     padding: 18px 40px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 32px;
   }
 
@@ -284,7 +284,6 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-shrink: 0;
   }
 
   .logo-icon {
@@ -294,14 +293,13 @@ body {
     display: block;
   }
 
-  /* เมนูอยู่ใน flow ปกติและไม่ตัดบรรทัด เพื่อให้ logo / เมนู / ปุ่มบัญชีอยู่แถวเดียวกัน */
   .main-nav {
+    position: absolute;
+    left: 50%;
     display: flex;
-    flex: 1 1 auto;
-    justify-content: center;
-    gap: clamp(16px, 2.4vw, 40px);
-    flex-wrap: nowrap;
-    min-width: 0;
+    gap: 40px;
+    flex-wrap: wrap;
+    transform: translateX(-50%);
   }
 
   .main-nav a {
@@ -327,7 +325,6 @@ body {
     align-items: center;
     margin-left: auto;
     gap: 0;
-    flex-shrink: 0;
   }
 
   .lang-switch {
@@ -872,13 +869,9 @@ html {
 @media (max-width: 1200px) {
   .site-header {
     padding: 16px 24px;
-    gap: 20px;
   }
   .main-nav {
-    gap: 18px;
-  }
-  .main-nav a {
-    font-size: 14px;
+    gap: 24px;
   }
 }
 
@@ -886,7 +879,6 @@ html {
 @media (max-width: 1024px) {
   .site-header {
     gap: 12px;
-    flex-wrap: wrap;
   }
   .logo-icon {
     width: 84px;
@@ -900,6 +892,8 @@ html {
     margin-left: auto;
   }
   .main-nav {
+    position: static;
+    transform: none;
     order: 4;
     display: none;
     flex-direction: column;
