@@ -942,6 +942,21 @@ html {
   .header-auth__user {
     display: none;
   }
+  /* ย่อปุ่มเข้าสู่ระบบให้พอดีจอเล็ก (320px) โดย header ยังอยู่แถวเดียว */
+  .header-auth__login,
+  .header-auth__menu {
+    gap: 8px;
+    font-size: 16px;
+  }
+  .header-auth__avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 21px;
+  }
+  .header-auth__avatar--guest svg {
+    width: 22px;
+    height: 22px;
+  }
   .search-box.open {
     width: 110px;
   }
