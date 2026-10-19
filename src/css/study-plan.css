@@ -71,6 +71,17 @@ a {
 .main-nav a {
     position: relative;
     padding: 25px 0 21px;
+    white-space: nowrap;
+}
+
+/* กันไม่ให้ logo / เครื่องมือถูกบีบ และให้เมนูหดตามพื้นที่ที่เหลือ (header ต้องอยู่แถวเดียว) */
+.logo-link,
+.header-tools {
+    flex-shrink: 0;
+}
+
+.main-nav {
+    min-width: 0;
 }
 
 .main-nav a.active {
@@ -852,23 +863,32 @@ a {
 }
 
 @media (max-width: 700px) {
+    /* จอเล็ก: ยังคงแถวเดียว เมนูเลื่อนซ้าย-ขวาแทนการตกบรรทัด */
     .site-header {
-        height: auto;
-        min-height: 66px;
-        padding: 10px 4%;
-        flex-wrap: wrap;
+        height: 66px;
+        padding: 0 4%;
+        gap: 14px;
+        flex-wrap: nowrap;
+    }
+
+    .logo-link img {
+        width: 84px;
     }
 
     .main-nav {
-        order: 3;
-        width: 100%;
+        flex: 1 1 auto;
         overflow-x: auto;
         justify-content: flex-start;
+        gap: 18px;
+        scrollbar-width: none;
+    }
+
+    .main-nav::-webkit-scrollbar {
+        display: none;
     }
 
     .main-nav a {
         padding: 8px 0;
-        white-space: nowrap;
     }
 
     .main-nav a.active::after {
@@ -929,6 +949,16 @@ a {
 }
 
 @media (max-width: 450px) {
+    /* ซ่อนปุ่มสลับภาษาเพื่อให้เมนูมีพื้นที่ เหลือไว้แค่ไอคอนค้นหา */
+    .header-tools button,
+    .header-tools > span:not(.search-icon) {
+        display: none;
+    }
+
+    .logo-link img {
+        width: 72px;
+    }
+
     .summary-bar {
         grid-template-columns: 1fr;
     }
