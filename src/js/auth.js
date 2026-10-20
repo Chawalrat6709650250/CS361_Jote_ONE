@@ -1,11 +1,13 @@
 // ===== auth.js =====
-// จัดการ Login / Logout / Token ฝั่งหน้าบ้าน (Cognito CUSTOM_AUTH ผ่าน fetch ตรง ไม่ต้องใช้ไลบรารี)
-// Flow: InitiateAuth(CUSTOM_AUTH, USERNAME) -> RespondToAuthChallenge(ANSWER = password)
+// จัดการ Login / Logout / Token ฝั่งหน้าบ้าน (Cognito ผ่าน fetch ตรง ไม่ต้องใช้ไลบรารี)
+// ผู้ใช้จริง : EnsureUser -> InitiateAuth(CUSTOM_AUTH) -> RespondToAuthChallenge(ANSWER = password) -> ตรวจกับ TU
+// mock user : InitiateAuth(USER_PASSWORD_AUTH) -> Cognito ตรวจรหัสเอง (username ขึ้นต้นด้วย "mock.")
 //       -> ได้ IdToken / AccessToken / RefreshToken กลับมา
 (function () {
   const C = window.APP_CONFIG;
   const KEY = "cstu_auth";
   const ENDPOINT = `https://cognito-idp.${C.region}.amazonaws.com/`;
+  const MOCK_PREFIX = "mock."; // บัญชีทดสอบ (mock.admin, mock.professor, mock.staff, mock.student)
 
   // ---------- เรียก Cognito ----------
   async function cognito(target, body) {
@@ -98,7 +100,7 @@
     const data = await res.json().catch(() => ({}));
     if (res.status === 401) throw new Error("รหัสผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
     if (res.status === 400) throw new Error("กรุณากรอกรหัสผู้ใช้และรหัสผ่านให้ครบ");
-        if (res.status === 429) {
+    if (res.status === 429) {
       const min = Math.ceil((data.retry_after_sec || 900) / 60);
       throw new Error(`ใส่รหัสผิดหลายครั้ง กรุณาลองใหม่ในอีก ${min} นาที`);
     }
@@ -110,28 +112,48 @@
     return data; // อาจมี data.name (ชื่อจาก TU) ถ้า Lambda ส่งมา
   }
 
+  // ---------- Login แบบผู้ใช้จริง (TU ผ่าน CUSTOM_AUTH) ----------
+  async function loginWithTU(username, password) {
+    const ensured = await ensureUser(username, password);
+    const init = await cognito("InitiateAuth", {
+      AuthFlow: "CUSTOM_AUTH",
+      ClientId: C.clientId,
+      AuthParameters: { USERNAME: username },
+    });
+    if (init.ChallengeName !== "CUSTOM_CHALLENGE") {
+      throw Object.assign(new Error("Unexpected challenge: " + init.ChallengeName), {
+        code: "InvalidParameterException",
+      });
+    }
+    const done = await cognito("RespondToAuthChallenge", {
+      ClientId: C.clientId,
+      ChallengeName: "CUSTOM_CHALLENGE",
+      Session: init.Session,
+      ChallengeResponses: { USERNAME: username, ANSWER: password },
+    });
+    return { done, ensured };
+  }
+
+  // ---------- Login แบบ mock user (รหัสเก็บใน Cognito ไม่ผ่าน TU) ----------
+  async function loginWithMock(username, password) {
+    const done = await cognito("InitiateAuth", {
+      AuthFlow: "USER_PASSWORD_AUTH",
+      ClientId: C.clientId,
+      AuthParameters: { USERNAME: username, PASSWORD: password },
+    });
+    return { done, ensured: null };
+  }
+
   // ---------- Login ----------
   async function login(username, password) {
     username = String(username || "").trim();
     if (!username || !password) throw new Error("กรุณากรอกรหัสผู้ใช้และรหัสผ่านให้ครบ");
     try {
-      const ensured = await ensureUser(username, password);
-      const init = await cognito("InitiateAuth", {
-        AuthFlow: "CUSTOM_AUTH",
-        ClientId: C.clientId,
-        AuthParameters: { USERNAME: username },
-      });
-      if (init.ChallengeName !== "CUSTOM_CHALLENGE") {
-        throw Object.assign(new Error("Unexpected challenge: " + init.ChallengeName), {
-          code: "InvalidParameterException",
-        });
-      }
-      const done = await cognito("RespondToAuthChallenge", {
-        ClientId: C.clientId,
-        ChallengeName: "CUSTOM_CHALLENGE",
-        Session: init.Session,
-        ChallengeResponses: { USERNAME: username, ANSWER: password },
-      });
+      const isMock = username.toLowerCase().startsWith(MOCK_PREFIX);
+      const { done, ensured } = isMock
+        ? await loginWithMock(username, password)
+        : await loginWithTU(username, password);
+
       if (!done.AuthenticationResult) {
         // Cognito ส่ง challenge ซ้ำ = รหัสผ่านผิด (DefineAuthChallenge ให้ลองใหม่)
         throw Object.assign(new Error("wrong password"), { code: "NotAuthorizedException" });
@@ -207,11 +229,12 @@
     const t = load();
     const p = t && decode(t.idToken);
     if (!p) return null;
+    const nameEn = t.displayNameEn || "";
     return {
       username: p["cognito:username"] || t.username,
-      name: p.name || t.displayName || "", // ชื่อไทยเต็ม (ถ้ายังไม่มีจะเป็นค่าว่าง)
-      nameEn: t.displayNameEn || "",
-      shortName: shortName(t.displayNameEn), // เช่น "Wanwisa.j" ตามดีไซน์ใน Figma
+      name: p.name || t.displayName || "", // ชื่อไทยเต็ม (mock user = "Mock Admin" ฯลฯ)
+      nameEn,
+      shortName: shortName(nameEn || p.name), // เช่น "Wanwisa.j" ตามดีไซน์ใน Figma
       groups: p["cognito:groups"] || [],
       claims: p,
     };
