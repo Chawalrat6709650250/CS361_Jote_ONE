@@ -805,3 +805,145 @@ section + section {
 @media (max-width: 900px) {
     .hero-search-btn { top: 12px; right: 16px; }
 }
+/* =========================================
+   V3: รายวิชาทดสอบตามปีหลักสูตร (TestCourses)
+   ========================================= */
+
+.test-courses__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.test-courses__tabs button {
+    padding: 8px 20px;
+    font: inherit;
+    font-weight: 600;
+    color: #333333;
+    background: #ffffff;
+    border: 1.5px solid #D9D9D9;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.test-courses__tabs button[aria-selected="true"] {
+    color: #ffffff;
+    background: #D99A00;
+    border-color: #D99A00;
+}
+
+.test-courses__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.test-courses__card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 18px;
+    font: inherit;
+    text-align: left;
+    color: #333333;
+    background: #ffffff;
+    border: 1px solid #D9D9D9;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.test-courses__card:hover,
+.test-courses__card:focus-visible,
+.test-courses__card.is-active {
+    border-color: #D99A00;
+    box-shadow: 0 0 0 2px rgba(217, 154, 0, 0.2);
+}
+
+.test-courses__code {
+    color: #D99A00;
+    font-weight: 700;
+}
+
+.test-courses__title {
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.test-courses__credits {
+    color: #666666;
+    font-size: 14px;
+}
+
+.test-courses__detail {
+    margin-top: 20px;
+    padding: 20px 24px;
+    background: #FFF9EB;
+    border: 1px solid #F1DDA8;
+    border-radius: 10px;
+}
+
+.test-courses__detail h3 {
+    margin: 0 0 12px;
+    font-size: 20px;
+}
+
+.test-courses__kv {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px 16px;
+    margin: 0;
+}
+
+.test-courses__kv dt {
+    color: #666666;
+}
+
+.test-courses__kv dd {
+    margin: 0;
+}
+
+main > section.test-courses .test-courses__prereq {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.test-courses__op {
+    margin-right: 6px;
+    color: #666666;
+    font-weight: 700;
+}
+
+.test-courses__cond {
+    margin-left: 8px;
+    padding: 1px 8px;
+    font-size: 13px;
+    background: #E6F2FF;
+    border-radius: 4px;
+}
+
+.test-courses__cond--grade {
+    background: #FDE9C4;
+}
+
+main > section.test-courses .test-courses__source {
+    margin: 8px 0 0;
+    color: #666666;
+    font-size: 14px;
+}
+
+.test-courses__status.is-error {
+    color: #D13212;
+}
+
+@media (max-width: 600px) {
+    .test-courses__kv {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .test-courses__kv dd {
+        margin-bottom: 8px;
+    }
+}

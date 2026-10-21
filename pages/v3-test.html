@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V3 Test — Course Detail</title>
+  <style>
+    :root { --ink:#232F3E; --muted:#5f6b7a; --line:#d9dee4; --bg:#f6f7f9; --accent:#e8a400; --ok:#1d8102; --err:#d13212; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: "Sarabun", system-ui, sans-serif; color:var(--ink); background:var(--bg); }
+    main { max-width: 880px; margin: 0 auto; padding: 24px 16px 48px; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .sub { color: var(--muted); margin: 0 0 20px; font-size: 14px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:16px; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:end; }
+    label { font-size:13px; color:var(--muted); display:block; margin-bottom:4px; }
+    select, input { font: inherit; padding:8px 10px; border:1px solid var(--line); border-radius:6px; min-width: 160px; }
+    button { font: inherit; padding:8px 16px; border:0; border-radius:6px; background:var(--accent); color:#fff; cursor:pointer; }
+    button.ghost { background:#fff; color:var(--ink); border:1px solid var(--line); }
+    .user { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; background:#eef1f4; margin-right:4px; }
+    .badge.admin { background:#fde9c4; }
+    .kv { display:grid; grid-template-columns: 140px 1fr; gap:6px 12px; font-size:15px; }
+    .kv dt { color:var(--muted); }
+    .kv dd { margin:0; }
+    .pre li { margin: 4px 0; }
+    .cond { font-size:12px; padding:1px 6px; border-radius:4px; margin-left:6px; }
+    .cond.taken { background:#e6f2ff; } .cond.grade { background:#fff1d6; }
+    .op { font-weight:700; color:var(--muted); margin: 0 4px; }
+    .msg { font-size:14px; margin-top:8px; } .msg.ok { color:var(--ok); } .msg.err { color:var(--err); }
+    .evidence { font-family: ui-monospace, monospace; font-size:12px; background:#0f1720; color:#d6e2ee; border-radius:8px; padding:12px; overflow:auto; max-height: 320px; white-space: pre-wrap; word-break: break-word; }
+    .hidden { display:none !important; }
+    .denied { text-align:center; padding:40px 16px; border-color:#f3c2b8; background:#fff5f3; }
+    .denied h2 { color:var(--err); margin:0 0 8px; font-size:20px; }
+    .denied p { color:var(--muted); margin:0 0 16px; }
+  </style>
+</head>
+<body data-root="../">
+<main class="hidden">
+  <h1>V3 Test — Course Detail</h1>
+  <p class="sub">ชุดข้อมูลทดสอบ (TestCourses) • วิชาเอกคอมพิวเตอร์และวิทยาการสารสนเทศ • ไม่แก้ข้อมูลหลักสูตรทางการ</p>
+
+  <section class="card user">
+    <div>
+      <div id="who">-</div>
+      <div id="roles"></div>
+    </div>
+    <button class="ghost" id="logout">ออกจากระบบ</button>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <div><label for="year">ปีหลักสูตร</label>
+        <select id="year"><option value="2561">2561</option><option value="2566">2566</option></select></div>
+      <div><label for="course">รายวิชา</label><select id="course"></select></div>
+      <button id="open">เปิดรายละเอียด</button>
+    </div>
+  </section>
+
+  <section class="card hidden" id="detail">
+    <dl class="kv">
+      <dt>ปีหลักสูตร</dt><dd id="d-year"></dd>
+      <dt>รหัส / ชื่อวิชา</dt><dd id="d-title"></dd>
+      <dt>หน่วยกิต</dt><dd id="d-credits"></dd>
+      <dt>วิชาบังคับก่อน</dt><dd><div id="d-pre-text"></div><ul class="pre" id="d-pre"></ul></dd>
+      <dt>test_note</dt><dd id="d-note"></dd>
+    </dl>
+
+    <div id="admin-box" class="hidden" style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px">
+      <label for="note">แก้ test_note (Curriculum Admin เท่านั้น)</label>
+      <div class="row">
+        <input id="note" style="flex:1" placeholder="เช่น V3-TEST-UPDATED-2026">
+        <button id="save">Save</button>
+      </div>
+      <div class="msg" id="save-msg"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <label>หลักฐาน (request / response ล่าสุด)</label>
+    <div class="evidence" id="evidence">-</div>
+  </section>
+</main>
+
+<!-- ปรับ path ให้ตรงกับโครงสร้างโปรเจกต์ -->
+<script src="../src/js/config.js"></script>
+<script src="../src/js/auth.js"></script>
+<script>
+(async () => {
+  if (!Auth.requireLogin()) return;
+  const C = window.APP_CONFIG;
+  const ADMIN_URL = C.apiBase.replace(/\/api\/?$/, "") + "/admin/test-note";
+  const $ = (id) => document.getElementById(id);
+  const user = Auth.getUser();
+  const isAdmin = Auth.hasRole("Admin");
+
+  // ---------- เฉพาะ Admin เท่านั้น ----------
+  if (!isAdmin) {
+    document.querySelector("main").innerHTML = `
+      <section class="card denied" role="alert">
+        <h2>ไม่สามารถเข้าถึงหน้านี้ได้</h2>
+        <p>คุณไม่มีคุณสมบัติในการเข้าถึงหน้านี้ (เฉพาะ Curriculum Admin เท่านั้น)</p>
+        <button class="ghost" id="back">กลับหน้าหลัก</button>
+      </section>`;
+    $("back").onclick = () => location.replace(document.body.dataset.root || "../");
+    document.querySelector("main").classList.remove("hidden");
+    return;
+  }
+  document.querySelector("main").classList.remove("hidden");
+
+  // ---------- ผู้ใช้ / บทบาท ----------
+  $("who").textContent = `${user.name || user.username} (${user.username})`;
+  $("roles").innerHTML = user.groups.map(g => `<span class="badge ${g === "Admin" ? "admin" : ""}">${g === "Admin" ? "Curriculum Admin" : g}</span>`).join("") || '<span class="badge">ไม่มีกลุ่ม</span>';
+  if (user.groups.includes("Student61")) $("year").value = "2561";
+  if (user.groups.includes("Student66")) $("year").value = "2566";
+  $("logout").onclick = async () => { await Auth.logout(); location.replace("../" + C.loginPage); };
+
+  const show = (label, status, body) => {
+    $("evidence").textContent = `${label}\nHTTP ${status}\n\n${JSON.stringify(body, null, 2)}`;
+  };
+
+  // ---------- เรียก API (GET ผ่าน Auth.apiFetch / PUT แนบ token เอง) ----------
+  async function get(resource, params) {
+    const url = new URL(C.apiBase);
+    url.searchParams.set("resource", resource);
+    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+    const token = await Auth.getToken();
+    const res = await fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+    const body = await res.json().catch(() => ({}));
+    show(`GET ${url.pathname}${url.search}`, res.status, body);
+    return { res, body };
+  }
+
+  async function loadCourses() {
+    const { body } = await get("test_courses", { year: $("year").value });
+    const list = body.data?.courses || [];
+    $("course").innerHTML = list.map(c => `<option value="${c.course_code}">${c.course_code} — ${c.title_en}</option>`).join("");
+    $("detail").classList.add("hidden");
+  }
+
+  async function openDetail() {
+    const year = $("year").value, code = $("course").value;
+    if (!code) return;
+    const { res, body } = await get("test_course", { year, course_code: code });
+    if (!res.ok) { $("detail").classList.add("hidden"); return; }
+    const c = body.data.course;
+    $("d-year").textContent = c.curriculum_year;
+    $("d-title").textContent = `${c.course_code} — ${c.title_en}`;
+    $("d-credits").textContent = c.credits;
+    const p = c.prerequisite;
+    $("d-pre-text").textContent = p?.text ? `ตามเอกสาร: ${p.text}` : "ไม่มี";
+    $("d-pre").innerHTML = (p?.items || []).map((it, i) =>
+      `<li>${i ? `<span class="op">${p.op === "OR" ? "หรือ" : "และ"}</span>` : ""}${it.course}` +
+      (it.condition === "min_grade"
+        ? `<span class="cond grade">เกรด ≥ ${it.grade}</span>`
+        : `<span class="cond taken">เคยศึกษา</span>`) + `</li>`).join("");
+    $("d-note").textContent = c.test_note ? c.test_note : "(ว่าง)";
+    $("note").value = c.test_note || "";
+    $("save-msg").textContent = "";
+    $("admin-box").classList.toggle("hidden", !isAdmin);
+    $("detail").classList.remove("hidden");
+  }
+
+  async function saveNote() {
+    const payload = { year: $("year").value, course_code: $("course").value, test_note: $("note").value };
+    const token = await Auth.getToken();
+    const res = await fetch(ADMIN_URL, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify(payload),
+    });
+    const body = await res.json().catch(() => ({}));
+    show(`PUT ${new URL(ADMIN_URL).pathname}\n${JSON.stringify(payload)}`, res.status, body);
+    const m = $("save-msg");
+    if (res.ok) { m.className = "msg ok"; m.textContent = "บันทึกแล้ว — Refresh หน้าเพื่อยืนยันว่าอ่านกลับได้"; $("d-note").textContent = body.data.course.test_note || "(ว่าง)"; }
+    else { m.className = "msg err"; m.textContent = `บันทึกไม่สำเร็จ (HTTP ${res.status}) ${body.error?.message || body.message || ""}`; }
+  }
+
+  $("year").onchange = loadCourses;
+  $("open").onclick = openDetail;
+  $("save").onclick = saveNote;
+  await loadCourses();
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 // หน้าเปรียบเทียบหลักสูตร: ใช้ API เดียวกับหน้าแผนการเรียน / เงื่อนไขการสำเร็จการศึกษา
 // resource=study_plans, study_plan, graduation_requirements
+// + ชุดข้อมูลทดสอบ V3 (ตาราง TestCourses): resource=test_courses&year=2561|2566 ใช้ id แบบ "TEST-2561"
 (() => {
   const $ = (id) => document.getElementById(id);
   const esc = (x) => String(x ?? "").replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
@@ -19,6 +20,11 @@
     return j;
   }
 
+  // ชุดข้อมูลทดสอบ: ไม่มีปี/ภาคที่เรียน มีวิชาบังคับก่อนแทน
+  const TEST_YEARS = ["2561", "2566"];
+  const TEST_PREFIX = "TEST-";
+  const isTest = (id) => String(id).startsWith(TEST_PREFIX);
+
   let plans = [], data = { A: null, B: null }, filter = "all";
   const cache = {};
 
@@ -30,7 +36,8 @@
       const groups = {};
       plans.forEach((p) => (groups[yearOf(p.curriculum_id)] ||= []).push(p));
       const opts = '<option value="">— เลือก —</option>' + Object.keys(groups).sort().map((y) =>
-        `<optgroup label="หลักสูตร ${esc(y)}">` + groups[y].map((p) => `<option value="${esc(p.study_plan_id)}">${esc(p.plan_name_th || p.study_plan_id)}</option>`).join("") + "</optgroup>").join("");
+        `<optgroup label="หลักสูตร ${esc(y)}">` + groups[y].map((p) => `<option value="${esc(p.study_plan_id)}">${esc(p.plan_name_th || p.study_plan_id)}</option>`).join("") + "</optgroup>").join("") +
+        '<optgroup label="ชุดข้อมูลทดสอบ (TestCourses)">' + TEST_YEARS.map((y) => `<option value="${TEST_PREFIX}${y}">หลักสูตร ${y} (ทดสอบ)</option>`).join("") + "</optgroup>";
       $("planA").innerHTML = opts; $("planB").innerHTML = opts;
       const sp = new URLSearchParams(location.search);
       if (sp.get("a")) $("planA").value = sp.get("a");
@@ -42,7 +49,7 @@
 
   // ----- ดึงข้อมูลของแผนหนึ่งแผน -----
   function loadPlan(id) {
-    if (!cache[id]) cache[id] = (async () => {
+    if (!cache[id]) cache[id] = (isTest(id) ? loadTestPlan(id) : (async () => {
       const j = await api("study_plan", { study_plan_id: id });
       const d = j.data || {};
       const meta = (d.detail && d.detail.study_plan) || d.summary || {};
@@ -63,8 +70,22 @@
       const list = [...courses.values()];
       return { id, name: meta.plan_name_th || plan.plan_name_th || id, cid: meta.curriculum_id || plan.curriculum_id, courses, grad,
         totalCr: list.reduce((s, c) => s + c.cr, 0) + reqCredits, reqCredits };
-    })().catch((e) => { delete cache[id]; throw e; });
+    })()).catch((e) => { delete cache[id]; throw e; });
     return cache[id];
+  }
+
+  // แปลงข้อมูล TestCourses ให้อยู่ในรูปเดียวกับแผนการเรียนจริง
+  async function loadTestPlan(id) {
+    const year = id.slice(TEST_PREFIX.length);
+    const j = await api("test_courses", { year });
+    const courses = new Map();
+    ((j.data && j.data.courses) || []).forEach((c) => {
+      const code = norm(c.course_code); if (!code) return;
+      courses.set(code, { code: c.course_code, th: c.title_th || "", en: c.title_en || "", cr: num(c.credits), yr: null, tm: null, role: "",
+        pre: (c.prerequisite && c.prerequisite.text) || "ไม่มี" });
+    });
+    const list = [...courses.values()];
+    return { id, name: `หลักสูตร ${year} (ชุดข้อมูลทดสอบ)`, cid: null, courses, grad: null, totalCr: list.reduce((s, c) => s + c.cr, 0), reqCredits: 0 };
   }
 
   async function run() {
@@ -91,7 +112,7 @@
     const used = new Set();
     A.courses.forEach((ca, k) => {
       const cb = B.courses.get(k);
-      if (cb) { used.add(k); const same = ca.yr === cb.yr && ca.tm === cb.tm && ca.cr === cb.cr && String(ca.role) === String(cb.role); rows.push({ a: ca, b: cb, st: same ? "same" : "diff" }); }
+      if (cb) { used.add(k); const same = ca.yr === cb.yr && ca.tm === cb.tm && ca.cr === cb.cr && String(ca.role) === String(cb.role) && ca.pre === cb.pre; rows.push({ a: ca, b: cb, st: same ? "same" : "diff" }); }
       else rows.push({ a: ca, b: null, st: "a" });
     });
     // วิชาที่ชื่ออังกฤษเหมือนกันแต่รหัสต่างกัน = เปลี่ยนรหัส
@@ -133,7 +154,9 @@
     if (!c) return `<td class="n none" colspan="2">ไม่มีในแผนนี้</td>`;
     const ch = (k) => other && c[k] !== other[k];
     const hl = (t, on) => (on ? `<b>${t}</b>` : t);
-    return `<td class="n ${cls}">ปี ${esc(c.yr)} · ${esc(semText(c.tm))}<br><small>${esc(roleText(c.role))}</small></td><td class="n ${cls}">${hl(c.cr, ch("cr"))}</td>`;
+    const when = c.yr == null ? "-" : `ปี ${esc(c.yr)} · ${esc(semText(c.tm))}`;
+    const sub = c.pre != null ? hl("วิชาบังคับก่อน: " + esc(c.pre), ch("pre")) : esc(roleText(c.role));
+    return `<td class="n ${cls}">${when}<br><small>${sub}</small></td><td class="n ${cls}">${hl(c.cr, ch("cr"))}</td>`;
   }
   function drawRows() {
     const q = $("q").value.trim().toLowerCase().replace(/\s+/g, "");
