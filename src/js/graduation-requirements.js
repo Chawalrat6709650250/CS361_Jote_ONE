@@ -46,6 +46,9 @@
       type: "special",
       year: "2568",
     },
+    // ชุดข้อมูลทดสอบ V3 (ตาราง TestCourses) วิชาเอกคอมพิวเตอร์และวิทยาการสารสนเทศ
+    { testYear: "2561", program: "CIS", type: "regular", year: "TEST-2561" },
+    { testYear: "2566", program: "CIS", type: "regular", year: "TEST-2566" },
   ];
 
   // หาแผนการศึกษาที่ตรงกับประเภทหลักสูตร/สาขา/ปีที่เลือกอยู่
@@ -198,6 +201,12 @@
       .map((key) => item?.[key])
       .find((value) => value !== undefined && value !== null && value !== "") ??
     fallback;
+  const esc = (value) =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (ch) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch],
+    );
   const number = (value) =>
     Number(String(value ?? "0").replace(/[^0-9.]/g, "")) || 0;
   const icon = (name) => {
@@ -344,6 +353,39 @@
     };
   }
 
+  // แปลงรายวิชาจาก resource=test_courses ให้อยู่ในรูปเดียวกับ plan ที่ displayPlan ใช้
+  function testPlan(data, year) {
+    const courses = [...(data?.courses ?? [])].sort((a, b) =>
+      a.course_code.localeCompare(b.course_code),
+    );
+    const rows = courses.map((c) => [
+      `${esc(c.course_code)} ${esc(c.title_th || c.title_en)}`,
+      esc(c.credits),
+      `วิชาบังคับก่อน: ${esc(c.prerequisite?.text || "ไม่มี")}` +
+        (c.test_note ? `<br>หมายเหตุ: ${esc(c.test_note)}` : ""),
+    ]);
+    return {
+      programName: "วิชาเอกคอมพิวเตอร์และวิทยาการสารสนเทศ (ชุดข้อมูลทดสอบ)",
+      year,
+      type: typeSelect.selectedOptions[0]?.textContent,
+      categories: [
+        {
+          key: "major",
+          label: "รายวิชาชุดข้อมูลทดสอบ",
+          // credits เป็นข้อความ เช่น "3 (3-0-6)" จึงใช้ parseFloat แทน number()
+          credits: courses.reduce((sum, c) => sum + (parseFloat(c.credits) || 0), 0),
+          rows,
+        },
+      ],
+      graduationCriteria: [
+        `ข้อมูลจากตาราง TestCourses หลักสูตรปี ${year} ใช้สำหรับทดสอบระบบเท่านั้น ไม่ใช่เงื่อนไขการสำเร็จการศึกษาจริง`,
+        ...courses
+          .filter((c) => c.prerequisite?.text)
+          .map((c) => `${esc(c.course_code)}: ${esc(c.prerequisite.text)}`),
+      ],
+    };
+  }
+
   function displayPlan(plan, message = "แสดงข้อมูลล่าสุดจาก API") {
     const total = plan.categories.reduce(
       (sum, category) => sum + number(category.credits),
@@ -357,7 +399,7 @@
     ]
       .map(
         (category, index) => `
-      <article class="summary-card summary-card--${colorKeys[index] ?? "total"}">
+      <article class="summary-card summary-card--${colorKeys.includes(category.key) ? category.key : (colorKeys[index] ?? "total")}">
         <span class="summary-card__icon">${icon(category.key)}</span>
         <div><span class="summary-card__label">${category.label}</span><span class="summary-card__value">${category.credits}</span><span class="summary-card__unit">หน่วยกิต</span></div>
       </article>`,
@@ -499,9 +541,22 @@
   async function loadRequirements() {
     status.className = "requirements-status is-loading";
     status.textContent = "กำลังโหลดข้อมูลเงื่อนไขการสำเร็จการศึกษา...";
+    const selected = findSelectedPlan();
+    if (selected.testYear) {
+      try {
+        const data = await request("test_courses", { year: selected.testYear });
+        displayPlan(testPlan(data, selected.testYear), "แสดงชุดข้อมูลทดสอบจาก API (TestCourses)");
+      } catch (error) {
+        status.className = "requirements-status is-error";
+        status.textContent = `โหลดชุดข้อมูลทดสอบไม่สำเร็จ: ${error.message}`;
+        console.warn("Test courses API error:", error);
+      }
+      bindAccordions();
+      return;
+    }
     try {
       const detail = await request("study_plan", {
-        study_plan_id: findSelectedPlan().studyPlanId,
+        study_plan_id: selected.studyPlanId,
       });
       const normalised = normalisePlan(detail);
       if (!normalised)
