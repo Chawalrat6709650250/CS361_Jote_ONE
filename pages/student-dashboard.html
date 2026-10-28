@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="หน้าของนักศึกษา สำหรับตรวจสอบความคืบหน้า ผลการเรียน และเงื่อนไขการสำเร็จการศึกษา"
+    />
+    <title>หน้าของนักศึกษา | CSTU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../src/css/style.css?v=20261028-student-menu-2" />
+    <link rel="stylesheet" href="../src/css/student-dashboard.css?v=20261028-status-dot" />
+  </head>
+  <body data-root="../" data-page="student-dashboard">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="student-hero" aria-labelledby="student-dashboard-title">
+        <div class="student-hero__content">
+          <h1 id="student-dashboard-title">หน้าของนักศึกษา</h1>
+          <p>จัดการข้อมูลการเรียนและตรวจสอบความคืบหน้าของคุณ</p>
+        </div>
+      </section>
+
+      <nav class="student-breadcrumb" aria-label="เส้นทางนำทาง">
+        <a href="../index.html" aria-label="กลับหน้าหลัก">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z" /></svg>
+        </a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">หน้าของนักศึกษา</span>
+      </nav>
+
+      <section class="student-dashboard" aria-label="เมนูสำหรับนักศึกษา">
+        <div class="student-dashboard__panel">
+          <div class="student-dashboard__cards">
+            <a class="student-card" href="graduation-check.html">
+              <span class="student-card__icon student-card__icon--cap" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path d="m4 25 28-16 28 16-28 16Z" />
+                  <path d="M14 31v14c9.6 8 26.4 8 36 0V31L32 41Z" />
+                  <path class="student-cap__seam" d="m15 31 17 9.5L49 31" />
+                  <path d="M60 25v20" />
+                  <circle cx="60" cy="47.5" r="2.8" />
+                </svg>
+              </span>
+              <h2>ตรวจสอบการจบของฉัน</h2>
+              <p>ดูความคืบหน้าเทียบกับเกณฑ์หลักสูตร</p>
+              <span class="student-card__arrow" aria-hidden="true">›</span>
+            </a>
+
+            <a class="student-card" href="transcript.html">
+              <span class="student-card__icon student-card__icon--solid" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5.5 2h8.2L19 7.3v13.2a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 4 20.5v-17A1.5 1.5 0 0 1 5.5 2Z" /><path d="M13.5 2v5.5H19" /><path d="M8 12h7M8 15.5h7" /></svg>
+              </span>
+              <h2>ผลการเรียนของฉัน</h2>
+              <p>ดูรายวิชาและเกรดของคุณ</p>
+              <span class="student-card__arrow" aria-hidden="true">›</span>
+            </a>
+
+            <a class="student-card" href="graduation-requirements.html">
+              <span class="student-card__icon student-card__icon--book" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path d="M7 10c0-4.4 3.6-8 8-8h16v45c-7-3.9-15.8-3.9-24 0Z" />
+                  <path d="M57 10c0-4.4-3.6-8-8-8H33v45c7-3.9 15.8-3.9 24 0Z" />
+                  <path class="student-book__seam" d="M32 2v45" />
+                </svg>
+              </span>
+              <h2>เงื่อนไขการสำเร็จการศึกษา</h2>
+              <p>ดูข้อกำหนดของหลักสูตร</p>
+              <span class="student-card__arrow" aria-hidden="true">›</span>
+            </a>
+
+            <a class="student-card" href="faq.html">
+              <span class="student-card__icon student-card__icon--question" aria-hidden="true">
+                <span>?</span>
+              </span>
+              <h2>FAQ</h2>
+              <p>คำถามที่พบบ่อย</p>
+              <span class="student-card__arrow" aria-hidden="true">›</span>
+            </a>
+          </div>
+
+          <aside id="data-freshness" class="data-freshness" aria-live="polite">
+            <span class="data-freshness__clock" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.75" /><path d="M12 7v5l3.5 2" /></svg>
+            </span>
+            <div class="data-freshness__body">
+              <h2>ข้อมูลล่าสุดจากระบบ</h2>
+              <p id="data-freshness-time">กำลังตรวจสอบเวลาอัปเดตล่าสุด…</p>
+            </div>
+            <span id="data-freshness-status" class="data-freshness__status data-freshness__status--current" role="status">
+              <span id="data-freshness-indicator" class="data-freshness__indicator" aria-hidden="true">✓</span>
+              <span>
+                <strong id="data-freshness-label">ข้อมูลปัจจุบัน</strong>
+                <small id="data-freshness-detail">ข้อมูลครบถ้วนล่าสุด</small>
+              </span>
+            </span>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js?v=20261028-student-menu-3"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/student-dashboard.js?v=20261028-three-status"></script>
+  </body>
+</html>

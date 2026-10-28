@@ -474,6 +474,7 @@ body {
     content: "";
   }
 
+  .header-auth__link,
   .header-auth__profile,
   .header-auth__logout {
     position: relative;
@@ -487,6 +488,12 @@ body {
     color: #222;
     font: 500 17px "Sarabun", sans-serif;
     text-align: left;
+    text-decoration: none;
+  }
+
+  .header-auth__link--active {
+    border-radius: 6px;
+    background: #f1f4f9;
   }
 
   .header-auth__logout {
@@ -494,6 +501,7 @@ body {
     cursor: pointer;
   }
 
+  .header-auth__link svg,
   .header-auth__profile svg,
   .header-auth__logout svg {
     width: 25px;
@@ -506,6 +514,7 @@ body {
     stroke-width: 1.8;
   }
 
+  .header-auth__link:hover,
   .header-auth__profile:hover,
   .header-auth__logout:hover {
     opacity: 0.7;

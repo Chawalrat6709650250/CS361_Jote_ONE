@@ -15,6 +15,25 @@
       <path d="M10 5H5.75A1.75 1.75 0 0 0 4 6.75v10.5C4 18.22 4.78 19 5.75 19H10"></path>
       <path d="M13 8l4 4-4 4M17 12H8"></path>
     </svg>`;
+  const homeIcon = `
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"></path>
+    </svg>`;
+  const capIcon = `
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="m2.5 9.4 9.5-5 9.5 5-9.5 5-9.5-5Z"></path>
+      <path d="M6 11.3v4.1c2.9 2.9 9.1 2.9 12 0v-4.1"></path>
+    </svg>`;
+  const documentIcon = `
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M6 2.75h8.5L19 7.25V21.25H6a1 1 0 0 1-1-1v-16.5a1 1 0 0 1 1-1Z"></path>
+      <path d="M14 2.75v4.5h5M8.5 12h7M8.5 15.5h7"></path>
+    </svg>`;
+  const questionIcon = `
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="M9.7 9a2.45 2.45 0 1 1 4.05 1.86c-1.3 1.05-1.75 1.55-1.75 3.14M12 17.1h.01"></path>
+    </svg>`;
 
   mount.innerHTML = `
     <header class="site-header">
@@ -30,6 +49,7 @@
         <a href="${root}pages/graduation-requirements.html" class="${page === "graduation" ? "active" : ""}">เงื่อนไขการสำเร็จการศึกษา</a>
         <a href="${root}pages/course-search.html" class="${page === "course-search" ? "active" : ""}">ค้นหารายวิชา</a>
         <a href="${root}pages/curriculum-compare.html" class="${page === "curriculum-compare" ? "active" : ""}">เปรียบเทียบหลักสูตร</a>
+        <a href="${root}pages/faq.html" class="${page === "faq" ? "active" : ""}">FAQ</a>
         <a href="#contact">ติดต่อ</a>
       </nav>
       <div class="header-right">
@@ -44,8 +64,12 @@
             <svg class="header-auth__chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
           </button>
           <div id="account-menu" class="header-auth__dropdown" hidden>
-            <button class="header-auth__profile" type="button">${personIcon}<span>ข้อมูลส่วนตัว</span></button>
+            <a class="header-auth__link header-auth__link--active" href="${root}pages/student-dashboard.html">${homeIcon}<span>หน้าของนักศึกษา</span></a>
+            <a class="header-auth__link" href="${root}pages/graduation-check.html">${capIcon}<span>ตรวจสอบการจบของฉัน</span></a>
+            <a class="header-auth__link" href="${root}pages/transcript.html">${documentIcon}<span>ผลการเรียนของฉัน</span></a>
+            <a class="header-auth__link" href="${root}pages/faq.html">${questionIcon}<span>FAQ</span></a>
             <div class="header-auth__divider"></div>
+            <button class="header-auth__profile" type="button">${personIcon}<span>ข้อมูลส่วนตัว</span></button>
             <button class="header-auth__logout" type="button">${logoutIcon}<span>ออกจากระบบ</span></button>
           </div>
         </div>
@@ -105,7 +129,12 @@
 
   // อ่านผู้ใช้จาก token จริงของ Cognito (ผ่าน auth.js)
   const me = window.Auth && Auth.isLoggedIn() ? Auth.getUser() : null;
-  const fullName = me ? (me.claims?.name || me.name || me.username || "").trim() : "";
+  const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
+  const fullName = me
+    ? (me.claims?.name || me.name || me.username || "").trim()
+    : isPreview
+      ? "Wanwisa Janthakham"
+      : "";
 
   // ชื่อต้นโดยตัดคำนำหน้าออก เช่น "นางสาวชวัลรัตน์ ภาคอารีย์" -> "ชวัลรัตน์"
   function givenName(name) {
@@ -124,7 +153,7 @@
     loginLink.hidden = true;
     accountMenu.hidden = false;
     avatar.textContent = initialOf(fullName);
-    userLabel.textContent = shortLabel(fullName);
+    userLabel.textContent = me?.shortName || (isPreview ? "Wanwisa.j" : shortLabel(fullName));
     accountMenu.title = fullName; // เอาเมาส์ชี้เพื่อดูชื่อเต็ม
   }
 
