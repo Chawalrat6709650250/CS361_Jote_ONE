@@ -4,6 +4,8 @@
 
   const root = document.body.dataset.root || "./";
   const page = document.body.dataset.page || "programs";
+  const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
+  const previewQuery = isPreview ? "?preview=1" : "";
 
   const personIcon = `
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -64,8 +66,8 @@
             <svg class="header-auth__chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
           </button>
           <div id="account-menu" class="header-auth__dropdown" hidden>
-            <a class="header-auth__link header-auth__link--active" href="${root}pages/student-dashboard.html">${homeIcon}<span>หน้าของนักศึกษา</span></a>
-            <a class="header-auth__link" href="${root}pages/graduation-check.html">${capIcon}<span>ตรวจสอบการจบของฉัน</span></a>
+            <a class="header-auth__link header-auth__link--active" href="${root}pages/student-dashboard.html${previewQuery}">${homeIcon}<span>หน้าของนักศึกษา</span></a>
+            <a class="header-auth__link" href="${root}pages/graduation-check.html${previewQuery}">${capIcon}<span>ตรวจสอบการจบของฉัน</span></a>
             <a class="header-auth__link" href="${root}pages/transcript.html">${documentIcon}<span>ผลการเรียนของฉัน</span></a>
             <a class="header-auth__link" href="${root}pages/faq.html">${questionIcon}<span>FAQ</span></a>
             <div class="header-auth__divider"></div>
@@ -129,7 +131,6 @@
 
   // อ่านผู้ใช้จาก token จริงของ Cognito (ผ่าน auth.js)
   const me = window.Auth && Auth.isLoggedIn() ? Auth.getUser() : null;
-  const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
   const fullName = me
     ? (me.claims?.name || me.name || me.username || "").trim()
     : isPreview
