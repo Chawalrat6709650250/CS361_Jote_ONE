@@ -40,7 +40,7 @@
   // กลับไปหน้าที่ผู้ใช้ตั้งใจจะเข้า (รับเฉพาะ path ในเว็บเรา กัน open redirect)
     function nextUrl() {
     const n = new URLSearchParams(window.location.search).get("next");
-    if (!n) return "../index.html";
+    if (!n) return window.Auth?.hasRole("Admin") ? "admin.html" : "../index.html";
     try {
       const u = new URL(n, window.location.origin);
       return u.origin === window.location.origin ? u.pathname + u.search + u.hash : "../index.html";

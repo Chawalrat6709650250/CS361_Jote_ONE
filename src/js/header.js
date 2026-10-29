@@ -31,6 +31,7 @@
         <a href="${root}pages/course-search.html" class="${page === "course-search" ? "active" : ""}">ค้นหารายวิชา</a>
         <a href="${root}pages/curriculum-compare.html" class="${page === "curriculum-compare" ? "active" : ""}">เปรียบเทียบหลักสูตร</a>
         <a href="#contact">ติดต่อ</a>
+        <a href="${root}pages/admin.html" data-admin-link class="${page === "admin" ? "active" : ""}" hidden>จัดการหลักสูตร</a>
       </nav>
       <div class="header-right">
         <div class="header-auth">
@@ -44,6 +45,7 @@
             <svg class="header-auth__chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
           </button>
           <div id="account-menu" class="header-auth__dropdown" hidden>
+            <a class="header-auth__admin-entry" href="${root}pages/admin.html" hidden>จัดการหลักสูตร (Admin)</a>
             <button class="header-auth__profile" type="button">${personIcon}<span>ข้อมูลส่วนตัว</span></button>
             <div class="header-auth__divider"></div>
             <button class="header-auth__logout" type="button">${logoutIcon}<span>ออกจากระบบ</span></button>
@@ -119,6 +121,11 @@
   };
   // ตัวอักษรในวงกลม: ข้ามสระนำหน้า (เ แ โ ใ ไ) เอาพยัญชนะ/ตัวอักษรแรกของชื่อต้น
   const initialOf = (name) => (givenName(name).match(/[ก-ฮA-Za-z0-9]/) || [name.charAt(0)])[0].toUpperCase();
+
+  // Only expose the shortcut for confirmed Cognito Admin group. Backend remains the authority.
+  if (me && window.Auth?.hasRole("Admin")) {
+    mount.querySelectorAll("[data-admin-link], .header-auth__admin-entry").forEach(el => { el.hidden = false; });
+  }
 
   if (fullName) {
     loginLink.hidden = true;

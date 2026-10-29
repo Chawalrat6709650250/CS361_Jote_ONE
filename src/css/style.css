@@ -1043,3 +1043,8 @@ html {
     word-break: break-word;
   }
 }
+
+/* V4: keep admin-only navigation hidden until Cognito group verification */
+.main-nav a[hidden], .header-auth__admin-entry[hidden] { display: none !important; }
+.header-auth__admin-entry { display:block; padding:12px 18px; text-decoration:none; color:#262626; font-weight:700; }
+.header-auth__admin-entry:hover { background:#fff4cc; }
