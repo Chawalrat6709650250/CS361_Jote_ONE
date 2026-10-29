@@ -1,6 +1,6 @@
 (() => {
-  // ข้อมูลตัวอย่าง: เมื่อ API FAQ พร้อม สามารถแทนที่รายการนี้ด้วยข้อมูลจากระบบได้
-  const faqs = [
+  // ข้อมูลตัวอย่างจะแสดงชั่วคราว หาก API ยังเชื่อมต่อไม่ได้
+  const fallbackFaqs = [
     {
       category: "graduation",
       question: "ต้องมีหน่วยกิตรวมเท่าไรจึงจะจบ?",
@@ -63,13 +63,19 @@
     },
   ];
 
-  const categories = [
-    { id: "all", label: "ทั้งหมด", icon: "home" },
-    { id: "transfer", label: "การเทียบการศึกษา", icon: "cap" },
-    { id: "graduation", label: "การสำเร็จการศึกษา", icon: "cap" },
-    { id: "registration", label: "การลงทะเบียน", icon: "document" },
-    { id: "fees", label: "ค่าเทอม/ทุนการศึกษา", icon: "wallet" },
-  ];
+  const tagLabels = {
+    account: "บัญชีผู้ใช้",
+    credits: "หน่วยกิต",
+    curriculum: "หลักสูตร",
+    data: "ข้อมูลผลการเรียน",
+    grade: "เกรด",
+    graduation: "การสำเร็จการศึกษา",
+    official: "ข้อมูลทางการ",
+    privacy: "สิทธิ์และความเป็นส่วนตัว",
+    transfer: "การเทียบการศึกษา",
+    registration: "การลงทะเบียน",
+    fees: "ค่าเทอม/ทุนการศึกษา",
+  };
 
   const icons = {
     home: '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z" /></svg>',
@@ -85,6 +91,9 @@
   const breadcrumbHome = document.getElementById("faq-breadcrumb-home");
   const breadcrumbHomeLabel = document.getElementById("faq-breadcrumb-home-label");
   let selectedCategory = "all";
+  let faqs = fallbackFaqs.map((item) => ({ ...item, tags: [item.category] }));
+  let categories = createCategories(["transfer", "graduation", "registration", "fees"]);
+  let dataStatus = "";
 
   // FAQ เปิดให้ทุกคนอ่านได้ แต่ผู้ที่ล็อกอินควรย้อนกลับไปหน้าของนักศึกษาได้
   if (window.Auth && Auth.isLoggedIn()) {
@@ -93,10 +102,30 @@
     breadcrumbHomeLabel.hidden = false;
   }
 
+  function createCategories(tags = []) {
+    return [
+      { id: "all", label: "ทั้งหมด", icon: "home" },
+      ...tags.map((tag) => ({
+        id: tag,
+        label: tagLabels[tag] || tag,
+        icon: tag === "grade" ? "document" : tag === "account" ? "wallet" : "cap",
+      })),
+    ];
+  }
+
   function categoryCount(categoryId) {
     return categoryId === "all"
       ? faqs.length
-      : faqs.filter((item) => item.category === categoryId).length;
+      : faqs.filter((item) => item.tags.includes(categoryId)).length;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
   function renderCategories() {
@@ -125,13 +154,13 @@
   function renderFaqs() {
     const keyword = searchInput.value.trim();
     const visibleFaqs = faqs.filter((item) => {
-      const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+      const matchesCategory = selectedCategory === "all" || item.tags.includes(selectedCategory);
       return matchesCategory && matchesSearch(item, keyword);
     });
 
     resultStatus.textContent = keyword
       ? `พบ ${visibleFaqs.length} คำถามสำหรับ “${keyword}”`
-      : "";
+      : dataStatus;
 
     if (!visibleFaqs.length) {
       items.innerHTML = '<p class="faq-empty">ไม่พบคำถามที่ค้นหา ลองใช้คำค้นหาอื่นอีกครั้ง</p>';
@@ -149,7 +178,7 @@
               aria-expanded="false"
               aria-controls="faq-answer-${index}"
             >
-              <span>${item.question}</span>
+              <span>${escapeHtml(item.question)}</span>
               <svg class="faq-item__chevron" aria-hidden="true" viewBox="0 0 24 24">
                 <path d="m6 9 6 6 6-6" />
               </svg>
@@ -161,7 +190,7 @@
               aria-labelledby="faq-question-${index}"
               hidden
             >
-              ${item.answer}
+              ${escapeHtml(item.answer)}
             </div>
           </article>
         `,
@@ -193,4 +222,34 @@
 
   renderCategories();
   renderFaqs();
+
+  async function loadFaqs() {
+    const apiUrl = `${APP_CONFIG.apiBase}?resource=faq`;
+
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const payload = await response.json();
+      const apiItems = payload?.data?.items;
+      if (!payload?.success || !Array.isArray(apiItems)) throw new Error("รูปแบบข้อมูลไม่ถูกต้อง");
+
+      faqs = apiItems.map((item) => ({
+        question: item.question_th,
+        answer: item.answer_th,
+        tags: Array.isArray(item.tags) ? item.tags : [],
+      }));
+      categories = createCategories(payload.data.tags || []);
+      selectedCategory = "all";
+      dataStatus = "กำลังแสดงคำถามจากระบบล่าสุด";
+      renderCategories();
+      renderFaqs();
+    } catch (error) {
+      console.warn("ไม่สามารถโหลด FAQ จาก API ได้", error);
+      dataStatus = "ไม่สามารถโหลดข้อมูลล่าสุดได้ กำลังแสดงข้อมูลตัวอย่าง";
+      renderFaqs();
+    }
+  }
+
+  loadFaqs();
 })();
