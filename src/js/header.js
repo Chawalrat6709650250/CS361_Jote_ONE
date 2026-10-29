@@ -68,7 +68,7 @@
           <div id="account-menu" class="header-auth__dropdown" hidden>
             <a class="header-auth__link header-auth__link--active" href="${root}pages/student-dashboard.html${previewQuery}">${homeIcon}<span>หน้าของนักศึกษา</span></a>
             <a class="header-auth__link" href="${root}pages/graduation-check.html${previewQuery}">${capIcon}<span>ตรวจสอบการจบของฉัน</span></a>
-            <a class="header-auth__link" href="${root}pages/transcript.html">${documentIcon}<span>ผลการเรียนของฉัน</span></a>
+            <a class="header-auth__link" href="${root}pages/transcript.html${previewQuery}">${documentIcon}<span>ผลการเรียนของฉัน</span></a>
             <a class="header-auth__link" href="${root}pages/faq.html">${questionIcon}<span>FAQ</span></a>
             <div class="header-auth__divider"></div>
             <button class="header-auth__profile" type="button">${personIcon}<span>ข้อมูลส่วนตัว</span></button>

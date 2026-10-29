@@ -63,16 +63,18 @@
       const target = new URL(card.href, window.location.href);
       if (
         target.pathname.endsWith("graduation-requirements.html") ||
-        target.pathname.endsWith("graduation-check.html")
+        target.pathname.endsWith("graduation-check.html") ||
+        target.pathname.endsWith("transcript.html")
       ) {
-        if (isPreview && target.pathname.endsWith("graduation-check.html")) {
+        if (isPreview && (target.pathname.endsWith("graduation-check.html") || target.pathname.endsWith("transcript.html"))) {
           event.preventDefault();
-          window.location.assign("graduation-check.html?preview=1");
+          const nextPage = target.pathname.endsWith("graduation-check.html") ? "graduation-check.html" : "transcript.html";
+          window.location.assign(`${nextPage}?preview=1`);
         }
         return;
       }
 
-      // Pages B3 and B5 will be delivered next. Keep the interaction explicit
+      // Page B5 will be delivered next. Keep the interaction explicit
       // instead of showing a browser 404 while their routes are not available yet.
       event.preventDefault();
       window.alert("หน้านี้กำลังพัฒนาและจะเปิดใช้งานในขั้นตอนถัดไปของ V4");

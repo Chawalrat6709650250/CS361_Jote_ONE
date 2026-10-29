@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="ผลการเรียนรายวิชาของนักศึกษา" />
+    <title>ผลการเรียนของฉัน | CSTU</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../src/css/style.css?v=20261028-student-menu-2" />
+    <link
+      rel="stylesheet"
+      href="../src/css/transcript.css?v=20261029-neutral-table-header"
+    />
+  </head>
+
+  <body data-root="../" data-page="transcript">
+    <!-- ส่วนหัวของเว็บไซต์ จัดการโดย src/js/header.js -->
+    <div id="site-header"></div>
+
+    <main class="transcript-page">
+      <!-- เส้นทางนำทางกลับไปยังหน้าของนักศึกษา -->
+      <nav class="transcript-breadcrumb" aria-label="เส้นทางนำทาง">
+        <a href="student-dashboard.html?preview=1" aria-label="หน้าของนักศึกษา">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z" />
+          </svg>
+          <span>หน้าของนักศึกษา</span>
+        </a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">ผลการเรียนของฉัน</span>
+      </nav>
+
+      <section class="transcript" aria-labelledby="transcript-title">
+        <!-- ชื่อหน้าและสถานะเวลาอัปเดตล่าสุด -->
+        <header class="transcript__heading">
+          <div>
+            <h1 id="transcript-title">ผลการเรียนของฉัน</h1>
+            <p>รายวิชาที่คุณเรียนทั้งหมด</p>
+          </div>
+
+          <div class="transcript__updated" aria-live="polite">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <rect x="4" y="5" width="16" height="15" rx="2" />
+              <path d="M8 3v4M16 3v4M4 10h16" />
+            </svg>
+            <span id="transcript-updated">กำลังตรวจสอบข้อมูลล่าสุด…</span>
+            <button id="transcript-refresh" type="button" aria-label="รีเฟรชข้อมูล">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M20 11a8 8 0 0 0-14.8-4.2L3 9m0-5v5h5M4 13a8 8 0 0 0 14.8 4.2L21 15m0 5v-5h-5" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="transcript-panel" aria-label="รายวิชาที่ลงทะเบียนเรียน">
+          <!-- ตัวกรองภาคการศึกษา -->
+          <form id="transcript-filters" class="transcript-filters">
+            <label class="transcript-term-field">
+              <span>ภาคการศึกษา</span>
+
+              <div class="transcript-select">
+                <button
+                  id="transcript-term-button"
+                  class="transcript-select__button"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="transcript-term-options"
+                >
+                  <span id="transcript-term-label">ทั้งหมด</span>
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+
+                <ul
+                  id="transcript-term-options"
+                  class="transcript-select__options"
+                  role="listbox"
+                  hidden
+                >
+                  <li>
+                    <button type="button" role="option" aria-selected="true" data-value="all">
+                      ทั้งหมด
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" role="option" aria-selected="false" data-value="1/2567">
+                      1/2567
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" role="option" aria-selected="false" data-value="2/2567">
+                      2/2567
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" role="option" aria-selected="false" data-value="S/2567">
+                      S/2567
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" role="option" aria-selected="false" data-value="1/2568">
+                      1/2568
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" role="option" aria-selected="false" data-value="2/2568">
+                      2/2568
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- เก็บค่าที่เลือกไว้สำหรับ JavaScript โดยไม่แสดง native select ซ้ำ -->
+              <input id="transcript-term" name="term" type="hidden" value="all" />
+            </label>
+          </form>
+
+          <!-- JavaScript จะสร้างตารางรายวิชาแต่ละภาคการศึกษาในส่วนนี้ -->
+          <div id="transcript-groups"></div>
+
+          <!-- คำอธิบายคำย่อใต้ตาราง -->
+          <section class="transcript-glossary" aria-labelledby="transcript-glossary-title">
+            <h2 id="transcript-glossary-title">ความหมายของอักษรย่อ</h2>
+            <dl>
+              <div>
+                <dt>CR (Credit Registered)</dt>
+                <dd>ผลรวมหน่วยกิตที่ลงทะเบียน</dd>
+              </div>
+              <div>
+                <dt>CE (Credit Earned)</dt>
+                <dd>ผลรวมหน่วยกิตที่ได้รับ</dd>
+              </div>
+              <div>
+                <dt>CL (Credit Loaded)</dt>
+                <dd>ผลรวมหน่วยกิตของเกรดตัวที่มีค่าระดับ</dd>
+              </div>
+              <div>
+                <dt>GP (Grade Point)</dt>
+                <dd>ค่าคะแนน เป็นผลรวมของตัวคูณระหว่าง CL กับค่าระดับของเกรดที่ได้</dd>
+              </div>
+              <div>
+                <dt>GPA (Grade Point Average)</dt>
+                <dd>คะแนนเฉลี่ยรายภาค คำนวณจาก GP หารด้วย CL</dd>
+              </div>
+              <div>
+                <dt>GPAX</dt>
+                <dd>คะแนนเฉลี่ยสะสม</dd>
+              </div>
+            </dl>
+
+            <h3>หมายเหตุ</h3>
+            <ul>
+              <li>เกรดที่แสดงเป็นค่าที่คำนวณสะสม เพื่อให้เห็นการเคลื่อนไหวของยอดแต้มคะแนน</li>
+              <li>ค่าที่คำนวณเมื่อจบภาคเรียนจะเป็นค่าที่พิมพ์ใน Transcript</li>
+              <li>เกรดอาจยังไม่แสดงระหว่างรอการตรวจสอบหรือประกาศผล</li>
+            </ul>
+          </section>
+
+          <!-- แม่แบบตารางที่ JavaScript คัดลอกสำหรับแต่ละภาคการศึกษา -->
+          <template id="transcript-group-template">
+            <section class="transcript-group">
+              <h2 class="transcript-group__title"></h2>
+
+              <div class="transcript-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>รหัสวิชา</th>
+                      <th>ชื่อวิชา</th>
+                      <th>หน่วยกิต</th>
+                      <th>เกรด/คะแนน</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <footer class="transcript-summary">
+                <div class="transcript-summary__header transcript-summary__header--this">
+                  <strong>THIS SEMESTER</strong>
+                </div>
+                <div class="transcript-summary__header transcript-summary__header--cumulative">
+                  <strong>
+                    สถานภาพทางวิชาการ :
+                    <span class="transcript-summary__standing"></span>
+                  </strong>
+                  <strong>CUMULATIVE TO THIS SEMESTER</strong>
+                </div>
+                <div class="transcript-summary__metrics transcript-summary__this"></div>
+                <div class="transcript-summary__metrics transcript-summary__cumulative"></div>
+              </footer>
+            </section>
+          </template>
+        </section>
+      </section>
+    </main>
+
+    <!-- ส่วนท้ายของเว็บไซต์ จัดการโดย src/js/footer.js -->
+    <div id="site-footer"></div>
+
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js?v=20261029-b3-preview-link"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/transcript.js?v=20261029-valid-grades"></script>
+  </body>
+</html>
