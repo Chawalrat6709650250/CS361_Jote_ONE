@@ -64,18 +64,24 @@
       if (
         target.pathname.endsWith("graduation-requirements.html") ||
         target.pathname.endsWith("graduation-check.html") ||
-        target.pathname.endsWith("transcript.html")
+        target.pathname.endsWith("transcript.html") ||
+        target.pathname.endsWith("faq.html")
       ) {
-        if (isPreview && (target.pathname.endsWith("graduation-check.html") || target.pathname.endsWith("transcript.html"))) {
+        if (
+          isPreview &&
+          (target.pathname.endsWith("graduation-check.html") ||
+            target.pathname.endsWith("transcript.html"))
+        ) {
           event.preventDefault();
-          const nextPage = target.pathname.endsWith("graduation-check.html") ? "graduation-check.html" : "transcript.html";
+          const nextPage = target.pathname.endsWith("graduation-check.html")
+            ? "graduation-check.html"
+            : "transcript.html";
           window.location.assign(`${nextPage}?preview=1`);
         }
         return;
       }
 
-      // Page B5 will be delivered next. Keep the interaction explicit
-      // instead of showing a browser 404 while their routes are not available yet.
+      // Keep routes that are still not available explicit instead of showing a browser 404.
       event.preventDefault();
       window.alert("หน้านี้กำลังพัฒนาและจะเปิดใช้งานในขั้นตอนถัดไปของ V4");
     });

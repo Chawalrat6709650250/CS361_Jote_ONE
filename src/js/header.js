@@ -6,6 +6,8 @@
   const page = document.body.dataset.page || "programs";
   const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
   const previewQuery = isPreview ? "?preview=1" : "";
+  // เก็บหน้าปัจจุบันไว้ เพื่อให้เข้าสู่ระบบแล้วกลับมาหน้าเดิม (รวมถึงหน้า FAQ)
+  const loginUrl = `${root}pages/login.html?next=${encodeURIComponent(window.location.href)}`;
 
   const personIcon = `
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -56,7 +58,7 @@
       </nav>
       <div class="header-right">
         <div class="header-auth">
-          <a class="header-auth__login" href="${root}pages/login.html">
+          <a class="header-auth__login" href="${loginUrl}">
             <span class="header-auth__avatar header-auth__avatar--guest">${personIcon}</span>
             <span>เข้าสู่ระบบ</span>
           </a>
