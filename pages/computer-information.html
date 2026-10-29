@@ -172,6 +172,19 @@
       <p>ผู้เรียนจะได้ฝึกทักษะในการปฏิบัติงานจริง พร้อมด้วยอุปกรณ์สนับสนุนการเรียนรู้ที่ทันสมัย และสามารถต่อยอดสู่อาชีพหลากหลายได้</p>
       -->
    </section>
+   <!-- รายวิชาทดสอบ V3 (ข้อมูลจากตาราง TestCourses ผ่าน API, สร้างโดย src/js/test-courses.js) -->
+   <section class="test-courses" data-test-courses>
+    <h2>
+     รายวิชาตามปีหลักสูตร (ชุดข้อมูลทดสอบ)
+    </h2>
+    <p>
+     เลือกปีหลักสูตรแล้วกดที่รายวิชาเพื่อดูหน่วยกิตและวิชาบังคับก่อน
+    </p>
+    <div class="test-courses__tabs" role="tablist" aria-label="ปีหลักสูตร"></div>
+    <p class="test-courses__status" aria-live="polite" hidden></p>
+    <div class="test-courses__list"></div>
+    <div class="test-courses__detail" aria-live="polite" hidden></div>
+   </section>
    <!-- การฝึกงานหรือสหกิจของหลักสูตร -->
    <section>
     <h2>
@@ -276,5 +289,6 @@
   <script src="../src/js/header.js?v=20261016-login-header-11"></script>
   <script src="../src/js/footer.js"></script>
   <script src="../src/js/main.js"></script>
+  <script src="../src/js/test-courses.js"></script>
  </body>
 </html>

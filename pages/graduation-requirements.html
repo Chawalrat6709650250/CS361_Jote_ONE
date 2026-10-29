@@ -54,13 +54,9 @@
             <span class="field-group__body"
               ><span>สาขาวิชา</span>
               <select id="program-select" name="program">
-                <option value="BSC-CS-2566-CIS-PROJECT">
-                  วิทยาการคอมพิวเตอร์
-                </option>
-                <option value="BSC-CS-2566-ACS-PROJECT">
-                  วิทยาการคอมพิวเตอร์ประยุกต์
-                </option>
-                <option value="BSC-CNC-2568-PROJECT">
+                <option value="CIS">วิทยาการคอมพิวเตอร์</option>
+                <option value="ACS">วิทยาการคอมพิวเตอร์ประยุกต์</option>
+                <option value="CNC">
                   วิทยาการคอมพิวเตอร์เครือข่ายและความปลอดภัย
                 </option>
               </select>
@@ -73,7 +69,10 @@
             <span class="field-group__body"
               ><span>ปีหลักสูตร</span>
               <select id="year-select" name="year">
-                <option value="2566">2566</option>
+                <option value="TEST-2561">2561 (ชุดข้อมูลทดสอบ)</option>
+                <option value="2562">2562</option>
+                <option value="2566" selected>2566</option>
+                <option value="TEST-2566">2566 (ชุดข้อมูลทดสอบ)</option>
                 <option value="2568">2568</option>
               </select>
             </span>
@@ -116,6 +115,6 @@
     <script src="../src/js/auth.js"></script>
     <script src="../src/js/header.js?v=20261016-login-header-11"></script>
     <script src="../src/js/footer.js"></script>
-    <script src="../src/js/graduation-requirements.js"></script>
+    <script src="../src/js/graduation-requirements.js?v=20261019-2562"></script>
   </body>
 </html>

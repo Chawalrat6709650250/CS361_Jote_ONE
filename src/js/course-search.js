@@ -11,6 +11,11 @@ const RANK = { "บังคับ": 0, "โครงงาน": 1, "สหก�
 const byCode = new Map(); // course_code -> course
 let all = [], plans = [], planData = {}, planLoading = {}, picked = new Set(), timer;
 const detailCache = {};
+// ชุดข้อมูลทดสอบ V3 (ตาราง TestCourses): เลือกได้จากช่องแผนการเรียน ใช้ค่า "TEST-2561" / "TEST-2566"
+const TEST_YEARS = ["2561", "2566"], TEST_PREFIX = "TEST-";
+const TEST_TYPE = { g: "ศึกษาทั่วไป", l: "ชุดข้อมูลทดสอบ" };
+const testData = {}, testLoading = {}; // year -> [course] / year -> Promise ระหว่างโหลด
+const isTest = (id) => String(id).startsWith(TEST_PREFIX);
 const $ = (id) => document.getElementById(id);
 const esc = (x) => String(x ?? "").replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
 const strip = (s) => String(s ?? "").toLowerCase().replace(/\s+/g, "");
@@ -170,11 +175,28 @@ async function loadPlans() {
     const groups = {};
     plans.forEach((p) => { (groups[yearOfCurriculum(p.curriculum_id)] ||= []).push(p); });
     $("plan").innerHTML = '<option value="">ทั้งหมด</option>' + Object.keys(groups).sort().map((y) =>
-      `<optgroup label="หลักสูตร ${esc(y)}">` + groups[y].map((p) => `<option value="${esc(p.study_plan_id)}">${esc(p.plan_name_th || p.study_plan_id)}</option>`).join("") + "</optgroup>").join("");
+      `<optgroup label="หลักสูตร ${esc(y)}">` + groups[y].map((p) => `<option value="${esc(p.study_plan_id)}">${esc(p.plan_name_th || p.study_plan_id)}</option>`).join("") + "</optgroup>").join("") + testOptions();
     await Promise.allSettled(plans.map((p) => loadPlan(p.study_plan_id)));
     render();
-  } catch { /* ถ้าโหลดแผนไม่ได้ จะยังค้นหารายวิชาได้ตามปกติ */ }
+  } catch { /* ถ้าโหลดแผนไม่ได้ จะยังค้นหารายวิชาได้ตามปกติ */
+    if (!$("plan").querySelector(`[value^="${TEST_PREFIX}"]`)) $("plan").insertAdjacentHTML("beforeend", testOptions());
+  }
 }
+function testOptions() {
+  return '<optgroup label="ชุดข้อมูลทดสอบ (TestCourses)">' + TEST_YEARS.map((y) => `<option value="${TEST_PREFIX}${y}">หลักสูตร ${y} (ทดสอบ)</option>`).join("") + "</optgroup>";
+}
+// โหลดรายวิชาทดสอบของปีหนึ่ง แปลงเป็นรูปเดียวกับ course ปกติ (แยกจาก byCode เพื่อไม่ปนกับข้อมูลจริง)
+function loadTest(year) {
+  if (!testLoading[year]) testLoading[year] = callApi({ resource: "test_courses", year }).then((j) => {
+    testData[year] = ((j.data && j.data.courses) || []).map((r) => ({
+      code: r.course_code, th: r.title_th || "", en: r.title_en || "", cr: num(r.credits), crText: r.credits,
+      recs: [], places: [], year, prerequisite: r.prerequisite, note: r.test_note || "",
+    }));
+  }).catch((e) => { delete testLoading[year]; throw e; });
+  return testLoading[year];
+}
+const testCourses = (plan) => testData[plan.slice(TEST_PREFIX.length)] || [];
+
 function loadPlan(id) {
   if (!planLoading[id]) planLoading[id] = (async () => {
     const j = await callApi({ resource: "study_plan", study_plan_id: id });
@@ -199,7 +221,15 @@ function loadPlan(id) {
 function filtered() {
   const q = strip($("q").value), yr = $("yr").value, cr = $("cr").value, s = $("sort").value, plan = $("plan").value;
   const out = [];
-  all.forEach((c) => {
+  if (isTest(plan)) {
+    // ชุดข้อมูลทดสอบไม่มีชั้นปี/ภาคเรียน และไม่มีประเภทวิชา
+    if (yr || (picked.size && !picked.has(TEST_TYPE.g))) return out;
+    testCourses(plan).forEach((c) => {
+      if (q && !strip(c.code + c.th + c.en).includes(q)) return;
+      if (cr && String(c.cr) !== cr) return;
+      out.push({ c, p: null, t: TEST_TYPE });
+    });
+  } else all.forEach((c) => {
     if (q && !strip(c.code + (c.codeTh || "") + c.th + c.en).includes(q)) return;
     if (cr && String(c.cr) !== cr) return;
     const p = placeFor(c, plan, yr);
@@ -267,7 +297,30 @@ async function getDetail(code) {
   return detailCache[code];
 }
 
+// popup ของวิชาในชุดข้อมูลทดสอบ: ใช้ข้อมูลที่โหลดมาแล้ว ไม่ต้องเรียก API เพิ่ม
+function openTestDetail(code, plan) {
+  const c = testCourses(plan).find((x) => x.code === code), d = $("dlg");
+  if (!c) return;
+  const p = c.prerequisite || {};
+  const cell = (k, v) => `<div><small>${k}</small><span>${v}</span></div>`;
+  const items = (p.items || []).map((it, i) => `<li>${i ? `<b>${p.op === "OR" ? "หรือ" : "และ"}</b> ` : ""}<span class="c">${esc(it.course)}</span> ` +
+    (it.condition === "min_grade" ? `ได้เกรดไม่ต่ำกว่า ${esc(it.grade)}` : "เคยศึกษา") + "</li>").join("");
+  d.style.setProperty("--rule", RULE[TEST_TYPE.g]);
+  d.innerHTML = `<div class="dh"><h2 id="dlgTitle"><span class="c">${esc(code)}</span>${esc(c.th || c.en)}</h2><div class="en">${esc(c.th ? c.en : "")}</div><hr><button class="x" id="closeDlg" aria-label="ปิด">✕</button></div>
+    <div class="db" id="dbody"><div class="kind">${esc(TEST_TYPE.l)}</div>
+      <div class="info">
+        ${cell("ปีหลักสูตร", esc(c.year))}
+        ${cell("หน่วยกิต", esc(c.crText || c.cr))}
+        ${cell("วิชาบังคับก่อน", esc(p.text || "ไม่มี"))}
+        ${c.note ? cell("หมายเหตุ", esc(c.note)) : ""}
+      </div>
+      <h3>เงื่อนไขวิชาบังคับก่อน</h3>${items ? `<ul class="next">${items}</ul>` : "<p>ไม่มีวิชาบังคับก่อน</p>"}</div>`;
+  $("closeDlg").onclick = () => d.close();
+  d.showModal();
+}
+
 async function openDetail(code, tLabel, g) {
+  if (isTest($("plan").value)) return openTestDetail(code, $("plan").value);
   const c = byCode.get(code), d = $("dlg");
   d.style.setProperty("--rule", RULE[g] || "#c9c9c9");
   const head = (title, en) => `<div class="dh"><h2 id="dlgTitle"><span class="c">${esc(code)}</span>${esc(title)}</h2><div class="en">${esc(en)}</div><hr><button class="x" id="closeDlg" aria-label="ปิด">✕</button></div>`;
@@ -332,7 +385,11 @@ $("searchForm").addEventListener("submit", (e) => { e.preventDefault(); render()
 ["yr", "cr", "sort"].forEach((i) => $(i).addEventListener("change", render));
 $("plan").addEventListener("change", async () => {
   const id = $("plan").value;
-  if (id && !planData[id]) { $("results").innerHTML = '<div class="cs-sk"></div><div class="cs-sk"></div>'; await loadPlan(id); }
+  if (isTest(id)) {
+    $("results").innerHTML = '<div class="cs-sk"></div><div class="cs-sk"></div>';
+    try { await loadTest(id.slice(TEST_PREFIX.length)); }
+    catch (e) { showErr("โหลดชุดข้อมูลทดสอบไม่สำเร็จ: " + esc(e.message)); }
+  } else if (id && !planData[id]) { $("results").innerHTML = '<div class="cs-sk"></div><div class="cs-sk"></div>'; await loadPlan(id); }
   render();
 });
 drawChips();

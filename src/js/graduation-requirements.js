@@ -14,16 +14,59 @@
   const searchButton = form.querySelector(".search-button");
   // ชุดข้อมูลที่มีหลักสูตรรองรับในระบบปัจจุบัน
   // หากเพิ่มหลักสูตรใหม่ ให้เพิ่มตัวเลือกใน HTML และเพิ่มกติกาที่นี่คู่กัน
-  const supportedPrograms = {
-    "BSC-CS-2566-CIS-PROJECT": { type: "regular", year: "2566" },
-    "BSC-CS-2566-ACS-PROJECT": { type: "special", year: "2566" },
-    "BSC-CNC-2568-PROJECT": { type: "special", year: "2568" },
-  };
+  // program = ค่าในช่องสาขาวิชา, studyPlanId = รหัสแผนที่ใช้เรียก API
+  const supportedPrograms = [
+    {
+      studyPlanId: "BSC-CS-2562-CIS-PROJECT",
+      program: "CIS",
+      type: "regular",
+      year: "2562",
+    },
+    {
+      studyPlanId: "BSC-CS-2562-ACS-PROJECT",
+      program: "ACS",
+      type: "special",
+      year: "2562",
+    },
+    {
+      studyPlanId: "BSC-CS-2566-CIS-PROJECT",
+      program: "CIS",
+      type: "regular",
+      year: "2566",
+    },
+    {
+      studyPlanId: "BSC-CS-2566-ACS-PROJECT",
+      program: "ACS",
+      type: "special",
+      year: "2566",
+    },
+    {
+      studyPlanId: "BSC-CNC-2568-PROJECT",
+      program: "CNC",
+      type: "special",
+      year: "2568",
+    },
+    // ชุดข้อมูลทดสอบ V3 (ตาราง TestCourses) วิชาเอกคอมพิวเตอร์และวิทยาการสารสนเทศ
+    { testYear: "2561", program: "CIS", type: "regular", year: "TEST-2561" },
+    { testYear: "2566", program: "CIS", type: "regular", year: "TEST-2566" },
+  ];
+
+  // หาแผนการศึกษาที่ตรงกับประเภทหลักสูตร/สาขา/ปีที่เลือกอยู่
+  const findSelectedPlan = () =>
+    supportedPrograms.find(
+      (item) =>
+        item.program === programSelect.value &&
+        item.type === typeSelect.value &&
+        item.year === yearSelect.value,
+    );
 
   // ข้อมูลสำรอง: ใช้แสดงผลระหว่างที่ API ยังตอบไม่ได้หรือยังติด CORS
-  function getMockPlan(studyPlanId = programSelect.value) {
+  function getMockPlan(
+    studyPlanId = findSelectedPlan()?.studyPlanId ?? "BSC-CS-2566-CIS-PROJECT",
+  ) {
     const isCnc = studyPlanId.startsWith("BSC-CNC-2568");
     const isCis = studyPlanId.includes("-CIS-");
+    const csYear = studyPlanId.match(/(25\d{2})/)?.[1] ?? "2566";
     const programName =
       programSelect.selectedOptions[0]?.textContent ?? "หลักสูตร";
 
@@ -74,7 +117,7 @@
 
     return {
       programName,
-      year: "2566",
+      year: csYear,
       type: typeSelect.selectedOptions[0]?.textContent ?? "ภาคพิเศษ",
       categories: [
         {
@@ -158,6 +201,12 @@
       .map((key) => item?.[key])
       .find((value) => value !== undefined && value !== null && value !== "") ??
     fallback;
+  const esc = (value) =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (ch) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch],
+    );
   const number = (value) =>
     Number(String(value ?? "0").replace(/[^0-9.]/g, "")) || 0;
   const icon = (name) => {
@@ -304,6 +353,39 @@
     };
   }
 
+  // แปลงรายวิชาจาก resource=test_courses ให้อยู่ในรูปเดียวกับ plan ที่ displayPlan ใช้
+  function testPlan(data, year) {
+    const courses = [...(data?.courses ?? [])].sort((a, b) =>
+      a.course_code.localeCompare(b.course_code),
+    );
+    const rows = courses.map((c) => [
+      `${esc(c.course_code)} ${esc(c.title_th || c.title_en)}`,
+      esc(c.credits),
+      `วิชาบังคับก่อน: ${esc(c.prerequisite?.text || "ไม่มี")}` +
+        (c.test_note ? `<br>หมายเหตุ: ${esc(c.test_note)}` : ""),
+    ]);
+    return {
+      programName: "วิชาเอกคอมพิวเตอร์และวิทยาการสารสนเทศ (ชุดข้อมูลทดสอบ)",
+      year,
+      type: typeSelect.selectedOptions[0]?.textContent,
+      categories: [
+        {
+          key: "major",
+          label: "รายวิชาชุดข้อมูลทดสอบ",
+          // credits เป็นข้อความ เช่น "3 (3-0-6)" จึงใช้ parseFloat แทน number()
+          credits: courses.reduce((sum, c) => sum + (parseFloat(c.credits) || 0), 0),
+          rows,
+        },
+      ],
+      graduationCriteria: [
+        `ข้อมูลจากตาราง TestCourses หลักสูตรปี ${year} ใช้สำหรับทดสอบระบบเท่านั้น ไม่ใช่เงื่อนไขการสำเร็จการศึกษาจริง`,
+        ...courses
+          .filter((c) => c.prerequisite?.text)
+          .map((c) => `${esc(c.course_code)}: ${esc(c.prerequisite.text)}`),
+      ],
+    };
+  }
+
   function displayPlan(plan, message = "แสดงข้อมูลล่าสุดจาก API") {
     const total = plan.categories.reduce(
       (sum, category) => sum + number(category.credits),
@@ -317,7 +399,7 @@
     ]
       .map(
         (category, index) => `
-      <article class="summary-card summary-card--${colorKeys[index] ?? "total"}">
+      <article class="summary-card summary-card--${colorKeys.includes(category.key) ? category.key : (colorKeys[index] ?? "total")}">
         <span class="summary-card__icon">${icon(category.key)}</span>
         <div><span class="summary-card__label">${category.label}</span><span class="summary-card__value">${category.credits}</span><span class="summary-card__unit">หน่วยกิต</span></div>
       </article>`,
@@ -440,25 +522,14 @@
 
   function setSearchAvailability() {
     // ป้องกันการเรียก API ด้วยชุดประเภทหลักสูตร/สาขา/ปีที่ไม่มีอยู่จริง
-    const supportedProgram = supportedPrograms[programSelect.value];
-    const incorrectFields = [];
-    const requiredType = typeSelect.querySelector(
-      `option[value="${supportedProgram.type}"]`,
-    ).textContent;
-    if (typeSelect.value !== supportedProgram.type) {
-      incorrectFields.push(requiredType);
-    }
-    if (yearSelect.value !== supportedProgram.year) {
-      incorrectFields.push(`ปี ${supportedProgram.year}`);
-    }
-    const isSupported = incorrectFields.length === 0;
+    const isSupported = Boolean(findSelectedPlan());
 
     searchButton.disabled = !isSupported;
     searchButton.setAttribute("aria-disabled", String(!isSupported));
 
     if (!isSupported) {
       status.className = "requirements-status is-error";
-      status.textContent = `ยังไม่มีหลักสูตร ${programSelect.selectedOptions[0].textContent} ในชุดที่เลือก กรุณาเลือก${incorrectFields.join(" และ ")}`;
+      status.textContent = `ยังไม่มีหลักสูตร ${programSelect.selectedOptions[0].textContent} ในชุดที่เลือก กรุณาเลือกประเภทหลักสูตรหรือปีหลักสูตรอื่น`;
     } else if (status.textContent.startsWith("ยังไม่มีหลักสูตร")) {
       status.className = "requirements-status";
       status.textContent = "พร้อมค้นหาเงื่อนไขการสำเร็จการศึกษา";
@@ -470,9 +541,22 @@
   async function loadRequirements() {
     status.className = "requirements-status is-loading";
     status.textContent = "กำลังโหลดข้อมูลเงื่อนไขการสำเร็จการศึกษา...";
+    const selected = findSelectedPlan();
+    if (selected.testYear) {
+      try {
+        const data = await request("test_courses", { year: selected.testYear });
+        displayPlan(testPlan(data, selected.testYear), "แสดงชุดข้อมูลทดสอบจาก API (TestCourses)");
+      } catch (error) {
+        status.className = "requirements-status is-error";
+        status.textContent = `โหลดชุดข้อมูลทดสอบไม่สำเร็จ: ${error.message}`;
+        console.warn("Test courses API error:", error);
+      }
+      bindAccordions();
+      return;
+    }
     try {
       const detail = await request("study_plan", {
-        study_plan_id: programSelect.value,
+        study_plan_id: selected.studyPlanId,
       });
       const normalised = normalisePlan(detail);
       if (!normalised)
@@ -491,14 +575,52 @@
     }
   }
 
+  // อัปเดตข้อความและตัวเลือกที่ถูกเลือกของ custom dropdown ให้ตรงกับ native select
+  function syncCustomSelect(select) {
+    const customSelect = select.nextElementSibling;
+    if (!customSelect?.classList.contains("custom-select")) return;
+    customSelect.querySelector(".custom-select__trigger span").textContent =
+      select.selectedOptions[0].textContent;
+    customSelect.querySelectorAll(".custom-select__option").forEach((choice) => {
+      const selected = choice.dataset.value === select.value;
+      choice.classList.toggle("is-selected", selected);
+      choice.setAttribute("aria-selected", String(selected));
+    });
+  }
+
+  // เมื่อกรองช่องใดช่องหนึ่ง ให้ช่องที่เหลือขยับไปเป็นชุดหลักสูตรที่มีอยู่จริง
+  // โดยพยายามคงค่าเดิมของช่องอื่นไว้ให้มากที่สุด
+  function alignFilters(changedField) {
+    const current = {
+      program: programSelect.value,
+      type: typeSelect.value,
+      year: yearSelect.value,
+    };
+    const candidates = supportedPrograms.filter(
+      (item) => item[changedField] === current[changedField],
+    );
+    if (!candidates.length) return;
+
+    const score = (item) =>
+      ["program", "type", "year"].filter((key) => item[key] === current[key])
+        .length;
+    const best = candidates.reduce((a, b) => (score(b) > score(a) ? b : a));
+
+    programSelect.value = best.program;
+    typeSelect.value = best.type;
+    yearSelect.value = best.year;
+    [programSelect, typeSelect, yearSelect].forEach(syncCustomSelect);
+    setSearchAvailability();
+  }
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!setSearchAvailability()) return;
     loadRequirements();
   });
-  programSelect.addEventListener("change", setSearchAvailability);
-  yearSelect.addEventListener("change", setSearchAvailability);
-  typeSelect.addEventListener("change", setSearchAvailability);
+  programSelect.addEventListener("change", () => alignFilters("program"));
+  yearSelect.addEventListener("change", () => alignFilters("year"));
+  typeSelect.addEventListener("change", () => alignFilters("type"));
   createCustomDropdowns();
   displayPlan(
     getMockPlan(),
