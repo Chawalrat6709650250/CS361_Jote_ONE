@@ -585,3 +585,75 @@ select:focus {
 #rule-coop {
   margin-top: 0;
 }
+
+/* Center Add / Edit Course modal on desktop and mobile */
+dialog#json-modal.adm-dialog[open] {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(700px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 650px) {
+  dialog#json-modal.adm-dialog[open] {
+    padding: 18px;
+  }
+}
+
+/* Prerequisite editor (V4) */
+.adm-prereq-current {
+  background: #faf8f1;
+  border: 1px solid #e8dfc8;
+  border-radius: 9px;
+  padding: 14px 17px;
+  line-height: 1.65;
+  color: #604d27;
+}
+.adm-prereq-fieldset {
+  min-width: 0;
+  border: 1px solid #e8dfc8;
+  border-radius: 10px;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+.adm-prereq-fieldset legend {
+  font-weight: 700;
+  padding: 0 8px;
+}
+.adm-prereq-fieldset:disabled {
+  opacity: 0.65;
+}
+.adm-prereq-input-label {
+  display: grid;
+  gap: 7px;
+}
+.adm-prereq-clear {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff9f0;
+  padding: 12px;
+  border-radius: 8px;
+}
+.adm-prereq-clear input {
+  width: auto;
+}
+.adm-prereq-preview {
+  background: #eef7ef;
+  border: 1px solid #bfdcc4;
+  border-radius: 9px;
+  padding: 15px;
+  line-height: 1.7;
+}
+.adm-prereq-preview p {
+  margin: 7px 0 0;
+  overflow-wrap: anywhere;
+}
+.adm-prereq-preview[hidden] {
+  display: none;
+}

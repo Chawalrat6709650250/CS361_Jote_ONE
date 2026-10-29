@@ -12,6 +12,7 @@
     />
     <link rel="stylesheet" href="../src/css/style.css" />
     <link rel="stylesheet" href="../src/css/admin.css" />
+    <link rel="stylesheet" href="../src/css/admin-required-list.css" />
   </head>
   <body data-root="../" data-page="admin">
     <div id="site-header"></div>
@@ -100,7 +101,13 @@
         </section>
         <section class="adm-panel" data-panel="prereq" hidden>
           <div class="adm-section-head">
-            <div><h3>แก้ไขวิชาบังคับก่อน</h3></div>
+            <div>
+              <h3>จัดการวิชาบังคับก่อน</h3>
+              <p>
+                เลือกวิชา ดูเงื่อนไขเดิม แล้วแก้ไขหรือยกเลิกเงื่อนไข
+                พร้อมระบุเหตุผลทุกครั้ง
+              </p>
+            </div>
           </div>
           <form id="prereq-form" class="adm-form">
             <div class="adm-fields">
@@ -111,47 +118,114 @@
                   <option value="2561">หลักสูตรปี 2561</option>
                   <option value="2566">หลักสูตรปี 2566</option>
                 </select></label
-              ><label
-                >รหัสวิชา <input id="pre-code" required placeholder="CS... "
-              /></label>
-            </div>
-            <div class="adm-fields">
-              <label
-                >การจับคู่
-                <select id="pre-op">
-                  <option value="AND">ต้องครบทุกวิชา (AND)</option>
-                  <option value="OR">ผ่านอย่างใดอย่างหนึ่ง (OR)</option>
-                </select></label
-              ><label
-                >ประเภทเงื่อนไข
-                <select id="pre-condition">
-                  <option value="taken">เคยศึกษา</option>
-                  <option value="min_grade">เกรดขั้นต่ำ</option>
-                </select></label
-              ><label
-                >เกรดขั้นต่ำ
-                <select id="pre-grade">
-                  <option>C</option>
-                  <option>C+</option>
-                  <option>B</option>
-                  <option>B+</option>
-                  <option>A</option>
-                  <option>D</option>
-                  <option>D+</option>
-                </select></label
               >
+              <label
+                >รหัสวิชาที่ต้องการแก้
+                <input
+                  id="pre-code"
+                  required
+                  list="pre-course-options"
+                  placeholder="เช่น CS254"
+                  autocomplete="off" /><datalist
+                  id="pre-course-options"
+                ></datalist
+              ></label>
+              <button type="button" class="adm-btn" id="pre-load">
+                ดูเงื่อนไขเดิม
+              </button>
             </div>
-            <label
-              >รหัสวิชาที่ต้องเรียนก่อน (คั่นด้วยจุลภาค)
-              <input id="pre-list" placeholder="เช่น CS101, CS102" /></label
-            ><textarea id="pre-json" hidden aria-hidden="true">
-{
-  "prerequisite": []
-}</textarea
+            <div
+              id="pre-current"
+              class="adm-prereq-current"
+              role="status"
+              aria-live="polite"
             >
+              เลือกปีหลักสูตรและรหัสวิชา แล้วกด “ดูเงื่อนไขเดิม” ก่อนแก้ไข
+            </div>
+            <fieldset id="pre-edit-fields" class="adm-prereq-fieldset" disabled>
+              <legend>กำหนดเงื่อนไขใหม่</legend>
+              <div class="adm-fields">
+                <label
+                  >การจับคู่
+                  <select id="pre-op">
+                    <option value="AND">ต้องครบทุกวิชา (AND)</option>
+                    <option value="OR">ผ่านอย่างใดอย่างหนึ่ง (OR)</option>
+                  </select></label
+                >
+                <label
+                  >ประเภทเงื่อนไข
+                  <select id="pre-condition">
+                    <option value="taken">เคยศึกษา</option>
+                    <option value="min_grade">เกรดขั้นต่ำ</option>
+                  </select></label
+                >
+                <label
+                  >เกรดขั้นต่ำ
+                  <select id="pre-grade">
+                    <option value="C">C</option>
+                    <option value="C+">C+</option>
+                    <option value="B">B</option>
+                    <option value="B+">B+</option>
+                    <option value="A">A</option>
+                    <option value="D">D</option>
+                    <option value="D+">D+</option>
+                  </select></label
+                >
+              </div>
+              <label class="adm-prereq-input-label"
+                >รหัสวิชาที่ต้องเรียนก่อน (คั่นด้วยจุลภาค)
+                <input
+                  id="pre-list"
+                  placeholder="เช่น CS111, CS101"
+                  autocomplete="off"
+              /></label>
+              <p class="adm-hint">
+                รายการที่บันทึกจะ
+                <strong>แทนที่เงื่อนไขเดิมทั้งชุด</strong>
+                ไม่ได้เพิ่มต่อท้ายอัตโนมัติ (สูงสุด 10 วิชา)
+              </p>
+              <label class="adm-prereq-clear"
+                ><input type="checkbox" id="pre-remove" />
+                ยกเลิกวิชาบังคับก่อนทั้งหมดของวิชานี้</label
+              >
+              <label class="adm-prereq-input-label"
+                >เหตุผลในการแก้ไข *
+                <textarea
+                  id="pre-reason"
+                  rows="3"
+                  maxlength="500"
+                  minlength="3"
+                  placeholder="เช่น ปรับวิชาบังคับก่อนตามมติหลักสูตร"
+                ></textarea>
+              </label>
+              <p class="adm-hint">
+                เหตุผลต้องมี 3–500 ตัวอักษร และจะบันทึกในประวัติการเปลี่ยนแปลง
+              </p>
+              <textarea id="pre-json" hidden aria-hidden="true"></textarea>
+              <div class="adm-actions">
+                <button
+                  type="submit"
+                  class="adm-btn adm-btn-dark"
+                  id="pre-preview-button"
+                >
+                  ตรวจสอบก่อนบันทึก
+                </button>
+              </div>
+            </fieldset>
+            <div
+              id="pre-preview"
+              class="adm-prereq-preview"
+              role="status"
+              hidden
+            ></div>
             <div class="adm-actions">
-              <button class="adm-btn adm-btn-dark" type="submit">
-                บันทึกวิชาบังคับก่อน
+              <button
+                type="button"
+                id="pre-save"
+                class="adm-btn adm-btn-dark"
+                hidden
+              >
+                ยืนยันและบันทึกลง AWS
               </button>
             </div>
           </form>
@@ -241,7 +315,7 @@
                 <input
                   type="number"
                   id="edit-rule-credits"
-                  min="0"
+                  min="1"
                   step="1"
                   required
               /></label>
@@ -258,6 +332,52 @@
             </div>
             <h4>หน่วยกิตขั้นต่ำตามหมวดวิชา</h4>
             <div id="edit-rule-categories" class="adm-rule-edit-cats"></div>
+            <section
+              class="adm-required-editor"
+              aria-labelledby="req-editor-heading"
+            >
+              <h4 id="req-editor-heading">
+                รายวิชาบังคับสำหรับการจบ
+                <span id="edit-required-count" class="adm-muted-count"></span>
+              </h4>
+              <p class="adm-editor-help">
+                เพิ่มหรือลบรหัสวิชาที่นักศึกษาต้องผ่านเพื่อสำเร็จการศึกษา
+                (ไม่ใช่ “วิชาบังคับก่อน”)
+              </p>
+              <div
+                id="edit-required-list"
+                class="adm-edit-course-chips"
+                aria-live="polite"
+              ></div>
+              <div class="adm-add-required">
+                <label for="edit-required-code">รหัสวิชาที่ต้องการเพิ่ม</label>
+                <div class="adm-add-required-row">
+                  <input
+                    id="edit-required-code"
+                    type="text"
+                    placeholder="เช่น CS350"
+                    maxlength="8"
+                    autocomplete="off"
+                    aria-describedby="edit-required-help"
+                  /><button
+                    type="button"
+                    id="edit-required-add"
+                    class="adm-btn"
+                  >
+                    + เพิ่มรายวิชา
+                  </button>
+                </div>
+                <p class="adm-editor-warning" role="note">
+                  การเพิ่มหรือลบรายวิชาบังคับจะไม่ปรับหน่วยกิตขั้นต่ำอัตโนมัติ
+                  กรุณาตรวจสอบหน่วยกิตรวมและหน่วยกิตตามหมวดก่อนบันทึก
+                </p>
+                <small id="edit-required-help"
+                  >กรอกรหัสวิชา เช่น CS350 แล้วกดเพิ่ม · ลบด้วยปุ่ม “ลบ”
+                  ทางขวาของแต่ละวิชา (มีการถามยืนยันก่อนลบ) ·
+                  การเพิ่มรหัสในรายการนี้ยังไม่สร้างรายวิชาใหม่</small
+                >
+              </div>
+            </section>
             <label
               >เหตุผลในการแก้ไข <span aria-hidden="true">*</span>
               <textarea
@@ -271,7 +391,6 @@
             <small id="edit-rule-reason-help"
               >ต้องกรอกเหตุผลอย่างน้อย 3 ตัวอักษร</small
             >
-
             <div class="adm-actions">
               <button type="button" class="adm-btn" id="cancel-rule-edit">
                 ยกเลิก</button
@@ -290,6 +409,16 @@
               role="status"
               hidden
             ></div>
+            <div class="adm-actions">
+              <button
+                id="save-rule-changes"
+                class="adm-btn adm-btn-dark"
+                type="button"
+                hidden
+              >
+                ยืนยันและบันทึกลง AWS
+              </button>
+            </div>
           </form>
         </section>
         <section class="adm-panel" data-panel="changes" hidden>
@@ -304,10 +433,10 @@
           </div>
           <div class="adm-tools">
             <label
-              >ค้นหาเฉพาะรายการ (ไม่บังคับ)
+              >ค้นหาในประวัติ (รหัสวิชา / แผนการเรียน / เหตุผล)
               <input
                 id="change-entity"
-                placeholder="เช่น รหัสวิชา หรือรหัสแผนการเรียน"
+                placeholder="เช่น CS100 หรือ BSC-CS-2566"
             /></label>
           </div>
           <div class="adm-tablewrap">
