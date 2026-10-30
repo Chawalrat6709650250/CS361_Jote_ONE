@@ -657,3 +657,63 @@ dialog#json-modal.adm-dialog[open] {
 .adm-prereq-preview[hidden] {
   display: none;
 }
+
+/* Highlight the course's public visibility during create/edit. */
+.adm-course-visibility {
+  border: 2px solid #1c8b56;
+  background: #e9f8ef;
+  border-radius: 12px;
+  padding: 15px 16px;
+  margin: 12px 0 16px;
+}
+.adm-course-visibility.is-inactive {
+  border-color: #b36a15;
+  background: #fff3dc;
+}
+.adm-course-visibility-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  margin: 0;
+}
+.adm-course-visibility-toggle input {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  accent-color: #13693d;
+  cursor: pointer;
+}
+.adm-course-visibility-text {
+  display: grid;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+.adm-course-visibility-text strong {
+  font-size: 16px;
+  color: #173f2d;
+}
+.adm-course-visibility-text > span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #375648;
+}
+.adm-course-visibility-status {
+  font-weight: 700;
+  color: #125d36;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.adm-course-visibility.is-inactive .adm-course-visibility-status,
+.adm-course-visibility.is-inactive .adm-course-visibility-text strong {
+  color: #8d4d0d;
+}
+@media (max-width: 600px) {
+  .adm-course-visibility-toggle {
+    flex-wrap: wrap;
+  }
+  .adm-course-visibility-status {
+    margin-left: 38px;
+  }
+}

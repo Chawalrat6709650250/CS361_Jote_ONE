@@ -489,8 +489,8 @@
               type="number"
               id="course-credits"
               min="0"
-              max="30"
-              step="0.5"
+              max="12"
+              step="1"
               placeholder="เช่น 3"
           /></label>
         </div>
@@ -504,13 +504,56 @@
             >หมวดหมู่
             <select id="course-category">
               <option value="">ไม่ระบุ</option>
+              <option value="gen_ed">ศึกษาทั่วไป</option>
+              <option value="core">วิชาแกน</option>
               <option value="major_required">วิชาบังคับสาขา</option>
+              <option value="major_elective">วิชาเลือกสาขา</option>
+              <option value="free_elective">วิชาเลือกเสรี</option>
             </select></label
           >
         </div>
-        <label class="adm-check"
-          ><input type="checkbox" id="course-active" checked />
-          เปิดใช้งานรายวิชา</label
+        <label for="course-description"
+          >คำอธิบายรายวิชา (ภาษาไทย — ไม่บังคับ)
+          <textarea
+            id="course-description"
+            rows="4"
+            maxlength="2000"
+            placeholder="กรอกคำอธิบายรายวิชาที่ต้องการให้แสดงในหน้าค้นหารายวิชา"
+          ></textarea>
+        </label>
+        <section
+          class="adm-course-visibility"
+          id="course-visibility-box"
+          aria-labelledby="course-visibility-title"
+        >
+          <label class="adm-course-visibility-toggle" for="course-active">
+            <input type="checkbox" id="course-active" checked />
+            <span class="adm-course-visibility-text">
+              <strong id="course-visibility-title"
+                >แสดงรายวิชานี้ในหน้าค้นหารายวิชา</strong
+              >
+              <span id="course-visibility-hint" aria-live="polite"
+                >เปิดใช้งาน — ผู้ใช้ทั่วไปสามารถค้นหารายวิชานี้ได้ (เมื่อข้อมูล
+                Public API อัปเดตแล้ว)</span
+              >
+            </span>
+            <span
+              class="adm-course-visibility-status"
+              id="course-visibility-status"
+              >เปิดใช้งาน</span
+            >
+          </label>
+        </section>
+        <label
+          >เหตุผลในการเพิ่มหรือแก้ไขรายวิชา (จำเป็น)
+          <textarea
+            id="course-reason"
+            rows="2"
+            minlength="3"
+            maxlength="500"
+            required
+            placeholder="เช่น ปรับปรุงข้อมูลตามมติที่ประชุมหลักสูตร"
+          ></textarea></label
         ><textarea id="json-body" hidden aria-hidden="true"></textarea>
         <div class="adm-actions">
           <button type="button" class="adm-btn" id="cancel-json">ยกเลิก</button

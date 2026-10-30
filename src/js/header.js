@@ -127,12 +127,27 @@
     mount.querySelectorAll("[data-admin-link], .header-auth__admin-entry").forEach(el => { el.hidden = false; });
   }
 
-  if (fullName) {
+  // Mock accounts: show the test role in the header without changing identity,
+  // the personal-information menu, Cognito session, or authorization logic.
+  const mockLabels = {
+    "mock.admin": "Admin",
+    "mock.professor": "Professor",
+    "mock.staff": "Staff",
+  };
+  const username = String(me?.username || "").toLowerCase();
+  const mockLabel = Object.prototype.hasOwnProperty.call(mockLabels, username)
+    ? mockLabels[username]
+    : null;
+  const headerName = mockLabel || fullName;
+
+  if (headerName) {
     loginLink.hidden = true;
     accountMenu.hidden = false;
-    avatar.textContent = initialOf(fullName);
-    userLabel.textContent = shortLabel(fullName);
-    accountMenu.title = fullName; // เอาเมาส์ชี้เพื่อดูชื่อเต็ม
+    avatar.textContent = mockLabel ? mockLabel.charAt(0) : initialOf(fullName);
+    userLabel.textContent = mockLabel || shortLabel(fullName);
+    accountMenu.title = mockLabel
+      ? `${mockLabel} (บัญชีทดสอบ: ${me.username})`
+      : fullName; // TU accounts retain their original display name.
   }
 
   accountMenu.addEventListener("click", () => {
