@@ -278,7 +278,7 @@ body {
     padding: 18px 40px;
     flex-wrap: nowrap;
     gap: 32px;
-  }
+}
 
   .logo {
     display: flex;
@@ -302,7 +302,7 @@ body {
     gap: clamp(16px, 2.4vw, 40px);
     flex-wrap: nowrap;
     min-width: 0;
-  }
+}
 
   .main-nav a {
     font-size: 15px;
@@ -328,7 +328,7 @@ body {
     margin-left: auto;
     gap: 0;
     flex-shrink: 0;
-  }
+}
 
   .lang-switch {
     font-size: 14px;
@@ -1026,3 +1026,8 @@ html {
     word-break: break-word;
   }
 }
+
+/* V4: keep admin-only navigation hidden until Cognito group verification */
+.main-nav a[hidden], .header-auth__admin-entry[hidden] { display: none !important; }
+.header-auth__admin-entry { display:block; padding:12px 18px; text-decoration:none; color:#262626; font-weight:700; }
+.header-auth__admin-entry:hover { background:#fff4cc; }
