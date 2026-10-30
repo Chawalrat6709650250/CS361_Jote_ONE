@@ -12,6 +12,15 @@
   const status = document.getElementById("requirements-status");
   const selectedProgram = document.getElementById("selected-program");
   const searchButton = form.querySelector(".search-button");
+  const breadcrumbHome = document.getElementById("requirements-breadcrumb-home");
+  const breadcrumbHomeLabel = document.getElementById("requirements-breadcrumb-home-label");
+
+  // หน้านี้เปิดให้ทุกคนดูได้ แต่ผู้ที่ล็อกอินควรย้อนกลับไปหน้าของนักศึกษาได้
+  if (window.Auth && Auth.isLoggedIn()) {
+    breadcrumbHome.href = "student-dashboard.html";
+    breadcrumbHome.setAttribute("aria-label", "กลับหน้าของนักศึกษา");
+    breadcrumbHomeLabel.hidden = false;
+  }
   // ชุดข้อมูลที่มีหลักสูตรรองรับในระบบปัจจุบัน
   // หากเพิ่มหลักสูตรใหม่ ให้เพิ่มตัวเลือกใน HTML และเพิ่มกติกาที่นี่คู่กัน
   // program = ค่าในช่องสาขาวิชา, studyPlanId = รหัสแผนที่ใช้เรียก API

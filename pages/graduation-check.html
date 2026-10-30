@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="ตรวจสอบความคืบหน้าการสำเร็จการศึกษาของนักศึกษา"
+    />
+    <title>ตรวจสอบการจบของฉัน | CSTU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../src/css/style.css?v=20261030-profile-avatar" />
+    <link rel="stylesheet" href="../src/css/graduation-check.css?v=20261028-fixed-status-icons" />
+  </head>
+  <body data-root="../" data-page="graduation-check">
+    <div id="site-header"></div>
+
+    <main class="graduation-check-page">
+      <nav class="graduation-check__breadcrumb" aria-label="เส้นทางนำทาง">
+        <a href="student-dashboard.html?preview=1" aria-label="หน้าของนักศึกษา">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z" /></svg>
+          <span>หน้าของนักศึกษา</span>
+        </a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">ตรวจสอบการจบของฉัน</span>
+      </nav>
+
+      <section class="graduation-check" aria-labelledby="graduation-check-title">
+        <header class="graduation-check__heading">
+          <div>
+            <h1 id="graduation-check-title">ตรวจสอบการจบของฉัน</h1>
+            <p>ตรวจสอบความคืบหน้าตามเงื่อนไขหลักสูตร</p>
+          </div>
+          <div class="graduation-check__updated" aria-live="polite">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M8 3v4M16 3v4M4 10h16" /></svg>
+            <span id="graduation-check-updated">กำลังตรวจสอบข้อมูลล่าสุด…</span>
+            <button id="graduation-check-refresh" type="button" aria-label="รีเฟรชข้อมูล">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.8-4.2L3 9m0-5v5h5M4 13a8 8 0 0 0 14.8 4.2L21 15m0 5v-5h-5" /></svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="graduation-progress" aria-labelledby="graduation-progress-title">
+          <h2 id="graduation-progress-title">ความคืบหน้าโดยรวม</h2>
+          <div class="graduation-progress__content">
+            <strong id="graduation-progress-percent">76%</strong>
+            <div class="graduation-progress__track-wrap">
+              <div class="graduation-progress__track" aria-label="ความคืบหน้า 76 เปอร์เซ็นต์">
+                <span id="graduation-progress-bar" style="width: 76%"></span>
+              </div>
+              <div class="graduation-progress__caption">
+                <span id="graduation-progress-completed">หน่วยกิตสะสม 98 / 129 หน่วยกิต</span>
+                <span id="graduation-progress-remaining">เหลืออีก 31 หน่วยกิต</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="graduation-requirements" aria-labelledby="graduation-requirements-title">
+          <h2 id="graduation-requirements-title">รายการเงื่อนไขที่ต้องผ่าน</h2>
+          <div id="graduation-requirement-list" class="graduation-requirements__list"></div>
+        </section>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js?v=20261030-profile-icon"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/graduation-check.js?v=20261030-progress-copy"></script>
+  </body>
+</html>
