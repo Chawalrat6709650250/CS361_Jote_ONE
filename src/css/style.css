@@ -300,8 +300,6 @@ body {
 
   /* เมนูอยู่ใน flow ปกติและไม่ตัดบรรทัด เพื่อให้ logo / เมนู / ปุ่มบัญชีอยู่แถวเดียวกัน */
   .main-nav {
-    position: absolute;
-    left: 50%;
     display: flex;
 <<<<<<< HEAD
     gap: 40px;
@@ -915,8 +913,6 @@ html {
     margin-left: auto;
   }
   .main-nav {
-    position: static;
-    transform: none;
     order: 4;
     display: none;
     flex-direction: column;
