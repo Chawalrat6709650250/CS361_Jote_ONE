@@ -5,31 +5,31 @@
   // ข้อมูลตัวอย่างสำหรับหน้า preview หรือกรณี API ใช้งานไม่ได้ชั่วคราว
   const fallbackRequirements = [
     {
-      state: "passed",
+      state: "warning",
       icon: '<svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5" /></svg>',
       name: "1. หมวดวิชาศึกษาทั่วไป",
-      result: "ผ่านแล้ว 28 / 30 หน่วยกิต",
+      result: "สะสม 28 / 30 หน่วยกิต",
       detail: "เหลือหน่วยกิตศึกษาทั่วไปอีก 2 หน่วยกิตตามแผนการเรียนของหลักสูตร",
     },
     {
-      state: "passed",
+      state: "warning",
       icon: '<svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5" /></svg>',
       name: "2. หมวดวิชาเฉพาะ",
-      result: "ผ่านแล้ว 58 / 75 หน่วยกิต",
+      result: "สะสม 58 / 75 หน่วยกิต",
       detail: "ผลการเรียนในหมวดวิชาเฉพาะผ่านเกณฑ์ขั้นต่ำแล้ว โปรดตรวจสอบแผนการเรียนที่เหลือ",
     },
     {
       state: "warning",
       icon: '<svg viewBox="0 0 24 24"><path d="M12 6.5v7M12 17.2h.01" /></svg>',
       name: "3. หมวดวิชาเลือกเสรี",
-      result: "ผ่านแล้ว 12 / 18 หน่วยกิต",
+      result: "สะสม 12 / 18 หน่วยกิต",
       detail: "ยังต้องลงทะเบียนและผ่านวิชาเลือกเสรีเพิ่มอีก 6 หน่วยกิต",
     },
     {
-      state: "passed",
+      state: "warning",
       icon: '<svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5" /></svg>',
       name: "4. หมวดกิจกรรมตลอดหลักสูตร",
-      result: "ผ่านแล้ว 98 / 129 หน่วยกิต",
+      result: "สะสม 98 / 129 หน่วยกิต",
       detail: "จำนวนหน่วยกิตสะสมในปัจจุบันเป็นไปตามแผนการเรียน",
     },
     {
@@ -110,15 +110,19 @@
     return '<svg viewBox="0 0 24 24"><path d="M12 6.5v7M12 17.2h.01" /></svg>';
   }
 
-  function displayState(status) {
-    if (status === "pass") return "passed";
-    if (status === "fail") return "failed";
+  function displayState(check) {
+    if (Number.isFinite(check.earned) && Number.isFinite(check.required) && check.earned < check.required) {
+      return "warning";
+    }
+    if (check.status === "pass") return "passed";
+    if (check.status === "fail") return "failed";
     return "warning";
   }
 
   function checkResult(check) {
     if (Number.isFinite(check.earned) && Number.isFinite(check.required)) {
-      return `ผ่านแล้ว ${check.earned} / ${check.required} หน่วยกิต`;
+      const label = check.earned >= check.required ? "ครบแล้ว" : "สะสม";
+      return `${label} ${check.earned} / ${check.required} หน่วยกิต`;
     }
     if (Array.isArray(check.missing) && check.missing.length) {
       return `ยังขาด ${check.missing.length} รายการ`;
@@ -135,7 +139,7 @@
     percent.textContent = `${value}%`;
     progressBar.style.width = `${value}%`;
     progressBar.parentElement.setAttribute("aria-label", `ความคืบหน้า ${value} เปอร์เซ็นต์`);
-    progressCompleted.textContent = `ผ่านแล้ว ${earned} / ${required} หน่วยกิต`;
+    progressCompleted.textContent = `หน่วยกิตสะสม ${earned} / ${required} หน่วยกิต`;
     progressRemaining.textContent = pending ? `เหลืออีก ${pending} หน่วยกิต` : "ครบตามจำนวนหน่วยกิตแล้ว";
   }
 
@@ -159,7 +163,7 @@
       }
 
       requirements = data.checks.map((check, index) => ({
-        state: displayState(check.status),
+        state: displayState(check),
         icon: statusIcon(check.status),
         name: `${index + 1}. ${check.label_th}`,
         result: checkResult(check),
