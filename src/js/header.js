@@ -73,7 +73,10 @@
             <a class="header-auth__link" href="${root}pages/transcript.html${previewQuery}">${documentIcon}<span>ผลการเรียนของฉัน</span></a>
             <a class="header-auth__link" href="${root}pages/faq.html">${questionIcon}<span>FAQ</span></a>
             <div class="header-auth__divider"></div>
-            <button class="header-auth__profile" type="button">${personIcon}<span>ข้อมูลส่วนตัว</span></button>
+            <a
+              class="header-auth__profile ${page === "student-profile" ? "header-auth__link--active" : ""}"
+              href="${root}pages/student-profile.html${previewQuery}"
+            >${personIcon}<span>ข้อมูลส่วนตัว</span></a>
             <button class="header-auth__logout" type="button">${logoutIcon}<span>ออกจากระบบ</span></button>
           </div>
         </div>
@@ -149,13 +152,10 @@
     const g = givenName(name);
     return g.length > max ? g.slice(0, max) + "…" : g;
   };
-  // ตัวอักษรในวงกลม: ข้ามสระนำหน้า (เ แ โ ใ ไ) เอาพยัญชนะ/ตัวอักษรแรกของชื่อต้น
-  const initialOf = (name) => (givenName(name).match(/[ก-ฮA-Za-z0-9]/) || [name.charAt(0)])[0].toUpperCase();
-
   if (fullName) {
     loginLink.hidden = true;
     accountMenu.hidden = false;
-    avatar.textContent = initialOf(fullName);
+    avatar.innerHTML = personIcon;
     userLabel.textContent = me?.shortName || (isPreview ? "Wanwisa.j" : shortLabel(fullName));
     accountMenu.title = fullName; // เอาเมาส์ชี้เพื่อดูชื่อเต็ม
   }

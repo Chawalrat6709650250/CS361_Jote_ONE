@@ -418,13 +418,14 @@ body {
     height: 58px;
     place-items: center;
     border-radius: 50%;
-    background: #073d77;
+    background: linear-gradient(135deg, #174d99, #0b2853);
+    box-shadow: 0 3px 10px rgba(13, 40, 83, 0.25);
     color: #fff;
     font-size: 27px;
     font-weight: 500;
   }
 
-  .header-auth__avatar--guest svg {
+  .header-auth__avatar svg {
     width: 28px;
     height: 28px;
     fill: none;
@@ -432,6 +433,12 @@ body {
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.7;
+  }
+
+  .header-auth__avatar svg circle,
+  .header-auth__avatar svg path {
+    fill: none;
+    stroke: currentColor;
   }
 
   .header-auth__user {
