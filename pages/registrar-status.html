@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>สถานะข้อมูลจากทะเบียน | CSTU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/staff.css" />
+  </head>
+  <body data-root="../" data-page="staff">
+    <div id="site-header"></div>
+    <main>
+      <section class="st-hero"><div><h1>สถานะข้อมูลจากทะเบียน</h1><p>ตรวจรอบดึงข้อมูล ดึงข้อมูลใหม่ และอัปโหลดไฟล์ CSV</p></div></section>
+      <nav class="st-crumb" aria-label="เส้นทางนำทาง"><a href="../index.html">หน้าหลัก</a><span>›</span><a href="staff-dashboard.html">หน้าของอาจารย์และเจ้าหน้าที่</a><span>›</span><span aria-current="page">สถานะข้อมูลจากทะเบียน</span></nav>
+      <div class="st-wrap">
+        <div id="demo"></div>
+
+        <section class="st-panel">
+          <h2>สถานะล่าสุด</h2>
+          <aside id="fresh" class="st-fresh" aria-live="polite">กำลังโหลด…</aside>
+          <div id="counts" class="st-stats"></div>
+        </section>
+        <div class="st-two" style="margin-top:16px">
+          <section class="st-panel" style="margin-top:0">
+            <h2>ดึงข้อมูลจากทะเบียน (Sync)</h2>
+            <p class="st-note" style="margin-top:0">ดึงข้อมูลนักศึกษาและผลการเรียนล่าสุดจากระบบทะเบียนจำลอง หากข้อมูลไม่ถูกต้องระบบจะไม่นำเข้าและใช้ข้อมูลเดิมต่อ</p>
+            <button id="sync" class="st-btn st-btn--gold" type="button" style="margin-top:8px">🔄 ดึงข้อมูลตอนนี้</button>
+            <div id="sync-msg" style="margin-top:12px" aria-live="polite"></div>
+          </section>
+          <section class="st-panel" style="margin-top:0">
+            <h2>อัปโหลดไฟล์ CSV</h2>
+            <div id="drop" class="st-drop">
+              <span>ลากไฟล์ .csv มาวางที่นี่ หรือ</span>
+              <label class="st-btn st-btn--ghost" style="display:inline-grid;place-items:center">เลือกไฟล์<input id="file" type="file" accept=".csv,text/csv" hidden /></label>
+              <small id="fname">ยังไม่ได้เลือกไฟล์</small>
+            </div>
+            <pre id="preview" class="st-preview" hidden></pre>
+            <p class="st-note">คอลัมน์ที่ต้องมี: student_code, term, course_code, credits, grade (เพิ่ม advisor_username ได้) · เกรด A, B+, B, C+, C, D+, D, F, W, I, S, U · ภาค เช่น 2568/1 · รหัสวิชา เช่น CS101 · หน่วยกิต 0–12</p>
+            <button id="upload" class="st-btn" type="button" disabled>อัปโหลดและนำเข้า</button>
+            <div id="up-msg" style="margin-top:12px" aria-live="polite"></div>
+          </section>
+        </div>
+        <section class="st-panel">
+          <h2>ประวัติการดึงข้อมูล</h2>
+          <div class="st-tablewrap"><table class="st-table">
+            <thead><tr><th>เวลา</th><th>ช่องทาง</th><th>ผู้ดำเนินการ</th><th>ผล</th><th class="num">รายการ</th><th>ข้อความ</th></tr></thead>
+            <tbody id="history"><tr><td colspan="6" class="st-empty">กำลังโหลด…</td></tr></tbody>
+          </table></div>
+        </section>
+      </div>
+    </main>
+    <div id="site-footer"></div>
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/staff-common.js"></script>
+    <script src="../src/js/registrar-status.js"></script>
+  </body>
+</html>

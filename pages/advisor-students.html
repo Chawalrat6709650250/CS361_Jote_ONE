@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>นักศึกษาในที่ปรึกษา | CSTU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/staff.css" />
+  </head>
+  <body data-root="../" data-page="staff">
+    <div id="site-header"></div>
+    <main>
+      <section class="st-hero"><div><h1>นักศึกษาในที่ปรึกษา</h1><p>รายชื่อนักศึกษาและผลตรวจเงื่อนไขการสำเร็จการศึกษา</p></div></section>
+      <nav class="st-crumb" aria-label="เส้นทางนำทาง"><a href="../index.html">หน้าหลัก</a><span>›</span><a href="staff-dashboard.html">หน้าของอาจารย์และเจ้าหน้าที่</a><span>›</span><span aria-current="page">นักศึกษาในที่ปรึกษา</span></nav>
+      <div class="st-wrap">
+        <div id="demo"></div>
+
+        <section class="st-panel">
+          <div class="st-toolbar">
+            <input id="q" class="st-input" type="search" placeholder="ค้นหาชื่อหรือรหัสนักศึกษา" aria-label="ค้นหานักศึกษา" />
+            <select id="year" class="st-select" aria-label="ปีหลักสูตร"><option value="">ทุกปีหลักสูตร</option></select>
+            <select id="status" class="st-select" aria-label="สถานะ">
+              <option value="">ทุกสถานะ</option>
+              <option value="eligible">ครบเงื่อนไข</option>
+              <option value="not_eligible">ยังไม่ครบเงื่อนไข</option>
+              <option value="unknown">ข้อมูลยังไม่ครบ</option>
+            </select>
+            <button id="reset" class="st-btn st-btn--ghost" type="button">ล้างตัวกรอง</button>
+          </div>
+          <div id="msg"></div>
+          <div class="st-tablewrap"><table class="st-table">
+            <thead><tr><th>รหัสนักศึกษา</th><th>ชื่อ-สกุล</th><th>ปีหลักสูตร</th><th>หน่วยกิต</th><th class="num">GPA</th><th>ผลตรวจ</th></tr></thead>
+            <tbody id="rows"><tr><td colspan="6" class="st-empty">กำลังโหลด…</td></tr></tbody>
+          </table></div>
+          <p id="count" class="st-count"></p>
+          <aside id="fresh" class="st-fresh" aria-live="polite"></aside>
+        </section>
+      </div>
+    </main>
+    <div id="site-footer"></div>
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/staff-common.js"></script>
+    <script src="../src/js/advisor-students.js"></script>
+  </body>
+</html>

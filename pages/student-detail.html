@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>รายละเอียดนักศึกษา | CSTU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/staff.css" />
+  </head>
+  <body data-root="../" data-page="staff">
+    <div id="site-header"></div>
+    <main>
+      <section class="st-hero"><div><h1>รายละเอียดนักศึกษา</h1><p>ผลตรวจการจบและผลการเรียนรายภาคการศึกษา</p></div></section>
+      <nav class="st-crumb" aria-label="เส้นทางนำทาง"><a href="../index.html">หน้าหลัก</a><span>›</span><a href="staff-dashboard.html">หน้าของอาจารย์และเจ้าหน้าที่</a><span>›</span><a href="advisor-students.html">นักศึกษาในที่ปรึกษา</a><span>›</span><span aria-current="page">รายละเอียดนักศึกษา</span></nav>
+      <div class="st-wrap">
+        <div id="demo"></div>
+
+        <div id="msg"></div>
+        <section id="profile" class="st-panel" hidden></section>
+        <div id="stats" class="st-stats"></div>
+        <section class="st-panel" id="checks-panel" hidden><h2>ผลตรวจเงื่อนไขการจบ</h2><div id="checks"></div></section>
+        <section class="st-panel" id="records-panel" hidden><h2>ผลการเรียนรายภาค</h2><div id="records"></div></section>
+        <aside id="fresh" class="st-fresh" aria-live="polite"></aside>
+      </div>
+    </main>
+    <div id="site-footer"></div>
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/staff-common.js"></script>
+    <script src="../src/js/student-detail.js"></script>
+  </body>
+</html>
