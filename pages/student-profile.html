@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="ข้อมูลส่วนตัวและแผนการเรียนของนักศึกษา" />
+    <title>ข้อมูลส่วนตัว | CSTU</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../src/css/style.css?v=20261030-profile-avatar" />
+    <link rel="stylesheet" href="../src/css/student-profile.css?v=20261030-profile" />
+  </head>
+
+  <body data-root="../" data-page="student-profile">
+    <div id="site-header"></div>
+
+    <main class="student-profile-page">
+      <nav class="student-profile-breadcrumb" aria-label="เส้นทางนำทาง">
+        <a href="student-dashboard.html" aria-label="หน้าของนักศึกษา">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z" />
+          </svg>
+          <span>หน้าของนักศึกษา</span>
+        </a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">ข้อมูลส่วนตัว</span>
+      </nav>
+
+      <section class="student-profile" aria-labelledby="student-profile-title">
+        <header class="student-profile__heading">
+          <h1 id="student-profile-title">ข้อมูลส่วนตัว</h1>
+          <p>ข้อมูลนักศึกษาและแผนการเรียนปัจจุบันของคุณ</p>
+        </header>
+
+        <p id="student-profile-status" class="student-profile__status" aria-live="polite">
+          กำลังตรวจสอบข้อมูลล่าสุด…
+        </p>
+
+        <article id="student-profile-card" class="student-profile-card" hidden>
+          <header class="student-profile-card__identity">
+            <span class="student-profile-card__avatar" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="3.25" />
+                <path d="M5.5 20c.65-3.15 3.15-5.1 6.5-5.1s5.85 1.95 6.5 5.1" />
+              </svg>
+            </span>
+            <p class="student-profile-card__role">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="3.25" />
+                <path d="M5.5 20c.65-3.15 3.15-5.1 6.5-5.1s5.85 1.95 6.5 5.1" />
+              </svg>
+              นักศึกษา
+            </p>
+            <p id="student-profile-academic-status" class="student-profile-card__academic-status">-</p>
+            <p id="student-profile-code" class="student-profile-card__code">รหัสนักศึกษา -</p>
+            <h2 id="student-profile-name">-</h2>
+          </header>
+
+          <dl class="student-profile-card__details">
+            <div class="student-profile-card__detail">
+              <dt>ปีหลักสูตร</dt>
+              <dd id="student-profile-curriculum">-</dd>
+            </div>
+            <div class="student-profile-card__detail">
+              <dt>แผนการเรียน</dt>
+              <dd id="student-profile-plan">-</dd>
+            </div>
+            <div class="student-profile-card__detail">
+              <dt>อาจารย์ที่ปรึกษา</dt>
+              <dd id="student-profile-advisor">-</dd>
+            </div>
+          </dl>
+        </article>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js?v=20261030-profile-icon"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/student-profile.js?v=20261030-profile"></script>
+  </body>
+</html>
