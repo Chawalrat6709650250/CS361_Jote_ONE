@@ -159,6 +159,16 @@
 
   // อ่านผู้ใช้จาก token จริงของ Cognito (ผ่าน auth.js)
   const me = window.Auth && Auth.isLoggedIn() ? Auth.getUser() : null;
+  
+  // เมนู "หน้าของอาจารย์และเจ้าหน้าที่" แสดงเฉพาะ Professor / Staff / Admin
+  if (me && ["Professor", "Staff", "Admin"].some((r) => me.groups?.includes(r))) {
+     const staffLink = document.createElement("a");
+     staffLink.href = `${root}pages/staff-dashboard.html`;
+     staffLink.textContent = "หน้าของอาจารย์/เจ้าหน้าที่";
+     if (page === "staff") staffLink.className = "active";
+     nav.insertBefore(staffLink, nav.querySelector('a[href="#contact"]'));
+   }
+
   const fullName = me
     ? (me.claims?.name || me.name || me.username || "").trim()
     : isPreview

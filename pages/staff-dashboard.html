@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>หน้าของอาจารย์และเจ้าหน้าที่ | CSTU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/staff.css" />
+  </head>
+  <body data-root="../" data-page="staff">
+    <div id="site-header"></div>
+    <main>
+      <section class="st-hero"><div><h1>หน้าของอาจารย์และเจ้าหน้าที่</h1><p>ติดตามนักศึกษาในที่ปรึกษาและสถานะข้อมูลจากทะเบียน</p></div></section>
+      <nav class="st-crumb" aria-label="เส้นทางนำทาง"><a href="../index.html">หน้าหลัก</a><span>›</span><span aria-current="page">หน้าของอาจารย์และเจ้าหน้าที่</span></nav>
+      <div class="st-wrap">
+        <div id="demo"></div>
+
+        <section class="st-panel" aria-label="เมนูสำหรับอาจารย์และเจ้าหน้าที่">
+          <div class="st-cards">
+            <a class="student-card" href="advisor-students.html">
+              <span class="student-card__icon" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="24" cy="20" r="9"/><path d="M6 52c1.5-10 9-16 18-16s16.5 6 18 16"/><path d="M44 28a8 8 0 1 0 0-16M50 36c6 2 9 8 10 16"/></svg></span>
+              <h2 id="card-students-title">นักศึกษาในที่ปรึกษา</h2>
+              <p id="card-students-desc">ดูรายชื่อและผลตรวจการจบ</p>
+              <span class="student-card__arrow" aria-hidden="true">›</span>
+            </a>
+            <a class="student-card" href="registrar-status.html">
+              <span class="student-card__icon" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 24a22 22 0 0 1 38-6M52 40a22 22 0 0 1-38 6"/><path d="M50 6v13H37M14 58V45h13"/></svg></span>
+              <h2>สถานะข้อมูลจากทะเบียน</h2>
+              <p>ดูรอบดึงข้อมูล / sync / อัปโหลด CSV</p>
+              <span class="student-card__arrow" aria-hidden="true">›</span>
+            </a>
+          </div>
+          <aside id="fresh" class="st-fresh" aria-live="polite"></aside>
+        </section>
+      </div>
+    </main>
+    <div id="site-footer"></div>
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js"></script>
+    <script src="../src/js/footer.js"></script>
+    <script src="../src/js/staff-common.js"></script>
+    <script src="../src/js/staff-dashboard.js"></script>
+  </body>
+</html>
