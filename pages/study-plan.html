@@ -6,75 +6,17 @@
 
     <title>แผนการเรียนและวิชาบังคับ</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../src/css/style.css?v=20261016-login-header-12">
     <link
         rel="stylesheet"
         href="../src/css/study-plan.css"
     >
 </head>
 
-<body>
+<body data-root="../" data-page="programs">
 
-    <!-- =========================
-         HEADER
-    ========================== -->
-    <header class="site-header">
-
-        <a
-            href="../index.html"
-            class="logo-link"
-        >
-            <img
-                src="../src/assets/images/cstu_logo.png"
-                alt="Computer Science"
-            >
-        </a>
-
-        <nav class="main-nav">
-            <a href="../index.html">
-                เกี่ยวกับ CSTU
-            </a>
-
-            <a
-                href="../index.html#programs"
-                class="active"
-            >
-                หลักสูตร
-            </a>
-
-            <a href="course-search.html">
-                ค้นหารายวิชา
-            </a>
-
-            <a href="#">
-                ติดต่อ
-            </a>
-        </nav>
-
-        <div class="header-tools">
-
-            <button
-                type="button"
-                class="lang-active"
-            >
-                TH
-            </button>
-
-            <span>/</span>
-
-            <button type="button">
-                EN
-            </button>
-
-            <span
-                class="search-icon"
-                aria-label="ค้นหา"
-            >
-                ⌕
-            </span>
-
-        </div>
-
-    </header>
+    <div id="site-header"></div>
 
 
     <!-- =========================
@@ -709,6 +651,9 @@
     <!-- =========================
          JAVASCRIPT
     ========================== -->
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/auth.js"></script>
+    <script src="../src/js/header.js?v=20261030-profile-icon"></script>
     <script src="../src/js/study-plan.js"></script>
 
 </body>

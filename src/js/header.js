@@ -230,7 +230,6 @@ if (headerName) {
     ? `${mockLabel} (บัญชีทดสอบ: ${me.username})`
     : fullName;
 }
-  }
 
   accountMenu.addEventListener("click", () => {
     const isOpen = !dropdown.hidden;

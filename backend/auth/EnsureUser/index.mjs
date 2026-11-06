@@ -3,7 +3,7 @@
 // เรียกจากหน้าเว็บ "ก่อน" InitiateAuth (CUSTOM_AUTH)
 //
 // Environment variables:
-//   USER_POOL_ID = us-east-1_xxxxxxx
+//   USER_POOL_ID = ap-southeast-2_xxxxxxx
 //   TU_APP_KEY   = Application-Key ของ TU API
 
 import {

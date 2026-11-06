@@ -40,91 +40,9 @@ a {
     margin: 0 auto;
 }
 
-/* Header */
-.site-header {
-    height: 72px;
-    padding: 0 5%;
-    background: var(--yellow);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 28px;
-    position: relative;
-    z-index: 10;
-}
-
-.logo-link img {
-    width: 120px;
-    height: auto;
-    display: block;
-}
-
-.main-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 42px;
-    font-weight: 700;
-    font-size: 15px;
-}
-
-.main-nav a {
-    position: relative;
-    padding: 25px 0 21px;
-    white-space: nowrap;
-}
-
-/* กันไม่ให้ logo / เครื่องมือถูกบีบ และให้เมนูหดตามพื้นที่ที่เหลือ (header ต้องอยู่แถวเดียว) */
-.logo-link,
-.header-tools {
-    flex-shrink: 0;
-}
-
-.main-nav {
-    min-width: 0;
-}
-
-.main-nav a.active {
-    color: var(--red);
-}
-
-.main-nav a.active::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 13px;
-    height: 3px;
-    background: var(--red);
-}
-
-.header-tools {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    font-weight: 700;
-}
-
-.header-tools button {
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    font-weight: 700;
-    padding: 0;
-}
-
-.header-tools .lang-active {
-    color: var(--red);
-}
-
-.search-icon {
-    margin-left: 13px;
-    font-size: 25px;
-    line-height: 1;
-}
-
 /* Hero */
 .hero {
+    height: auto; /* กัน style.css (height: 420px ของ carousel หน้าแรก) */
     min-height: 285px;
     position: relative;
     background:
@@ -836,11 +754,6 @@ a {
 
 /* Responsive */
 @media (max-width: 900px) {
-    .main-nav {
-        gap: 18px;
-        font-size: 13px;
-    }
-
     .selector-card {
         width: 94%;
     }
@@ -863,38 +776,6 @@ a {
 }
 
 @media (max-width: 700px) {
-    /* จอเล็ก: ยังคงแถวเดียว เมนูเลื่อนซ้าย-ขวาแทนการตกบรรทัด */
-    .site-header {
-        height: 66px;
-        padding: 0 4%;
-        gap: 14px;
-        flex-wrap: nowrap;
-    }
-
-    .logo-link img {
-        width: 84px;
-    }
-
-    .main-nav {
-        flex: 1 1 auto;
-        overflow-x: auto;
-        justify-content: flex-start;
-        gap: 18px;
-        scrollbar-width: none;
-    }
-
-    .main-nav::-webkit-scrollbar {
-        display: none;
-    }
-
-    .main-nav a {
-        padding: 8px 0;
-    }
-
-    .main-nav a.active::after {
-        bottom: 0;
-    }
-
     .hero,
     .hero-overlay {
         min-height: 220px;
@@ -949,16 +830,6 @@ a {
 }
 
 @media (max-width: 450px) {
-    /* ซ่อนปุ่มสลับภาษาเพื่อให้เมนูมีพื้นที่ เหลือไว้แค่ไอคอนค้นหา */
-    .header-tools button,
-    .header-tools > span:not(.search-icon) {
-        display: none;
-    }
-
-    .logo-link img {
-        width: 72px;
-    }
-
     .summary-bar {
         grid-template-columns: 1fr;
     }
