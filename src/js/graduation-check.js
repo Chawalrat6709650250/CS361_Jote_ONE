@@ -1,6 +1,6 @@
 (() => {
   const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
-  if (!isPreview && window.Auth && !Auth.requireLogin()) return;
+  if (!isPreview && window.Auth && !Auth.requireStudent()) return;
 
   // ข้อมูลตัวอย่างสำหรับหน้า preview หรือกรณี API ใช้งานไม่ได้ชั่วคราว
   const fallbackRequirements = [

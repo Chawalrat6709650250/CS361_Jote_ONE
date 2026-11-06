@@ -2,7 +2,7 @@
   const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
 
   // หน้าตัวอย่างเปิดได้โดยไม่ต้องเข้าสู่ระบบ ส่วนการใช้งานจริงต้องตรวจสอบการล็อกอินก่อน
-  if (!isPreview && window.Auth && !Auth.requireLogin()) return;
+  if (!isPreview && window.Auth && !Auth.requireStudent()) return;
 
   // ข้อมูลตัวอย่างจะแสดงสำหรับหน้า preview หรือเมื่อ API ใช้งานไม่ได้ชั่วคราว
   const fallbackTerms = [

@@ -2,7 +2,7 @@
   // ใช้ ?preview=1 สำหรับตรวจ UI ระหว่างระบบยืนยันตัวตน/ทะเบียนยังไม่พร้อม
   // หากไม่ใช่โหมดตัวอย่าง หน้านี้ยังต้องผ่าน Login ตามปกติ
   const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
-  if (!isPreview && window.Auth && !Auth.requireLogin()) return;
+  if (!isPreview && window.Auth && !Auth.requireStudent()) return;
 
   const timestamp = document.getElementById("data-freshness-time");
   const status = document.getElementById("data-freshness-status");

@@ -55,7 +55,6 @@
         <a href="${root}pages/curriculum-compare.html" class="${page === "curriculum-compare" ? "active" : ""}">เปรียบเทียบหลักสูตร</a>
         <a href="${root}pages/faq.html" class="${page === "faq" ? "active" : ""}">FAQ</a>
         <a href="#contact">ติดต่อ</a>
-        <a href="${root}pages/admin.html" data-admin-link class="${page === "admin" ? "active" : ""}" hidden>จัดการหลักสูตร</a>
       </nav>
       <div class="header-right">
         <div class="header-auth">
@@ -75,17 +74,17 @@
   จัดการหลักสูตร (Admin)
 </a>
 
-<a class="header-auth__link header-auth__link--active"
+<a class="header-auth__link header-auth__link--active" data-student-only
    href="${root}pages/student-dashboard.html${previewQuery}">
   ${homeIcon}<span>หน้าของนักศึกษา</span>
 </a>
 
-<a class="header-auth__link"
+<a class="header-auth__link" data-student-only
    href="${root}pages/graduation-check.html${previewQuery}">
   ${capIcon}<span>ตรวจสอบการจบของฉัน</span>
 </a>
 
-<a class="header-auth__link"
+<a class="header-auth__link" data-student-only
    href="${root}pages/transcript.html${previewQuery}">
   ${documentIcon}<span>ผลการเรียนของฉัน</span>
 </a>
@@ -190,10 +189,15 @@ const initialOf = (name) =>
 
 // แสดงเมนูจัดการหลักสูตรเฉพาะผู้ที่มีสิทธิ์ Admin
 if (me && window.Auth?.hasRole("Admin")) {
-  mount.querySelectorAll(
-    "[data-admin-link], .header-auth__admin-entry"
-  ).forEach(el => {
+  mount.querySelectorAll(".header-auth__admin-entry").forEach(el => {
     el.hidden = false;
+  });
+}
+
+// เมนูของนักศึกษา (หน้าของนักศึกษา / ตรวจสอบการจบ / ผลการเรียน) ซ่อนจากผู้ที่ไม่ใช่ Student เช่น Admin
+if (me && !window.Auth?.hasRole("Student")) {
+  mount.querySelectorAll("[data-student-only]").forEach(el => {
+    el.hidden = true;
   });
 }
 
