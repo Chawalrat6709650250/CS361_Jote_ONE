@@ -53,9 +53,7 @@
         <a href="${root}pages/graduation-requirements.html" class="${page === "graduation" ? "active" : ""}">เงื่อนไขการสำเร็จการศึกษา</a>
         <a href="${root}pages/course-search.html" class="${page === "course-search" ? "active" : ""}">ค้นหารายวิชา</a>
         <a href="${root}pages/curriculum-compare.html" class="${page === "curriculum-compare" ? "active" : ""}">เปรียบเทียบหลักสูตร</a>
-        <a href="${root}pages/faq.html" class="${page === "faq" ? "active" : ""}">FAQ</a>
-        <a href="#contact">ติดต่อ</a>
-      </nav>
+        <a href="${root}pages/faq.html" class="${page === "faq" ? "active" : ""}">FAQ</a>      </nav>
       <div class="header-right">
         <div class="header-auth">
           <a class="header-auth__login" href="${loginUrl}">
@@ -74,17 +72,17 @@
   จัดการหลักสูตร (Admin)
 </a>
 
-<a class="header-auth__link header-auth__link--active" data-student-only
+<a class="header-auth__link ${page === "student-dashboard" ? "header-auth__link--active" : ""}" data-student-only
    href="${root}pages/student-dashboard.html${previewQuery}">
   ${homeIcon}<span>หน้าของนักศึกษา</span>
 </a>
 
-<a class="header-auth__link" data-student-only
+<a class="header-auth__link ${page === "graduation-check" ? "header-auth__link--active" : ""}" data-student-only
    href="${root}pages/graduation-check.html${previewQuery}">
   ${capIcon}<span>ตรวจสอบการจบของฉัน</span>
 </a>
 
-<a class="header-auth__link" data-student-only
+<a class="header-auth__link ${page === "transcript" ? "header-auth__link--active" : ""}" data-student-only
    href="${root}pages/transcript.html${previewQuery}">
   ${documentIcon}<span>ผลการเรียนของฉัน</span>
 </a>
@@ -95,7 +93,7 @@
 </a>
 
             <div class="header-auth__divider"></div>
-            <a
+            <a data-student-only
               class="header-auth__profile ${page === "student-profile" ? "header-auth__link--active" : ""}"
               href="${root}pages/student-profile.html${previewQuery}"
             >${personIcon}<span>ข้อมูลส่วนตัว</span></a>
@@ -165,7 +163,7 @@
      staffLink.href = `${root}pages/staff-dashboard.html`;
      staffLink.textContent = "หน้าของอาจารย์/เจ้าหน้าที่";
      if (page === "staff") staffLink.className = "active";
-     nav.insertBefore(staffLink, nav.querySelector('a[href="#contact"]'));
+     nav.append(staffLink);
    }
 
   const fullName = me

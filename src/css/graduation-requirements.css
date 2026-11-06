@@ -6,14 +6,22 @@
 body {
   background: #f6f6f6;
 }
+main {
+  position: relative;
+}
 .requirements-breadcrumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
   display: flex;
   width: min(1060px, calc(100% - 48px));
   align-items: center;
   gap: 15px;
   margin: 0 auto;
   padding: 17px 0;
-  color: #627089;
+  color: rgba(255, 255, 255, 0.85);
   font-size: 15px;
   font-weight: 600;
 }
@@ -25,7 +33,7 @@ body {
   text-decoration: none;
 }
 .requirements-breadcrumb a:hover {
-  color: #172b4d;
+  color: #fff;
 }
 .requirements-breadcrumb svg {
   width: 25px;

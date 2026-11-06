@@ -132,7 +132,12 @@
   const termButton = document.getElementById("transcript-term-button");
   const termLabel = document.getElementById("transcript-term-label");
   const termOptions = document.getElementById("transcript-term-options");
-  let terms = fallbackTerms;
+  // ข้อมูลตัวอย่างใช้เฉพาะโหมด preview — ผู้ใช้จริงต้องเห็นข้อมูลจากทะเบียน หรือข้อความแจ้งข้อจำกัด
+  let terms = isPreview ? fallbackTerms : [];
+
+  function showNotice(message, tone = "warning") {
+    groups.innerHTML = `<p class="transcript-notice transcript-notice--${tone}" role="status">${escapeHtml(message)}</p>`;
+  }
 
   function escapeHtml(value) {
     return String(value)
@@ -334,7 +339,9 @@
       const apiRoot = APP_CONFIG.apiBase.replace(/\/api$/, "");
       const authorization = APP_CONFIG.authScheme ? `${APP_CONFIG.authScheme} ${token}` : token;
       const meResponse = await fetch(`${apiRoot}/grad/me`, { headers: { Authorization: authorization } });
-      if (!meResponse.ok) throw new Error(`HTTP ${meResponse.status}`);
+      if (!meResponse.ok) {
+        throw Object.assign(new Error(`HTTP ${meResponse.status}`), { status: meResponse.status });
+      }
 
       const mePayload = await meResponse.json();
       const studentId = mePayload?.data?.student?.student_id;
@@ -357,15 +364,37 @@
       termLabel.textContent = "ทั้งหมด";
       renderTermOptions();
       render();
+      if (!terms.length) showNotice("ยังไม่มีผลการเรียนจากสำนักทะเบียน", "info");
+      const warnings = recordsPayload.data?.data?.warnings || [];
+      if (warnings.length) {
+        groups.insertAdjacentHTML(
+          "afterbegin",
+          `<p class="transcript-notice" role="status">${warnings.map((w) => escapeHtml(w.message_th || w.code || "")).join("<br>")}</p>`,
+        );
+      }
       updateTimestamp(recordsPayload.data?.data?.data_as_of);
     } catch (error) {
       console.warn("ไม่สามารถโหลดผลการเรียนจาก API ได้", error);
-      updated.textContent = "ไม่สามารถโหลดข้อมูลล่าสุดได้ กำลังแสดงข้อมูลตัวอย่าง";
+      // ไม่แสดงข้อมูลตัวอย่างแทนข้อมูลจริง — แจ้งข้อจำกัดให้ชัดเจนแทน
+      terms = [];
+      renderTermOptions();
+      updated.textContent = "ไม่สามารถโหลดข้อมูลล่าสุดได้";
+      showNotice(
+        error.status === 404
+          ? "ยังไม่ได้รับข้อมูลผลการเรียนของคุณจากสำนักทะเบียน กรุณาลองใหม่ภายหลัง หรือติดต่ออาจารย์ที่ปรึกษา"
+          : "ไม่สามารถเชื่อมต่อระบบทะเบียนได้ในขณะนี้ กรุณากดรีเฟรชอีกครั้งภายหลัง",
+        "error",
+      );
     }
   }
 
   renderTermOptions();
-  render();
-  updateTimestamp();
+  if (isPreview) {
+    render();
+    updateTimestamp();
+  } else {
+    updated.textContent = "กำลังตรวจสอบข้อมูลล่าสุด…";
+    showNotice("กำลังโหลดผลการเรียนจากข้อมูลทะเบียน…", "info");
+  }
   loadTranscript();
 })();

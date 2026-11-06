@@ -322,3 +322,32 @@ body {
   .graduation-requirement__name { font-size: 17px; }
   .graduation-requirement__status { width: 32px; height: 32px; font-size: 22px; }
 }
+
+/* ข้อความแจ้งสถานะ/ข้อจำกัดของข้อมูลจากทะเบียน (ใช้ทั้งหน้าตรวจสอบการจบและผลการเรียน) */
+.graduation-notice {
+  margin: 0 0 12px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border-left: 4px solid;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.graduation-notice ul {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+.graduation-notice--info {
+  border-color: #3b6fd4;
+  background: #eef3fc;
+  color: #24406f;
+}
+.graduation-notice--warning {
+  border-color: #e8a500;
+  background: #fff7e0;
+  color: #6b4b00;
+}
+.graduation-notice--error {
+  border-color: #c62828;
+  background: #fdecec;
+  color: #7a1c1c;
+}

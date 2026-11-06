@@ -48,7 +48,34 @@
   const progressBar = document.getElementById("graduation-progress-bar");
   const progressCompleted = document.getElementById("graduation-progress-completed");
   const progressRemaining = document.getElementById("graduation-progress-remaining");
-  let requirements = fallbackRequirements;
+  // ข้อมูลตัวอย่างใช้เฉพาะโหมด preview เท่านั้น — ผู้ใช้จริงต้องเห็นข้อมูลจากทะเบียน หรือข้อความแจ้งข้อจำกัด
+  let requirements = isPreview ? fallbackRequirements : [];
+
+  // แจ้งสถานะ/ข้อจำกัดของข้อมูลแทนรายการเงื่อนไข (เช่น ยังไม่ได้รับข้อมูลจากทะเบียน หรือเชื่อมต่อไม่ได้)
+  function showNotice(message, tone = "warning") {
+    if (!list) return;
+    list.innerHTML = `<p class="graduation-notice graduation-notice--${tone}" role="status">${escapeHtml(message)}</p>`;
+  }
+
+  function resetProgress() {
+    percent.textContent = "–";
+    progressBar.style.width = "0%";
+    progressBar.parentElement.setAttribute("aria-label", "ยังไม่มีข้อมูลความคืบหน้า");
+    progressCompleted.textContent = "หน่วยกิตสะสม – / – หน่วยกิต";
+    progressRemaining.textContent = "";
+  }
+
+  // คำเตือนจากระบบ เช่น ดึงข้อมูลทะเบียนรอบล่าสุดไม่สำเร็จ / ข้อมูลเก่า / บางรายวิชายังไม่มีผล
+  function renderWarnings(warnings) {
+    if (!list || !Array.isArray(warnings) || !warnings.length) return;
+    list.insertAdjacentHTML(
+      "afterbegin",
+      `<div class="graduation-notice graduation-notice--warning" role="status">
+        <strong>ข้อจำกัดของข้อมูลจากทะเบียน</strong>
+        <ul>${warnings.map((w) => `<li>${escapeHtml(w.message_th || w.code || "")}</li>`).join("")}</ul>
+      </div>`,
+    );
+  }
 
   function escapeHtml(value) {
     return String(value)
@@ -146,6 +173,7 @@
   async function loadGraduationCheck() {
     if (isPreview) return;
 
+    updated.textContent = "กำลังตรวจสอบข้อมูลล่าสุด…";
     try {
       const token = await Auth.getToken();
       if (!token) throw new Error("ไม่พบข้อมูลการเข้าสู่ระบบ");
@@ -154,7 +182,12 @@
       const response = await fetch(`${apiRoot}/grad/me`, {
         headers: { Authorization: `${APP_CONFIG.authScheme} ${token}` },
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw Object.assign(new Error(body?.error?.message || `HTTP ${response.status}`), {
+          status: response.status,
+        });
+      }
 
       const payload = await response.json();
       const data = payload?.data;
@@ -171,15 +204,30 @@
       }));
       updateProgress(data.summary);
       renderRequirements();
+      renderWarnings(data.data?.warnings);
       updateTimestamp(data.data?.data_as_of || data.computed_at);
     } catch (error) {
       console.warn("ไม่สามารถโหลดผลตรวจการจบจาก API ได้", error);
-      updated.textContent = "ไม่สามารถโหลดข้อมูลล่าสุดได้ กำลังแสดงข้อมูลตัวอย่าง";
+      // ไม่แสดงข้อมูลตัวอย่างแทนข้อมูลจริง — แจ้งข้อจำกัดให้ชัดเจนแทน
+      requirements = [];
+      resetProgress();
+      updated.textContent = "ไม่สามารถโหลดข้อมูลล่าสุดได้";
+      showNotice(
+        error.status === 404
+          ? "ยังไม่ได้รับข้อมูลผลการเรียนของคุณจากสำนักทะเบียน จึงยังตรวจสอบเงื่อนไขการจบไม่ได้ กรุณาลองใหม่ภายหลัง หรือติดต่ออาจารย์ที่ปรึกษา"
+          : "ไม่สามารถเชื่อมต่อระบบตรวจสอบการจบหรือระบบทะเบียนได้ในขณะนี้ ผลด้านล่างจะแสดงเมื่อเชื่อมต่อได้ กรุณากดรีเฟรชอีกครั้งภายหลัง",
+        "error",
+      );
     }
   }
 
   refresh?.addEventListener("click", loadGraduationCheck);
-  renderRequirements();
-  updateTimestamp();
+  if (isPreview) {
+    renderRequirements();
+    updateTimestamp();
+  } else {
+    resetProgress();
+    showNotice("กำลังโหลดผลตรวจเงื่อนไขการจบจากข้อมูลทะเบียน…", "info");
+  }
   loadGraduationCheck();
 })();

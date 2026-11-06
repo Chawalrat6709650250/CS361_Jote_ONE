@@ -1,6 +1,6 @@
 (() => {
   const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
-  if (!isPreview && window.Auth && !Auth.requireLogin()) return;
+  if (!isPreview && window.Auth && !Auth.requireStudent()) return;
 
   const previewStudent = {
     name: "นางสาวเอ ครบถ้วน",

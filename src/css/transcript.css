@@ -436,3 +436,24 @@ body {
     display: block;
   }
 }
+
+.transcript-notice {
+  margin: 0 0 12px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border-left: 4px solid #e8a500;
+  background: #fff7e0;
+  color: #6b4b00;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.transcript-notice--error {
+  border-color: #c62828;
+  background: #fdecec;
+  color: #7a1c1c;
+}
+.transcript-notice--info {
+  border-color: #3b6fd4;
+  background: #eef3fc;
+  color: #24406f;
+}
