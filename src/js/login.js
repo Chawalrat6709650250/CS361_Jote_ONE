@@ -38,24 +38,38 @@
   });
 
   // กลับไปหน้าที่ผู้ใช้ตั้งใจจะเข้า (รับเฉพาะ path ในเว็บเรา กัน open redirect)
+  // หน้าที่ต้อง login ก่อนเข้า — ถ้าถูกส่งมาจากหน้าเหล่านี้ ให้กลับไปหน้าเดิมหลัง login
+  const PROTECTED_PAGES = [
+    "graduation-check.html",
+    "transcript.html",
+    "student-dashboard.html",
+  ];
+
   function nextUrl() {
     const n = new URLSearchParams(window.location.search).get("next");
-if (!n) {
-  return window.Auth?.hasRole("Admin")
-    ? "admin.html"
-    : "../index.html";
-}
-    try {
-      const currentPage = new URL(window.location.href);
-      const nextPage = new URL(n, currentPage);
-      const isSameSite =
-        nextPage.protocol === currentPage.protocol &&
-        nextPage.host === currentPage.host;
-
-      return isSameSite ? nextPage.href : "../index.html";
-    } catch {
-      return "../index.html";
+    let nextPage = null;
+    if (n) {
+      try {
+        const currentPage = new URL(window.location.href);
+        const candidate = new URL(n, currentPage);
+        const isSameSite =
+          candidate.protocol === currentPage.protocol &&
+          candidate.host === currentPage.host;
+        if (isSameSite) nextPage = candidate;
+      } catch {
+        nextPage = null;
+      }
     }
+
+    // นักศึกษา: เข้าหน้าข้อมูลส่วนตัวก่อนเสมอ ยกเว้นถูกส่งมาจากหน้าที่ต้อง login (เช่น ผลการเรียน)
+    if (window.Auth?.hasRole("Student")) {
+      const fromProtected =
+        nextPage && PROTECTED_PAGES.some((page) => nextPage.pathname.endsWith(`/${page}`));
+      return fromProtected ? nextPage.href : "student-profile.html";
+    }
+
+    if (nextPage) return nextPage.href;
+    return window.Auth?.hasRole("Admin") ? "admin.html" : "../index.html";
   }
 
   if (window.Auth && Auth.isLoggedIn()) window.location.replace(nextUrl());

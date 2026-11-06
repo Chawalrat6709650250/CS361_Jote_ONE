@@ -93,7 +93,7 @@
 </a>
 
             <div class="header-auth__divider"></div>
-            <a data-student-only
+            <a
               class="header-auth__profile ${page === "student-profile" ? "header-auth__link--active" : ""}"
               href="${root}pages/student-profile.html${previewQuery}"
             >${personIcon}<span>ข้อมูลส่วนตัว</span></a>
