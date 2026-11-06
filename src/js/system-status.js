@@ -1,5 +1,5 @@
 (function () {
-  const API_BASE = "https://uuo1em3vlb.execute-api.us-east-1.amazonaws.com/prod/api";
+  const API_BASE = "https://3r0xvwx60k.execute-api.ap-southeast-2.amazonaws.com/prod/api";
   const TIMEOUT_MS = 8000;
 
   const section = document.getElementById("system-status");

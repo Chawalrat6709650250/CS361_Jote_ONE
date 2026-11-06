@@ -278,7 +278,7 @@ body {
     padding: 18px 40px;
     flex-wrap: nowrap;
     gap: 32px;
-  }
+}
 
   .logo {
     display: flex;
@@ -302,7 +302,7 @@ body {
     gap: clamp(16px, 2.4vw, 40px);
     flex-wrap: nowrap;
     min-width: 0;
-  }
+}
 
   .main-nav a {
     font-size: 15px;
@@ -328,7 +328,7 @@ body {
     margin-left: auto;
     gap: 0;
     flex-shrink: 0;
-  }
+}
 
   .lang-switch {
     font-size: 14px;
@@ -418,13 +418,14 @@ body {
     height: 58px;
     place-items: center;
     border-radius: 50%;
-    background: #073d77;
+    background: linear-gradient(135deg, #174d99, #0b2853);
+    box-shadow: 0 3px 10px rgba(13, 40, 83, 0.25);
     color: #fff;
     font-size: 27px;
     font-weight: 500;
   }
 
-  .header-auth__avatar--guest svg {
+  .header-auth__avatar svg {
     width: 28px;
     height: 28px;
     fill: none;
@@ -432,6 +433,12 @@ body {
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.7;
+  }
+
+  .header-auth__avatar svg circle,
+  .header-auth__avatar svg path {
+    fill: none;
+    stroke: currentColor;
   }
 
   .header-auth__user {
@@ -474,6 +481,7 @@ body {
     content: "";
   }
 
+  .header-auth__link,
   .header-auth__profile,
   .header-auth__logout {
     position: relative;
@@ -487,6 +495,12 @@ body {
     color: #222;
     font: 500 17px "Sarabun", sans-serif;
     text-align: left;
+    text-decoration: none;
+  }
+
+  .header-auth__link--active {
+    border-radius: 6px;
+    background: #f1f4f9;
   }
 
   .header-auth__logout {
@@ -494,6 +508,7 @@ body {
     cursor: pointer;
   }
 
+  .header-auth__link svg,
   .header-auth__profile svg,
   .header-auth__logout svg {
     width: 25px;
@@ -506,6 +521,7 @@ body {
     stroke-width: 1.8;
   }
 
+  .header-auth__link:hover,
   .header-auth__profile:hover,
   .header-auth__logout:hover {
     opacity: 0.7;
@@ -1026,3 +1042,8 @@ html {
     word-break: break-word;
   }
 }
+
+/* V4: keep admin-only navigation hidden until Cognito group verification */
+.main-nav a[hidden], .header-auth__admin-entry[hidden], .header-auth__link[hidden] { display: none !important; }
+.header-auth__admin-entry { display:block; padding:12px 18px; text-decoration:none; color:#262626; font-weight:700; }
+.header-auth__admin-entry:hover { background:#fff4cc; }

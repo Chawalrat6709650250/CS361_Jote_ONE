@@ -1,0 +1,343 @@
+:root {
+  --profile-navy: #0b2853;
+  --profile-muted: #67758e;
+  --profile-line: #e4e9f1;
+  --profile-surface: #ffffff;
+  --profile-gold: #f5c63c;
+}
+
+.student-profile-page {
+  min-height: calc(100vh - 310px);
+  background: #f7f8fb;
+}
+
+.student-profile-breadcrumb {
+  display: flex;
+  max-width: 1120px;
+  align-items: center;
+  gap: 14px;
+  margin: 0 auto;
+  padding: 22px 28px;
+  color: #687790;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.student-profile-breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.student-profile-breadcrumb svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.student-profile {
+  max-width: 980px;
+  margin: 0 auto 46px;
+  padding: 12px 28px 32px;
+}
+
+.student-profile__heading h1 {
+  margin: 0;
+  color: var(--profile-navy);
+  font-size: clamp(28px, 2.6vw, 34px);
+  line-height: 1.2;
+}
+
+.student-profile__heading p {
+  margin: 5px 0 0;
+  color: var(--profile-muted);
+  font-size: 16px;
+}
+
+.student-profile__status {
+  margin: 12px 0 0;
+  color: var(--profile-muted);
+  font-size: 16px;
+}
+
+.student-profile__status.is-error {
+  color: #b45035;
+}
+
+.student-profile-card {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid var(--profile-line);
+  border-radius: 18px;
+  background: var(--profile-surface);
+  box-shadow: 0 12px 30px rgba(13, 33, 65, 0.08);
+}
+
+/* แถบบนสุด: รูปย่อ + ชื่อ + สถานะ */
+.student-profile-card__banner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 32px;
+  background: linear-gradient(120deg, #0b2853 0%, #174d99 100%);
+  color: #fff;
+}
+
+.student-profile-card__avatar {
+  display: grid;
+  flex: none;
+  width: 76px;
+  height: 76px;
+  place-items: center;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  background: var(--profile-gold);
+  color: var(--profile-navy);
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.student-profile-card__identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.student-profile-card__role {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.student-profile-card__identity h2 {
+  margin: 2px 0 0;
+  font-size: clamp(22px, 2.4vw, 28px);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.student-profile-card__code {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.student-profile-card__academic-status {
+  flex: none;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #fff4d6;
+  color: #8a5a00;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.student-profile-card__academic-status.is-success {
+  background: #dff5e4;
+  color: #1a6e31;
+}
+
+.student-profile-card__academic-status.is-unknown {
+  background: #e9edf3;
+  color: #4a5872;
+}
+
+/* สรุปตัวเลข */
+.student-profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--profile-line);
+}
+
+.student-profile-stat {
+  display: grid;
+  gap: 4px;
+  padding: 20px 28px;
+  border-right: 1px solid var(--profile-line);
+}
+
+.student-profile-stat:last-child {
+  border-right: 0;
+}
+
+.student-profile-stat small {
+  color: var(--profile-muted);
+  font-size: 14px;
+}
+
+.student-profile-stat b {
+  color: var(--profile-navy);
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.student-profile-stat b.student-profile-stat__date {
+  font-size: 18px;
+}
+
+.student-profile-stat__note {
+  color: var(--profile-muted);
+  font-size: 13px;
+}
+
+.student-profile-stat__track {
+  display: block;
+  height: 6px;
+  margin-top: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8edf5;
+}
+
+.student-profile-stat__track i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--profile-gold);
+  transition: width 0.4s ease;
+}
+
+/* รายละเอียด */
+.student-profile-card__details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 22px 28px 26px;
+}
+
+.student-profile-card__detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f5f7fb;
+}
+
+.student-profile-card__icon {
+  display: grid;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: #e3ebf8;
+  color: #174d99;
+}
+
+.student-profile-card__icon svg,
+.student-profile-links svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.student-profile-card__details dt {
+  color: var(--profile-muted);
+  font-size: 14px;
+}
+
+.student-profile-card__details dd {
+  margin: 2px 0 0;
+  color: var(--profile-navy);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* ทางลัด */
+.student-profile-links {
+  display: grid;
+  /* ขยายเต็มแถวตามจำนวนปุ่ม: 1 ปุ่ม = เต็มความกว้าง, 2 ปุ่ม = ครึ่งละปุ่ม */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.student-profile-links a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--profile-line);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--profile-navy);
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.student-profile-links a:hover {
+  border-color: #b9c8e2;
+  box-shadow: 0 6px 18px rgba(13, 33, 65, 0.08);
+  transform: translateY(-1px);
+}
+
+.student-profile-links svg {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  color: #174d99;
+}
+
+.student-profile-links span {
+  display: grid;
+}
+
+.student-profile-links small {
+  color: var(--profile-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .student-profile-stats,
+  .student-profile-card__details {
+    grid-template-columns: 1fr;
+  }
+
+  .student-profile-stat {
+    border-right: 0;
+    border-bottom: 1px solid var(--profile-line);
+  }
+
+  .student-profile-stat:last-child {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .student-profile-breadcrumb,
+  .student-profile {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .student-profile-card__banner {
+    flex-wrap: wrap;
+    padding: 22px 20px;
+  }
+
+  .student-profile-card__academic-status {
+    order: 3;
+  }
+
+  .student-profile-stat,
+  .student-profile-card__details {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .student-profile-links {
+    grid-template-columns: 1fr;
+  }
+}

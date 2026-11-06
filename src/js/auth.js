@@ -259,6 +259,16 @@
     return ok;
   }
 
+  // หน้าเฉพาะนักศึกษา (ผลการเรียน / ตรวจสอบการจบ / หน้าของนักศึกษา)
+  // ยังไม่ login -> ไปหน้า login, login แล้วแต่ไม่ใช่ Student (เช่น Admin/Staff) -> กลับหน้าแรก
+  function requireStudent() {
+    if (!requireLogin()) return false;
+    if (hasRole("Student")) return true;
+    const root = document.body.dataset.root || "./";
+    location.replace(`${root}index.html`);
+    return false;
+  }
+
   // ---------- เรียก API Gateway พร้อมแนบ token ----------
   // apiFetch("courses", { curriculum_id: "BSC-CS-2566" }, { auth: "required" | "optional" })
   //   required = ต้อง login (ไม่มี token -> ไปหน้า login, ได้ 401 -> ล้าง session แล้วไปหน้า login)
@@ -288,5 +298,5 @@
     return res.json();
   }
 
-  window.Auth = { login, logout, getToken, isLoggedIn, getUser, hasRole, requireLogin, apiFetch };
+  window.Auth = { login, logout, getToken, isLoggedIn, getUser, hasRole, requireLogin, requireStudent, apiFetch };
 })();

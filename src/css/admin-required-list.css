@@ -1,0 +1,14 @@
+/* Vertical graduation-course editor; loaded after admin.css */
+#edit-required-list.adm-edit-course-chips { display:block; margin:8px 0 16px; }
+.adm-required-vertical-list { max-height:390px; overflow-y:auto; background:#fff; border:1px solid #e4dfd5; border-radius:10px; }
+.adm-required-course-row { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:10px 14px; border-bottom:1px solid #eeeae3; min-height:52px; }
+.adm-required-course-row:last-child { border-bottom:0; }
+.adm-required-course-row:nth-child(even) { background:#fcfbf8; }
+.adm-required-course-info { display:flex; align-items:center; gap:14px; min-width:0; }
+.adm-required-course-number { color:#7c776f; font-size:13px; width:26px; }
+.adm-required-course-info strong { color:#2d2d2d; font-size:15px; }
+.adm-required-remove-button { flex:0 0 auto; cursor:pointer; font:600 14px Sarabun,sans-serif; border-radius:7px; padding:7px 17px; border:1px solid #f1c5c2; color:#a32d30; background:#fff1ef; }
+.adm-required-remove-button:hover,.adm-required-remove-button:focus-visible { background:#fbdcda; outline:2px solid #db9995; outline-offset:2px; }
+@media(max-width:520px) { .adm-required-course-row {padding:9px 10px;} .adm-required-remove-button {padding:7px 12px;} }
+
+.adm-editor-warning{border:1px solid #e6d5a7;background:#fffaf0;color:#725419;border-radius:8px;padding:11px 13px;font-size:14px;line-height:1.6;margin:12px 0 6px}

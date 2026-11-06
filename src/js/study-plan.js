@@ -1,5 +1,5 @@
 const API_URL =
-  "https://uuo1em3vlb.execute-api.us-east-1.amazonaws.com/prod/api";
+  "https://3r0xvwx60k.execute-api.ap-southeast-2.amazonaws.com/prod/api";
 
 let allStudyPlans = [];
 
