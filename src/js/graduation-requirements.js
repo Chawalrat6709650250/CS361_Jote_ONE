@@ -1,7 +1,6 @@
 (() => {
   // Base URL ของ API กลางที่ทีม Backend ดูแล
-  const API_BASE =
-    "https://3r0xvwx60k.execute-api.ap-southeast-2.amazonaws.com/prod/api";
+  const API_BASE = window.APP_CONFIG.apiBase;
   const form = document.getElementById("requirements-form");
   const programSelect = document.getElementById("program-select");
   const yearSelect = document.getElementById("year-select");
