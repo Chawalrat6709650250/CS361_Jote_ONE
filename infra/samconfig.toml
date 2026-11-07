@@ -1,0 +1,30 @@
+version = 0.1
+
+# sam deploy                     → environment หลัก (stack: cstu-v5)
+# sam deploy --config-env dev    → environment ทดสอบ (stack: cstu-v5-dev)
+
+[default.global.parameters]
+region = "ap-southeast-2"
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.deploy.parameters]
+stack_name = "cstu-v5"
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+confirm_changeset = false
+fail_on_empty_changeset = false
+parameter_overrides = "SecretsPath=/cstu"
+
+[dev.global.parameters]
+region = "ap-southeast-2"
+
+[dev.deploy.parameters]
+stack_name = "cstu-v5-dev"
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+confirm_changeset = false
+fail_on_empty_changeset = false
+parameter_overrides = "SecretsPath=/cstu"

@@ -1,0 +1,62 @@
+name: Deploy infrastructure (SAM)
+
+# push เข้า main ที่แก้ไฟล์ใน infra/ → build + deploy stack cstu-v5 อัตโนมัติ
+# สั่งเองได้จากแท็บ Actions (เลือก environment default หรือ dev)
+on:
+  push:
+    branches: [main]
+    paths: ["infra/**", ".github/workflows/deploy-infra.yml"]
+  workflow_dispatch:
+    inputs:
+      config_env:
+        description: "samconfig environment"
+        type: choice
+        options: [default, dev]
+        default: default
+
+concurrency:
+  group: deploy-infra-${{ inputs.config_env || 'default' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Lint template
+        run: |
+          pip install cfn-lint
+          cfn-lint template.yaml
+
+      - name: Check Lambda syntax
+        run: for f in src/*/index.mjs; do node --check "$f"; done
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-2
+
+      - name: Build
+        run: sam build
+
+      - name: Deploy
+        run: sam deploy --config-env ${{ inputs.config_env || 'default' }} --no-progressbar
+
+      - name: Show outputs
+        run: |
+          STACK=$([ "${{ inputs.config_env || 'default' }}" = "dev" ] && echo cstu-v5-dev || echo cstu-v5)
+          aws cloudformation describe-stacks --stack-name "$STACK" \
+            --query "Stacks[0].Outputs[].[OutputKey,OutputValue]" --output table

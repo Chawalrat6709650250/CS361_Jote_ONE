@@ -1,5 +1,5 @@
 (function () {
-  const API_BASE = "https://3r0xvwx60k.execute-api.ap-southeast-2.amazonaws.com/prod/api";
+  const API_BASE = window.APP_CONFIG.apiBase;
   const TIMEOUT_MS = 8000;
 
   const section = document.getElementById("system-status");

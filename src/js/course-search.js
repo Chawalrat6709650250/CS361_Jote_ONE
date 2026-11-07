@@ -1,6 +1,6 @@
 // ===== ตั้งค่า =====
 // โครงสร้างข้อมูลอ้างอิงจาก study-plan.js ของทีม (branch develop) และ API เดียวกัน
-const API = "https://3r0xvwx60k.execute-api.ap-southeast-2.amazonaws.com/prod/api";
+const API = window.APP_CONFIG.apiBase;
 const DEBUG = /[?&]debug/.test(location.search); // เปิดด้วย course-search.html?debug=1 เพื่อดูข้อมูลดิบ
 
 // กลุ่มประเภทวิชา = ปุ่มตัวกรองและสีตาม Figma

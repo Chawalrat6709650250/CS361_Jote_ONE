@@ -1,5 +1,4 @@
-const API_URL =
-  "https://3r0xvwx60k.execute-api.ap-southeast-2.amazonaws.com/prod/api";
+const API_URL = window.APP_CONFIG.apiBase;
 
 let allStudyPlans = [];
 

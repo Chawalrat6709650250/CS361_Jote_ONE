@@ -1,0 +1,3 @@
+infra/.aws-sam/
+config.env
+outputs.env

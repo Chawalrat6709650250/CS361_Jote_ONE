@@ -1,0 +1,531 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  CSTU Graduation Check (V5) — Infrastructure as Code ของทั้งระบบ:
+  DynamoDB, Lambda, IAM, Cognito (custom auth กับ TU), HTTP API + JWT authorizer, EventBridge
+  ชื่อทุกทรัพยากรขึ้นต้นด้วยชื่อ stack จึงสร้างหลาย environment (dev / prod) ในบัญชีเดียวกันได้
+
+Parameters:
+  SecretsPath:
+    Type: String
+    Default: /cstu
+    Description: path ใน SSM Parameter Store ที่เก็บค่าลับ (tu-app-key, gas-url, registrar-key) — สร้างด้วย scripts/put_secrets.sh
+  CurrentTerm:
+    Type: String
+    Default: "2569/2"
+    AllowedPattern: "^\\d{4}/[123]$"
+  CurriculumApiUrls:
+    Type: String
+    Description: URL ของ Apps Script หลักสูตร (คั่นด้วย ,)
+    Default: "https://script.google.com/macros/s/AKfycbw75ktHQ9wrWMNcMBq1rd0OnNCi3OOJwwNS0kTT5OQDYGiBA1Up7B-Ufbhtu603HZcZ/exec,https://script.google.com/macros/s/AKfycbxO0y-q5MC_dkvYOHwE5BguW0NYqBecLtF-JEvRJ42XnSouQ3Ij4-ss7paIYRX9wlU9SQ/exec"
+  RegistrarSyncSchedule:
+    Type: String
+    Default: "cron(0 1 * * ? *)"
+    Description: เวลา sync ทะเบียนอัตโนมัติ (UTC) — ค่าเริ่มต้น 08:00 เวลาไทย
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Handler: index.handler
+    Architectures: [x86_64]
+    Timeout: 30
+    MemorySize: 256
+    Environment:
+      Variables:
+        CURRICULUM_TABLE: !Ref CurriculumTable
+        COURSE_DETAIL_TABLE: !Ref CourseDetailTable
+        COURSE_MAPPING_TABLE: !Ref CourseMappingTable
+        COURSE_PREREQ_TABLE: !Ref CoursePrereqTable
+        STUDY_PLANS_TABLE: !Ref StudyPlansTable
+        RULES_TABLE: !Ref GraduationRulesTable
+        GRADUATION_REQUIREMENTS_TABLE: !Ref GraduationRequirementsTable
+        COURSES_TABLE: !Ref CoursesTable
+        TEST_COURSES_TABLE: !Ref CoursesTable
+        CHANGELOG_TABLE: !Ref ChangeLogTable
+        FAQ_TABLE: !Ref FaqTable
+        STUDENTS_TABLE: !Ref StudentsTable
+        RECORDS_TABLE: !Ref StudentRecordsTable
+        SYNC_TABLE: !Ref RegistrarSyncTable
+        ATTEMPTS_TABLE: !Ref LoginAttemptsTable
+        METADATA_TABLE: !Ref SystemMetadataTable
+        PROFILES_TABLE: !Ref UserProfilesTable
+        SYNC_SOURCE: registrar
+        CURRENT_TERM: !Ref CurrentTerm
+
+Resources:
+  # ===================================================================
+  # DynamoDB
+  # ===================================================================
+  CurriculumTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-CurriculumData"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: id, AttributeType: S }]
+      KeySchema: [{ AttributeName: id, KeyType: HASH }]
+  CourseDetailTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-CourseDetailData"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: course_code, AttributeType: S }]
+      KeySchema: [{ AttributeName: course_code, KeyType: HASH }]
+  CourseMappingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-CourseMappingData"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: course_id, AttributeType: S }]
+      KeySchema: [{ AttributeName: course_id, KeyType: HASH }]
+  CoursePrereqTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-CoursePrerequisitesData"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: course_code, AttributeType: S }]
+      KeySchema: [{ AttributeName: course_code, KeyType: HASH }]
+  StudyPlansTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-StudyPlansData"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: study_plan_id, AttributeType: S }]
+      KeySchema: [{ AttributeName: study_plan_id, KeyType: HASH }]
+  GraduationRulesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-GraduationRules"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: study_plan_id, AttributeType: S }]
+      KeySchema: [{ AttributeName: study_plan_id, KeyType: HASH }]
+  GraduationRequirementsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-GraduationRequirementsData"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: curriculum_id, AttributeType: S }
+        - { AttributeName: pathway_id, AttributeType: S }
+      KeySchema:
+        - { AttributeName: curriculum_id, KeyType: HASH }
+        - { AttributeName: pathway_id, KeyType: RANGE }
+  CoursesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-Courses"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: curriculum_year, AttributeType: S }
+        - { AttributeName: course_code, AttributeType: S }
+      KeySchema:
+        - { AttributeName: curriculum_year, KeyType: HASH }
+        - { AttributeName: course_code, KeyType: RANGE }
+  ChangeLogTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-CurriculumChangeLog"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: entity_id, AttributeType: S }
+        - { AttributeName: at, AttributeType: S }
+      KeySchema:
+        - { AttributeName: entity_id, KeyType: HASH }
+        - { AttributeName: at, KeyType: RANGE }
+  FaqTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-FAQ"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: id, AttributeType: S }]
+      KeySchema: [{ AttributeName: id, KeyType: HASH }]
+  StudentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-Students"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: student_id, AttributeType: S }
+        - { AttributeName: advisor_username, AttributeType: S }
+      KeySchema: [{ AttributeName: student_id, KeyType: HASH }]
+      GlobalSecondaryIndexes:
+        - IndexName: advisor-index
+          KeySchema: [{ AttributeName: advisor_username, KeyType: HASH }]
+          Projection: { ProjectionType: ALL }
+  StudentRecordsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-StudentRecords"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: student_id, AttributeType: S }
+        - { AttributeName: record_key, AttributeType: S }
+      KeySchema:
+        - { AttributeName: student_id, KeyType: HASH }
+        - { AttributeName: record_key, KeyType: RANGE }
+  RegistrarSyncTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-RegistrarSync"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: source, AttributeType: S }
+        - { AttributeName: at, AttributeType: S }
+      KeySchema:
+        - { AttributeName: source, KeyType: HASH }
+        - { AttributeName: at, KeyType: RANGE }
+  LoginAttemptsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-LoginAttempts"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: username, AttributeType: S }]
+      KeySchema: [{ AttributeName: username, KeyType: HASH }]
+      TimeToLiveSpecification: { AttributeName: expires_at, Enabled: true }
+  SystemMetadataTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-SystemMetadata"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: id, AttributeType: S }]
+      KeySchema: [{ AttributeName: id, KeyType: HASH }]
+  UserProfilesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-UserProfiles"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: username, AttributeType: S }]
+      KeySchema: [{ AttributeName: username, KeyType: HASH }]
+
+  # ===================================================================
+  # IAM — สิทธิ์เท่าที่ระบบใช้ (เฉพาะตารางของ stack นี้ + จัดการผู้ใช้ Cognito)
+  # ===================================================================
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: app-access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:BatchGetItem
+                  - dynamodb:ConditionCheckItem
+                Resource:
+                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AWS::StackName}-*"
+                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AWS::StackName}-*/index/*"
+              # ใช้ wildcard ของ user pool เพื่อเลี่ยง circular dependency (pool → trigger → role → pool)
+              - Effect: Allow
+                Action:
+                  - cognito-idp:AdminGetUser
+                  - cognito-idp:AdminCreateUser
+                  - cognito-idp:AdminSetUserPassword
+                  - cognito-idp:AdminAddUserToGroup
+                  - cognito-idp:AdminUpdateUserAttributes
+                Resource: !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
+
+  # ===================================================================
+  # Lambda — Cognito custom auth (ตรวจรหัสผ่านกับ TU)
+  # ===================================================================
+  DefineAuthChallengeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-DefineAuthChallenge"
+      CodeUri: src/DefineAuthChallenge/
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 10
+  CreateAuthChallengeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-CreateAuthChallenge"
+      CodeUri: src/CreateAuthChallenge/
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 10
+  VerifyAuthResponseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-VerifyAuthResponse"
+      CodeUri: src/VerifyAuthResponse/
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 15
+      Environment:
+        Variables:
+          TU_APP_KEY: !Sub "{{resolve:ssm:${SecretsPath}/tu-app-key}}"
+
+  DefineAuthChallengePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref DefineAuthChallengeFunction
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
+  CreateAuthChallengePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CreateAuthChallengeFunction
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
+  VerifyAuthResponsePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref VerifyAuthResponseFunction
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
+
+  # ===================================================================
+  # Cognito
+  # ===================================================================
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "${AWS::StackName}-users"
+      UsernameConfiguration: { CaseSensitive: false }
+      AdminCreateUserConfig: { AllowAdminCreateUserOnly: true }
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: false
+          RequireLowercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+      LambdaConfig:
+        DefineAuthChallenge: !GetAtt DefineAuthChallengeFunction.Arn
+        CreateAuthChallenge: !GetAtt CreateAuthChallengeFunction.Arn
+        VerifyAuthChallengeResponse: !GetAtt VerifyAuthResponseFunction.Arn
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub "${AWS::StackName}-web"
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+  AdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties: { UserPoolId: !Ref UserPool, GroupName: Admin, Description: ผู้ดูแลหลักสูตร }
+  ProfessorGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties: { UserPoolId: !Ref UserPool, GroupName: Professor, Description: อาจารย์ที่ปรึกษา }
+  StaffGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties: { UserPoolId: !Ref UserPool, GroupName: Staff, Description: เจ้าหน้าที่ }
+  StudentGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties: { UserPoolId: !Ref UserPool, GroupName: Student, Description: นักศึกษา }
+
+  # ===================================================================
+  # HTTP API (stage prod) — CORS ระดับ API ทำให้ error ทุกตัวมี header CORS
+  # ===================================================================
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: prod
+      CorsConfiguration:
+        AllowOrigins: ["*"]
+        AllowMethods: [GET, POST, PUT, OPTIONS]
+        AllowHeaders: [authorization, content-type]
+        MaxAge: 3600
+      Auth:
+        DefaultAuthorizer: CognitoJWT
+        Authorizers:
+          CognitoJWT:
+            IdentitySource: "$request.header.Authorization"
+            JwtConfiguration:
+              issuer: !Sub "https://cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}"
+              audience: [!Ref UserPoolClient]
+
+  # ===================================================================
+  # Lambda — API
+  # ===================================================================
+  GetCurriculumApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-GetCurriculumApi"
+      CodeUri: src/GetCurriculumApi/
+      Role: !GetAtt LambdaRole.Arn
+      MemorySize: 512
+      Events:
+        Api:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /api, Method: GET, Auth: { Authorizer: NONE } }
+
+  EnsureUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-EnsureUser"
+      CodeUri: src/EnsureUser/
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 15
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref UserPool
+          TU_APP_KEY: !Sub "{{resolve:ssm:${SecretsPath}/tu-app-key}}"
+      Events:
+        EnsureUser:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /auth/ensure-user, Method: POST, Auth: { Authorizer: NONE } }
+
+  GraduationApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-GraduationApi"
+      CodeUri: src/GraduationApi/
+      Role: !GetAtt LambdaRole.Arn
+      MemorySize: 512
+      Events:
+        Me:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /grad/me, Method: GET }
+        MeRecords:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /grad/me/records, Method: GET }
+        Students:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /grad/students, Method: GET }
+        Student:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: "/grad/students/{student_id}", Method: GET }
+        StudentRecords:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: "/grad/students/{student_id}/records", Method: GET }
+
+  RegistrarApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-RegistrarApi"
+      CodeUri: src/RegistrarApi/
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 60
+      MemorySize: 512
+      Environment:
+        Variables:
+          GAS_URL: !Sub "{{resolve:ssm:${SecretsPath}/gas-url}}"
+          REGISTRAR_KEY: !Sub "{{resolve:ssm:${SecretsPath}/registrar-key}}"
+          SIMULATE: none
+          FETCH_TIMEOUT_MS: "10000"
+      Events:
+        Status:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /registrar/status, Method: GET }
+        Sync:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /registrar/sync, Method: POST }
+        Upload:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /registrar/upload, Method: POST }
+        DailySync:
+          Type: Schedule
+          Properties:
+            Name: !Sub "${AWS::StackName}-registrar-daily-sync"
+            Schedule: !Ref RegistrarSyncSchedule
+            Enabled: true
+
+  CurriculumAdminApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-CurriculumAdminApi"
+      CodeUri: src/CurriculumAdminApi/
+      Role: !GetAtt LambdaRole.Arn
+      MemorySize: 512
+      Events:
+        ListCourses:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /admin/courses, Method: GET }
+        CreateCourse:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /admin/courses, Method: POST }
+        UpdateCourse:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: "/admin/courses/{year}/{course_code}", Method: PUT }
+        UpdatePrereq:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: "/admin/courses/{year}/{course_code}/prerequisite", Method: PUT }
+        GetRules:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: "/admin/graduation-rules/{study_plan_id}", Method: GET }
+        UpdateRules:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: "/admin/graduation-rules/{study_plan_id}", Method: PUT }
+        Changes:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /admin/changes, Method: GET }
+
+  ProfileApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-ProfileApi"
+      CodeUri: src/ProfileApi/
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 15
+      Environment:
+        Variables:
+          TU_APP_KEY: !Sub "{{resolve:ssm:${SecretsPath}/tu-app-key}}"
+          TU_TIMEOUT_MS: "8000"
+      Events:
+        Me:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /profile/me, Method: GET }
+        Student:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: "/profile/students/{student_id}", Method: GET }
+        Instructors:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /profile/instructors, Method: GET }
+
+  GetSystemStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-GetSystemStatus"
+      CodeUri: src/GetSystemStatus/
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 10
+
+  # ดึงข้อมูลหลักสูตรจาก Apps Script (รันด้วย scripts/bootstrap.sh หรือ invoke เอง)
+  SyncCurriculumDataFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-SyncCurriculumData"
+      CodeUri: src/SyncCurriculumData/
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 900
+      MemorySize: 1024
+      Environment:
+        Variables:
+          CURRICULUM_API_URLS: !Ref CurriculumApiUrls
+
+Outputs:
+  ApiUrl:
+    Description: ใส่ใน config ของหน้าเว็บ (apiBase = ApiUrl + "/api")
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod"
+  Region:
+    Value: !Ref AWS::Region
+  UserPoolId:
+    Value: !Ref UserPool
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+  EnsureUserUrl:
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod/auth/ensure-user"
+  TablePrefix:
+    Description: ชื่อตารางทุกตัวขึ้นต้นด้วยค่านี้ (ใช้กับ scripts/bootstrap.sh)
+    Value: !Sub "${AWS::StackName}-"
